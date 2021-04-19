@@ -14,10 +14,9 @@ Defines the analysis and plotting functions for postprocessing regarding the mis
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os.path as pth
-import openmdao.api as om
 import logging
-import shutil
+import os.path as pth
+
 import fastoad.api as oad
 
 

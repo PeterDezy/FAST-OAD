@@ -1,9 +1,8 @@
-from IPython.display import display
-from IPython.display import clear_output
 import ipywidgets as widgets
-from ruamel.yaml import YAML
-from fastoad.io.configuration.configuration import _YAMLSerializer
 import openmdao.drivers as driver
+from IPython.display import clear_output
+from IPython.display import display
+from ruamel.yaml import YAML
 
 
 def scipy_optimizer_change():
