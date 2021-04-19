@@ -6,10 +6,12 @@ from ruamel.yaml import YAML
 
 
 class ChangeNameInputOutput:
-
+    """
+    Change the name of the input/output files
+    """
     def __init__(self):
         # The file name
-        self.file_name = "./workdir/oad_process.yml"
+        self.file_name = "../notebooks/workdir/oad_process.yml"
 
         self.inputf = None
 

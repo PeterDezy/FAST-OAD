@@ -21,3 +21,6 @@ from .analysis_and_plots import (
 from .mission_viewer import MissionViewer
 from .optimization_viewer import OptimizationViewer
 from .variable_viewer import VariableViewer
+from .generate_files import GenerateFiles
+from .change_name_input_output import ChangeNameInputOutput
+

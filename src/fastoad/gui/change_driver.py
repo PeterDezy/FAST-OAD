@@ -13,7 +13,7 @@ def scipy_optimizer_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -70,7 +70,7 @@ def differential_evolution_driver_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -196,7 +196,7 @@ def doe_driver_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -337,7 +337,7 @@ def genetic_algorithm_driver_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -492,7 +492,7 @@ def genetic_algorithm_driver_change():
 def pyoptsparse_driver_change():
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 

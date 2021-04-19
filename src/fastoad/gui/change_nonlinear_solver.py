@@ -13,7 +13,7 @@ def broyden_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -197,7 +197,7 @@ def newton_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -342,7 +342,7 @@ def nonlinear_block_gs_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -514,7 +514,7 @@ def nonlinear_block_jac_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -613,7 +613,7 @@ def nonlinear_runonce_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "./workdir/oad_process.yml"
+        file_name = "../notebooks/workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
