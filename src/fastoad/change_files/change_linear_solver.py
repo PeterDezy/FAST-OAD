@@ -6,9 +6,10 @@ import openmdao.solvers.linear as solvers
 
 
 def direct_change():
-    drive = solvers.direct.DirectSolver()
 
-    # print(drive.options.__dict__)
+    solver = solvers.direct.DirectSolver()
+
+    # print(solver.options.__dict__)
 
     def save(b):
         yaml = YAML()
@@ -17,7 +18,9 @@ def direct_change():
             doc = yaml.load(f)
 
         try:
-            doc['model']['linear_solver'] = 'om.DirectSolver(err_on_singular=' + str(err_on_singular.value) + ')'
+            doc['model']['linear_solver'] = 'om.DirectSolver(iprint='+str(iprint.value)+',assemble_jac=' + \
+                                            str(assemble_jac.value)+',err_on_singular=' + \
+                                            str(err_on_singular.value) + ')'
             with open(file_name, 'w') as f:
                 yaml.dump(doc, f)
             print("Successfully changed options.\n")
@@ -25,8 +28,24 @@ def direct_change():
         except:
             raise ValueError("Error while modifying.\n")
 
+    iprint = widgets.BoundedIntText(
+        value=solver.options.__dict__['_dict']['iprint'].get('value'),
+        min=0,
+        max=1,
+        description='Print the output :',
+        style=style,
+        disabled=False
+    )
+
+    assemble_jac = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['assemble_jac'].get('value'),
+        description='Activates use of assembled jacobian by this solver',
+        style=style,
+        disabled=False,
+    )
+
     err_on_singular = widgets.Checkbox(
-        value=drive.options.__dict__['_dict']['err_on_singular'].get('value'),
+        value=solver.options.__dict__['_dict']['err_on_singular'].get('value'),
         description='Raise an error if LU decomposition is singular',
         style=style,
         disabled=False,
@@ -38,14 +57,15 @@ def direct_change():
         icon='save'
     )
 
-    display(err_on_singular, button)
+    display(iprint,assemble_jac, err_on_singular, button)
     button.on_click(save)
 
 
 def linear_block_gs_change():
-    drive = solvers.linear_block_gs.LinearBlockGS()
 
-    # print(drive.options.__dict__)
+    solver = solvers.linear_block_gs.LinearBlockGS()
+
+    # print(solver.options.__dict__)
 
     def save(b):
         yaml = YAML()
@@ -54,13 +74,18 @@ def linear_block_gs_change():
             doc = yaml.load(f)
 
         try:
-            doc['model']['linear_solver'] = 'om.LinearBlockGS(use_aitken=' + str(
-                use_aitken.value) + ',aitken_min_factor='
-            doc['model']['linear_solver'] += str(aitken_min_factor.value) + ',aitken_max_factor=' + str(
-                aitken_max_factor.value)
-            doc['model']['linear_solver'] += ',aitken_initial_factor=' + str(
-                aitken_initial_factor.value) + ',maxiter=' + str(maxiter.value)
-            doc['model']['linear_solver'] += ',atol=' + str(atol.value) + ',rtol=' + str(rtol.value) + ')'
+            doc['model']['linear_solver'] = 'om.LinearBlockGS(maxiter=' + str(maxiter.value) + ',atol=' + \
+                                            str(atol.value) + ',rtol='+str(rtol.value)+',iprint=' + \
+                                            str(iprint.value)+',err_on_non_converge=' + \
+                                            str(err_on_non_converge.value)+',assemble_jac=' + \
+                                            str(assemble_jac.value) + ',use_aitken=' + str(use_aitken.value)
+            if str(use_aitken.value) == 'True':
+                doc['model']['linear_solver'] += ',aitken_min_factor=' + \
+                                                 str(aitken_min_factor.value) + ',aitken_max_factor=' + \
+                                                 str(aitken_max_factor.value) + ',aitken_initial_factor=' + \
+                                                 str(aitken_initial_factor.value)
+
+            doc['model']['linear_solver'] += ')'
             with open(file_name, 'w') as f:
                 yaml.dump(doc, f)
             print("Successfully changed options.\n")
@@ -68,57 +93,85 @@ def linear_block_gs_change():
         except:
             raise ValueError("Error while modifying.\n")
 
-    use_aitken = widgets.Checkbox(
-        value=drive.options.__dict__['_dict']['use_aitken'].get('value'),
-        description='Set to True to use Aitken relaxation',
-        style=style,
-        disabled=False,
-    )
-
-    aitken_min_factor = widgets.FloatText(
-        value=drive.options.__dict__['_dict']['aitken_min_factor'].get('value'),
-        description='Lower limit for Aitken relaxation factor :',
-        style=style,
-        disabled=False
-    )
-
-    aitken_max_factor = widgets.FloatText(
-        value=drive.options.__dict__['_dict']['aitken_max_factor'].get('value'),
-        description='Upper limit for Aitken relaxation factor :',
-        style=style,
-        disabled=False
-    )
-
-    aitken_initial_factor = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['aitken_initial_factor'].get('value'),
-        description='Initial value for Aitken relaxation factor :',
-        style=style,
-        disabled=False
-    )
-
     maxiter = widgets.BoundedIntText(
-        value=drive.options.__dict__['_dict']['maxiter'].get('value'),
+        value=solver.options.__dict__['_dict']['maxiter'].get('value'),
         min=1,
         max=10000,
-        description='Maxiter:',
+        description='Maxiter :',
         style=style,
         disabled=False
     )
 
     atol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['atol'].get('value'),
-        min=10e-12,
+        value=solver.options.__dict__['_dict']['atol'].get('value'),
+        min=1e-20,
         max=1,
-        description='aTol:',
+        description='Absolute Error Tolerance :',
         style=style,
         disabled=False
     )
 
     rtol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['rtol'].get('value'),
+        value=solver.options.__dict__['_dict']['rtol'].get('value'),
         min=10e-12,
         max=1,
-        description='rTol:',
+        description='Relative Error Tolerance :',
+        style=style,
+        disabled=False
+    )
+
+    iprint = widgets.BoundedIntText(
+        value=solver.options.__dict__['_dict']['iprint'].get('value'),
+        min=0,
+        max=1,
+        description='Print the output :',
+        style=style,
+        disabled=False
+    )
+
+    err_on_non_converge = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['err_on_non_converge'].get('value'),
+        description='When True, AnalysisError will be raised if we don\'t converge',
+        style=style,
+        disabled=False,
+    )
+
+    assemble_jac = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['assemble_jac'].get('value'),
+        description='Activates use of assembled jacobian by this solver',
+        style=style,
+        disabled=False,
+    )
+
+    use_aitken = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['use_aitken'].get('value'),
+        description='Use Aitken relaxation',
+        disabled=False,
+    )
+
+    aitken_min_factor = widgets.BoundedFloatText(
+        value=solver.options.__dict__['_dict']['aitken_min_factor'].get('value'),
+        min=0,
+        max=100,
+        description='Aitken min factor :',
+        style=style,
+        disabled=False
+    )
+
+    aitken_max_factor = widgets.BoundedFloatText(
+        value=solver.options.__dict__['_dict']['aitken_max_factor'].get('value'),
+        min=0,
+        max=100,
+        description='Aitken max factor :',
+        style=style,
+        disabled=False
+    )
+
+    aitken_initial_factor = widgets.BoundedFloatText(
+        value=solver.options.__dict__['_dict']['aitken_initial_factor'].get('value'),
+        min=0,
+        max=100,
+        description='Aitken initial factor :',
         style=style,
         disabled=False
     )
@@ -129,14 +182,28 @@ def linear_block_gs_change():
         icon='save'
     )
 
-    display(use_aitken, aitken_min_factor, aitken_max_factor, aitken_initial_factor, maxiter, atol, rtol, button)
+    vb = widgets.VBox(
+        children=[]
+    )
+
+    def change_use_aitken(b):
+
+        if b['new']:
+            vb.children = [aitken_min_factor, aitken_max_factor, aitken_initial_factor]
+        else:
+            vb.children = []
+
+    use_aitken.observe(change_use_aitken, names='value')
+
+    display(maxiter, atol, rtol,iprint,err_on_non_converge,assemble_jac,use_aitken,vb, button)
     button.on_click(save)
 
 
 def linear_block_jac_change():
-    drive = solvers.linear_block_jac.LinearBlockJac()
 
-    # print(drive.options.__dict__)
+    solver = solvers.linear_block_jac.LinearBlockJac()
+
+    # print(solver.options.__dict__)
 
     def save(b):
         yaml = YAML()
@@ -145,9 +212,11 @@ def linear_block_jac_change():
             doc = yaml.load(f)
 
         try:
-            doc['model']['linear_solver'] = 'om.LinearBlockJac(maxiter=' + str(maxiter.value) + ',atol=' + str(
-                atol.value) + ',rtol='
-            doc['model']['linear_solver'] += str(rtol.value) + ')'
+            doc['model']['linear_solver'] = 'om.LinearBlockJac(maxiter=' + str(maxiter.value) + ',atol=' + \
+                                            str(atol.value) + ',rtol='+str(rtol.value)+',iprint=' + \
+                                            str(iprint.value)+',err_on_non_converge=' + \
+                                            str(err_on_non_converge.value)+',assemble_jac=' + \
+                                            str(assemble_jac.value) + ')'
             with open(file_name, 'w') as f:
                 yaml.dump(doc, f)
             print("Successfully changed options.\n")
@@ -156,30 +225,53 @@ def linear_block_jac_change():
             raise ValueError("Error while modifying.\n")
 
     maxiter = widgets.BoundedIntText(
-        value=drive.options.__dict__['_dict']['maxiter'].get('value'),
+        value=solver.options.__dict__['_dict']['maxiter'].get('value'),
         min=1,
         max=10000,
-        description='Maxiter:',
+        description='Maxiter :',
         style=style,
         disabled=False
     )
 
     atol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['atol'].get('value'),
+        value=solver.options.__dict__['_dict']['atol'].get('value'),
         min=1e-20,
         max=1,
-        description='aTol:',
+        description='Absolute Error Tolerance :',
         style=style,
         disabled=False
     )
 
     rtol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['rtol'].get('value'),
+        value=solver.options.__dict__['_dict']['rtol'].get('value'),
         min=10e-12,
         max=1,
-        description='rTol:',
+        description='Relative Error Tolerance :',
         style=style,
         disabled=False
+    )
+
+    iprint = widgets.BoundedIntText(
+        value=solver.options.__dict__['_dict']['iprint'].get('value'),
+        min=0,
+        max=1,
+        description='Print the output :',
+        style=style,
+        disabled=False
+    )
+
+    err_on_non_converge = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['err_on_non_converge'].get('value'),
+        description='When True, AnalysisError will be raised if we don\'t converge',
+        style=style,
+        disabled=False,
+    )
+
+    assemble_jac = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['assemble_jac'].get('value'),
+        description='Activates use of assembled jacobian by this solver',
+        style=style,
+        disabled=False,
     )
 
     button = widgets.Button(
@@ -188,14 +280,15 @@ def linear_block_jac_change():
         icon='save'
     )
 
-    display(maxiter, atol, rtol, button)
+    display(maxiter, atol, rtol,iprint,err_on_non_converge,assemble_jac, button)
     button.on_click(save)
 
 
 def linear_runonce_change():
-    drive = solvers.linear_runonce.LinearRunOnce()
 
-    # print(drive.options.__dict__)
+    solver = solvers.linear_runonce.LinearRunOnce()
+
+    # print(solver.options.__dict__)
 
     def save(b):
         yaml = YAML()
@@ -204,11 +297,15 @@ def linear_runonce_change():
             doc = yaml.load(f)
 
         try:
-            doc['model']['linear_solver'] = 'om.LinearRunOnce(use_aitken=' + str(
-                use_aitken.value) + ',aitken_min_factor='
-            doc['model']['linear_solver'] += str(aitken_min_factor.value) + ',aitken_max_factor=' + str(
-                aitken_max_factor.value)
-            doc['model']['linear_solver'] += ',aitken_initial_factor=' + str(aitken_initial_factor.value) + ')'
+            doc['model']['linear_solver'] = 'om.LinearRunOnce(iprint='+str(iprint.value)+',assemble_jac=' + \
+                                            str(assemble_jac.value) + ',use_aitken=' + str(use_aitken.value)
+            if str(use_aitken.value) == 'True':
+                doc['model']['linear_solver'] += ',aitken_min_factor=' + \
+                                                 str(aitken_min_factor.value) + ',aitken_max_factor=' + \
+                                                 str(aitken_max_factor.value) + ',aitken_initial_factor=' + \
+                                                 str(aitken_initial_factor.value)
+
+            doc['model']['linear_solver'] += ')'
             with open(file_name, 'w') as f:
                 yaml.dump(doc, f)
             print("Successfully changed options.\n")
@@ -216,30 +313,52 @@ def linear_runonce_change():
         except:
             raise ValueError("Error while modifying.\n")
 
-    use_aitken = widgets.Checkbox(
-        value=drive.options.__dict__['_dict']['use_aitken'].get('value'),
-        description='Set to True to use Aitken relaxation',
-        style=style,
-        disabled=False,
-    )
 
-    aitken_min_factor = widgets.FloatText(
-        value=drive.options.__dict__['_dict']['aitken_min_factor'].get('value'),
-        description='Lower limit for Aitken relaxation factor :',
+    iprint = widgets.BoundedIntText(
+        value=solver.options.__dict__['_dict']['iprint'].get('value'),
+        min=0,
+        max=1,
+        description='Print the output :',
         style=style,
         disabled=False
     )
 
-    aitken_max_factor = widgets.FloatText(
-        value=drive.options.__dict__['_dict']['aitken_max_factor'].get('value'),
-        description='Upper limit for Aitken relaxation factor :',
+    assemble_jac = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['assemble_jac'].get('value'),
+        description='Activates use of assembled jacobian by this solver',
+        style=style,
+        disabled=False,
+    )
+
+    use_aitken = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['use_aitken'].get('value'),
+        description='Use Aitken relaxation',
+        disabled=False,
+    )
+
+    aitken_min_factor = widgets.BoundedFloatText(
+        value=solver.options.__dict__['_dict']['aitken_min_factor'].get('value'),
+        min=0,
+        max=100,
+        description='Aitken min factor :',
+        style=style,
+        disabled=False
+    )
+
+    aitken_max_factor = widgets.BoundedFloatText(
+        value=solver.options.__dict__['_dict']['aitken_max_factor'].get('value'),
+        min=0,
+        max=100,
+        description='Aitken max factor :',
         style=style,
         disabled=False
     )
 
     aitken_initial_factor = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['aitken_initial_factor'].get('value'),
-        description='Initial value for Aitken relaxation factor :',
+        value=solver.options.__dict__['_dict']['aitken_initial_factor'].get('value'),
+        min=0,
+        max=100,
+        description='Aitken initial factor :',
         style=style,
         disabled=False
     )
@@ -250,11 +369,25 @@ def linear_runonce_change():
         icon='save'
     )
 
-    display(use_aitken, aitken_min_factor, aitken_max_factor, aitken_initial_factor, button)
+    vb = widgets.VBox(
+        children=[]
+    )
+
+    def change_use_aitken(b):
+
+        if b['new']:
+            vb.children = [aitken_min_factor, aitken_max_factor, aitken_initial_factor]
+        else:
+            vb.children = []
+
+    use_aitken.observe(change_use_aitken, names='value')
+
+    display(iprint,assemble_jac,use_aitken, vb, button)
     button.on_click(save)
 
 
 def petsc_ksp_change():
+
     def save(b):
         yaml = YAML()
         file_name = "./workdir/oad_process.yml"
@@ -281,9 +414,10 @@ def petsc_ksp_change():
 
 
 def scipy_iter_solver_change():
-    drive = solvers.scipy_iter_solver.ScipyKrylov()
 
-    # print(drive.options.__dict__)
+    solver = solvers.scipy_iter_solver.ScipyKrylov()
+
+    # print(solver.options.__dict__)
 
     def save(b):
         yaml = YAML()
@@ -292,9 +426,11 @@ def scipy_iter_solver_change():
             doc = yaml.load(f)
 
         try:
-            doc['model']['linear_solver'] = 'om.ScipyKrylov(maxiter=' + str(maxiter.value) + ',atol=' + str(
-                atol.value) + ',rtol='
-            doc['model']['linear_solver'] += str(rtol.value) + ',restart=' + str(restart.value) + ')'
+            doc['model']['linear_solver'] = 'om.ScipyKrylov(maxiter=' + str(maxiter.value) + ',atol=' + \
+                                            str(atol.value) + ',rtol='+str(rtol.value) + ',iprint=' + \
+                                            str(iprint.value)+',err_on_non_converge=' + \
+                                            str(err_on_non_converge.value)+',assemble_jac=' + \
+                                            str(assemble_jac.value) + ',restart=' + str(restart.value) + ')'
             with open(file_name, 'w') as f:
                 yaml.dump(doc, f)
             print("Successfully changed options.\n")
@@ -303,37 +439,60 @@ def scipy_iter_solver_change():
             raise ValueError("Error while modifying.\n")
 
     maxiter = widgets.BoundedIntText(
-        value=drive.options.__dict__['_dict']['maxiter'].get('value'),
+        value=solver.options.__dict__['_dict']['maxiter'].get('value'),
         min=1,
         max=10000,
-        description='Maxiter:',
+        description='Maxiter :',
         style=style,
         disabled=False
     )
 
     atol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['atol'].get('value'),
+        value=solver.options.__dict__['_dict']['atol'].get('value'),
         min=1e-20,
         max=1,
-        description='aTol:',
+        description='Absolute Error Tolerance :',
         style=style,
         disabled=False
     )
 
     rtol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['rtol'].get('value'),
+        value=solver.options.__dict__['_dict']['rtol'].get('value'),
         min=10e-12,
         max=1,
-        description='rTol:',
+        description='Relative Error Tolerance :',
         style=style,
         disabled=False
     )
 
+    iprint = widgets.BoundedIntText(
+        value=solver.options.__dict__['_dict']['iprint'].get('value'),
+        min=0,
+        max=1,
+        description='Print the output :',
+        style=style,
+        disabled=False
+    )
+
+    err_on_non_converge = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['err_on_non_converge'].get('value'),
+        description='When True, AnalysisError will be raised if we don\'t converge',
+        style=style,
+        disabled=False,
+    )
+
+    assemble_jac = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['assemble_jac'].get('value'),
+        description='Activates use of assembled jacobian by this solver',
+        style=style,
+        disabled=False,
+    )
+
     restart = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['restart'].get('value'),
+        value=solver.options.__dict__['_dict']['restart'].get('value'),
         min=0,
         max=1000,
-        description='Restart:',
+        description='Restart :',
         style=style,
         disabled=False
     )
@@ -344,14 +503,15 @@ def scipy_iter_solver_change():
         icon='save'
     )
 
-    display(maxiter, atol, rtol, restart, button)
+    display(maxiter, atol, rtol,iprint,err_on_non_converge,assemble_jac, restart, button)
     button.on_click(save)
 
 
 def user_defined_change():
-    drive = solvers.user_defined.LinearUserDefined()
 
-    # print(drive.options.__dict__)
+    solver = solvers.user_defined.LinearUserDefined()
+
+    # print(solver.options.__dict__)
 
     def save(b):
         yaml = YAML()
@@ -360,9 +520,10 @@ def user_defined_change():
             doc = yaml.load(f)
 
         try:
-            doc['model']['linear_solver'] = 'om.LinearUserDefined(maxiter=' + str(maxiter.value) + ',atol=' + str(
-                atol.value) + ',rtol='
-            doc['model']['linear_solver'] += str(rtol.value) + ')'
+            doc['model']['linear_solver'] = 'om.LinearUserDefined(maxiter=' + str(maxiter.value) + ',atol=' + \
+                                            str(atol.value) + ',rtol='+str(rtol.value)+',iprint=' + \
+                                            str(iprint.value)+',err_on_non_converge=' + \
+                                            str(err_on_non_converge.value)+',assemble_jac='+str(assemble_jac.value)+')'
             with open(file_name, 'w') as f:
                 yaml.dump(doc, f)
             print("Successfully changed options.\n")
@@ -371,30 +532,53 @@ def user_defined_change():
             raise ValueError("Error while modifying.\n")
 
     maxiter = widgets.BoundedIntText(
-        value=drive.options.__dict__['_dict']['maxiter'].get('value'),
+        value=solver.options.__dict__['_dict']['maxiter'].get('value'),
         min=1,
         max=10000,
-        description='Maxiter:',
+        description='Maxiter :',
         style=style,
         disabled=False
     )
 
     atol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['atol'].get('value'),
+        value=solver.options.__dict__['_dict']['atol'].get('value'),
         min=1e-20,
         max=1,
-        description='aTol:',
+        description='Absolute Error Tolerance :',
         style=style,
         disabled=False
     )
 
     rtol = widgets.BoundedFloatText(
-        value=drive.options.__dict__['_dict']['rtol'].get('value'),
+        value=solver.options.__dict__['_dict']['rtol'].get('value'),
         min=10e-12,
         max=1,
-        description='rTol:',
+        description='Relative Error Tolerance :',
         style=style,
         disabled=False
+    )
+
+    iprint = widgets.BoundedIntText(
+        value=solver.options.__dict__['_dict']['iprint'].get('value'),
+        min=0,
+        max=1,
+        description='Print the output :',
+        style=style,
+        disabled=False
+    )
+
+    err_on_non_converge = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['err_on_non_converge'].get('value'),
+        description='When True, AnalysisError will be raised if we don\'t converge',
+        style=style,
+        disabled=False,
+    )
+
+    assemble_jac = widgets.Checkbox(
+        value=solver.options.__dict__['_dict']['assemble_jac'].get('value'),
+        description='Activates use of assembled jacobian by this solver',
+        style=style,
+        disabled=False,
     )
 
     button = widgets.Button(
@@ -403,7 +587,7 @@ def user_defined_change():
         icon='save'
     )
 
-    display(maxiter, atol, rtol, button)
+    display(maxiter, atol, rtol,iprint,err_on_non_converge,assemble_jac, button)
     button.on_click(save)
 
 
