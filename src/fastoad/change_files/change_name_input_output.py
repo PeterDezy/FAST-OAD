@@ -13,6 +13,13 @@ class ChangeNameInputOutput:
         # The file name
         self.file_name = "../notebooks/workdir/oad_process.yml"
 
+        # Css esthetics
+        self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
+        self.css += ".save {margin-left: 6%;} .green {background-color: lightgreen;} </style>"
+        self.html = HTML(self.css)
+
+        self.yaml = YAML()
+
         self.inputf = None
 
         self.outputf = None
@@ -46,7 +53,6 @@ class ChangeNameInputOutput:
             raise ValueError("Error while modifying.\n")
 
     def read(self):
-        yaml = YAML()
 
         with open(self.file_name) as f:
             content = yaml.load(f)
@@ -74,10 +80,14 @@ class ChangeNameInputOutput:
             icon='save'
         )
 
+        button.add_class("save")
+        button.add_class("top")
+        button.add_class("green")
+
         def on_save_button_clicked(b):
             self.save()
 
         button.on_click(on_save_button_clicked)
 
     def display(self) -> display:
-        return display(self.i, self.o, self.button)
+        return display(self.html, self.i, self.o, self.button)

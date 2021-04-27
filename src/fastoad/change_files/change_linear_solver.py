@@ -5,6 +5,10 @@ from ruamel.yaml import YAML
 import openmdao.solvers.linear as solvers
 
 
+css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;} .green {background-color: lightgreen;} </style>"
+html = HTML(css)
+display(html)
+
 def direct_change():
 
     solver = solvers.direct.DirectSolver()

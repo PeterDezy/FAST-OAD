@@ -1,8 +1,12 @@
-import ipywidgets as widgets
-import openmdao.solvers.nonlinear as solversnonlinear
-from IPython.display import clear_output
 from IPython.display import display
+from IPython.display import clear_output
+import ipywidgets as widgets
 from ruamel.yaml import YAML
+import openmdao.solvers.nonlinear as solversnonlinear
+
+css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;} .green {background-color: lightgreen;} </style>"
+html = HTML(css)
+display(html)
 
 
 def broyden_change():
@@ -12,7 +16,7 @@ def broyden_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "../notebooks/workdir/oad_process.yml"
+        file_name = "./workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -182,10 +186,32 @@ def broyden_change():
         icon='save'
     )
 
-    display(maxiter, atol, rtol, iprint, err_on_non_converge, debug_print, stall_limit, stall_tol, alpha,
-            compute_jacobian, converge_limit,
-            cs_reconverge, diverge_limit, max_converge_failures, max_jacobians, state_vars, update_broyden,
-            reraise_child_analysiserror, button)
+    left_box = widgets.VBox([maxiter, rtol, err_on_non_converge, stall_limit, alpha, converge_limit])
+    right_box = widgets.VBox([atol, iprint, debug_print, stall_tol, compute_jacobian])
+    vbox = widgets.HBox([left_box, right_box])
+
+    # Left Widgets
+    rtol.add_class("top")
+    err_on_non_converge.add_class("top")
+    stall_limit.add_class("top")
+    alpha.add_class("top")
+    converge_limit.add_class("top")
+
+    # Right Widgets
+    iprint.add_class("top")
+    debug_print.add_class("top")
+    stall_tol.add_class("top")
+    compute_jacobian.add_class("top")
+
+    # VBox & Button Widgets
+    vbox.add_class("top")
+    left_box.add_class("left")
+    left_box.add_class("right")
+    vbox.add_class("top")
+    button.add_class("top")
+    button.add_class("green")
+
+    display(vbox, button)
     button.on_click(save)
 
 
@@ -196,7 +222,7 @@ def newton_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "../notebooks/workdir/oad_process.yml"
+        file_name = "./workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -329,8 +355,33 @@ def newton_change():
 
     solve_subsystems.observe(change_use_solve_subsystems, names='value')
 
-    display(maxiter, atol, rtol, iprint, err_on_non_converge, debug_print, stall_limit, stall_tol, solve_subsystems, vb,
-            cs_reconverge, reraise_child_analysiserror, button)
+    left_box = widgets.VBox([maxiter, rtol, err_on_non_converge, stall_limit, solve_subsystems, cs_reconverge])
+    right_box = widgets.VBox([atol, iprint, debug_print, stall_tol, vb, reraise_child_analysiserror])
+    vbox = widgets.HBox([left_box, right_box])
+
+    # Left Widgets
+    rtol.add_class("top")
+    err_on_non_converge.add_class("top")
+    stall_limit.add_class("top")
+    solve_subsystems.add_class("top")
+    cs_reconverge.add_class("top")
+
+    # Right Widgets
+    iprint.add_class("top")
+    debug_print.add_class("top")
+    stall_tol.add_class("top")
+    vb.add_class("top")
+    reraise_child_analysiserror.add_class("top")
+
+    # VBox & Button Widgets
+    vbox.add_class("top")
+    left_box.add_class("left")
+    left_box.add_class("right")
+    vbox.add_class("top")
+    button.add_class("top")
+    button.add_class("green")
+
+    display(vbox, button)
     button.on_click(save)
 
 
@@ -341,7 +392,7 @@ def nonlinear_block_gs_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "../notebooks/workdir/oad_process.yml"
+        file_name = "./workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -501,8 +552,35 @@ def nonlinear_block_gs_change():
 
     use_aitken.observe(change_use_aitken, names='value')
 
-    display(maxiter, atol, rtol, iprint, err_on_non_converge, debug_print, stall_limit, stall_tol, use_aitken, vb,
-            cs_reconverge, use_apply_nonlinear, reraise_child_analysiserror, button)
+    left_box = widgets.VBox(
+        [maxiter, rtol, err_on_non_converge, stall_limit, use_aitken, cs_reconverge, reraise_child_analysiserror])
+    right_box = widgets.VBox([atol, iprint, debug_print, stall_tol, vb, use_apply_nonlinear])
+    vbox = widgets.HBox([left_box, right_box])
+
+    # Left Widgets
+    rtol.add_class("top")
+    err_on_non_converge.add_class("top")
+    stall_limit.add_class("top")
+    use_aitken.add_class("top")
+    cs_reconverge.add_class("top")
+    reraise_child_analysiserror.add_class("top")
+
+    # Right Widgets
+    iprint.add_class("top")
+    debug_print.add_class("top")
+    stall_tol.add_class("top")
+    vb.add_class("top")
+    use_apply_nonlinear.add_class("top")
+
+    # VBox & Button Widgets
+    vbox.add_class("top")
+    left_box.add_class("left")
+    left_box.add_class("right")
+    vbox.add_class("top")
+    button.add_class("top")
+    button.add_class("green")
+
+    display(vbox, button)
     button.on_click(save)
 
 
@@ -513,7 +591,7 @@ def nonlinear_block_jac_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "../notebooks/workdir/oad_process.yml"
+        file_name = "./workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -601,7 +679,29 @@ def nonlinear_block_jac_change():
         icon='save'
     )
 
-    display(maxiter, atol, rtol, iprint, err_on_non_converge, debug_print, stall_limit, stall_tol, button)
+    left_box = widgets.VBox([maxiter, rtol, err_on_non_converge, stall_limit])
+    right_box = widgets.VBox([atol, iprint, debug_print, stall_tol])
+    vbox = widgets.HBox([left_box, right_box])
+
+    # Left Widgets
+    rtol.add_class("top")
+    err_on_non_converge.add_class("top")
+    stall_limit.add_class("top")
+
+    # Right Widgets
+    iprint.add_class("top")
+    debug_print.add_class("top")
+    stall_tol.add_class("top")
+
+    # VBox & Button Widgets
+    vbox.add_class("top")
+    left_box.add_class("left")
+    left_box.add_class("right")
+    vbox.add_class("top")
+    button.add_class("top")
+    button.add_class("green")
+
+    display(vbox, button)
     button.on_click(save)
 
 
@@ -612,7 +712,7 @@ def nonlinear_runonce_change():
 
     def save(b):
         yaml = YAML()
-        file_name = "../notebooks/workdir/oad_process.yml"
+        file_name = "./workdir/oad_process.yml"
         with open(file_name, 'r') as f:
             doc = yaml.load(f)
 
@@ -642,6 +742,9 @@ def nonlinear_runonce_change():
         icon='save'
     )
 
+    button.add_class("top")
+    button.add_class("green")
+
     display(iprint, button)
     button.on_click(save)
 
@@ -651,26 +754,16 @@ style = {'description_width': 'initial'}
 
 def onchange(change):
     clear_output(wait=True)
-    display(select, button)
+    display(select, html)
     if change['new'] == 'broyden':
-        clear_output(wait=True)
-        display(select)
         broyden_change()
     elif change['new'] == 'newton':
-        clear_output(wait=True)
-        display(select)
         newton_change()
     elif change['new'] == 'nonlinear_block_gs':
-        clear_output(wait=True)
-        display(select)
         nonlinear_block_gs_change()
     elif change['new'] == 'nonlinear_block_jac':
-        clear_output(wait=True)
-        display(select)
         nonlinear_block_jac_change()
     elif change['new'] == 'nonlinear_runonce':
-        clear_output(wait=True)
-        display(select)
         nonlinear_runonce_change()
 
 
@@ -680,6 +773,12 @@ select = widgets.Dropdown(
     value='nonlinear_block_gs',
     description='Nonlinear solver :',
     style=style,
+)
+
+button = widgets.Button(
+    description='Save',
+    tooltip='Save',
+    icon='save'
 )
 
 select.observe(onchange, names='value')
