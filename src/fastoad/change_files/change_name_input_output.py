@@ -23,6 +23,15 @@ class ChangeNameInputOutput:
 
         self.outputf = None
 
+        self.i = widgets.Text(
+            value=self.inputf,
+            description='input_file:',
+        )
+
+        self.o = None
+
+        self.button = None
+
     def save(self):
         clear_output(wait=True)
         display(self.i, self.o, self.button)
@@ -64,29 +73,29 @@ class ChangeNameInputOutput:
         self.outputf = self.outputf[2:len(self.outputf) - 4]
 
     def createwidgets(self):
-        i = widgets.Text(
+        self.i = widgets.Text(
             value=self.inputf,
             description='input_file:',
         )
 
-        o = widgets.Text(
+        self.o = widgets.Text(
             value=self.outputf,
             description='output_file:',
         )
 
-        button = widgets.Button(
+        self.button = widgets.Button(
             description='Save',
             icon='save'
         )
 
-        button.add_class("save")
-        button.add_class("top")
-        button.add_class("green")
+        self.button.add_class("save")
+        self.button.add_class("top")
+        self.button.add_class("green")
 
         def on_save_button_clicked(b):
             self.save()
 
-        button.on_click(on_save_button_clicked)
+        self.button.on_click(on_save_button_clicked)
 
     def display(self) -> display:
         return display(self.html, self.i, self.o, self.button)
