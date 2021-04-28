@@ -34,7 +34,7 @@ class ChangeNameInputOutput:
         display(self.i, self.o, self.button)
 
         with open(self.file_name) as f:
-            content = yaml.load(f)
+            content = yaml.safe_load(f)
 
             self.inputf = content["input_file"]
             self.outputf = content["output_file"]
@@ -46,7 +46,7 @@ class ChangeNameInputOutput:
             content['input_file'] = "./" + self.i.value + ".xml"
             content['output_file'] = "./" + self.o.value + ".xml"
             with open(self.file_name, 'w') as f:
-                yaml.dump(content, f)
+                yaml.safe_dump(content, f)
                 if self.inputf == self.i.value and self.outputf == self.o.value:
                     print("Valeurs inchangées.\n")
                 else:
@@ -60,10 +60,10 @@ class ChangeNameInputOutput:
     def read(self):
 
         with open(self.file_name) as f:
-            content = yaml.load(f)
+            content = yaml.safe_load(f)
 
-        self.inputf = self.content["input_file"]
-        self.outputf = self.content["output_file"]
+        self.inputf = content["input_file"]
+        self.outputf = content["output_file"]
 
         self.inputf = self.inputf[2:len(self.inputf) - 4]
 
@@ -97,6 +97,7 @@ class ChangeNameInputOutput:
 
     def display(self) -> display:
         clear_output(wait=True)
+        self.read()
         self._initialize_widgets()
         ui = widgets.VBox(
             [self.i, self.o, self.button]
