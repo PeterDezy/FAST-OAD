@@ -1,7 +1,6 @@
 import ipywidgets as widgets
 import yaml
-from IPython.display import clear_output
-from IPython.display import display
+from IPython.display import clear_output, display, HTML
 from ruamel.yaml import YAML
 
 

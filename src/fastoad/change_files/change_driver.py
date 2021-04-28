@@ -76,7 +76,6 @@ def scipy_optimizer_change():
     # VBox & Button Widgets
     vbox.add_class("top")
     left_box.add_class("left")
-    vbox.add_class("top")
     button.add_class("top")
     button.add_class("green")
 
@@ -226,7 +225,6 @@ def differential_evolution_driver_change():
     vbox.add_class("top")
     left_box.add_class("left")
     left_box.add_class("right")
-    vbox.add_class("top")
     button.add_class("top")
     button.add_class("green")
 
@@ -356,7 +354,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("save_28")
         button.add_class("top")
         button.add_class("green")
@@ -390,7 +387,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -419,7 +415,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -467,7 +462,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -521,7 +515,6 @@ def doe_driver_change():
             vbox.add_class("top")
             left_box.add_class("left")
             left_box.add_class("right")
-            vbox.add_class("top")
             button.add_class("top")
             button.add_class("green")
 
@@ -567,7 +560,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -622,7 +614,6 @@ def doe_driver_change():
             vbox.add_class("top")
             left_box.add_class("left")
             left_box.add_class("right")
-            vbox.add_class("top")
             button.add_class("top")
             button.add_class("green")
 
@@ -668,7 +659,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -692,7 +682,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -746,7 +735,6 @@ def doe_driver_change():
             vbox.add_class("top")
             left_box.add_class("left")
             left_box.add_class("right")
-            vbox.add_class("top")
             button.add_class("top")
             button.add_class("green")
 
@@ -792,7 +780,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -848,7 +835,6 @@ def doe_driver_change():
             vbox.add_class("top")
             left_box.add_class("left")
             left_box.add_class("right")
-            vbox.add_class("top")
             button.add_class("top")
             button.add_class("green")
 
@@ -905,7 +891,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 
@@ -974,7 +959,6 @@ def doe_driver_change():
         vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
-        vbox.add_class("top")
         button.add_class("top")
         button.add_class("green")
 

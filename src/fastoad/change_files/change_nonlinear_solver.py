@@ -207,7 +207,6 @@ def broyden_change():
     vbox.add_class("top")
     left_box.add_class("left")
     left_box.add_class("right")
-    vbox.add_class("top")
     button.add_class("top")
     button.add_class("green")
 
@@ -377,7 +376,6 @@ def newton_change():
     vbox.add_class("top")
     left_box.add_class("left")
     left_box.add_class("right")
-    vbox.add_class("top")
     button.add_class("top")
     button.add_class("green")
 
@@ -576,7 +574,6 @@ def nonlinear_block_gs_change():
     vbox.add_class("top")
     left_box.add_class("left")
     left_box.add_class("right")
-    vbox.add_class("top")
     button.add_class("top")
     button.add_class("green")
 
@@ -697,7 +694,6 @@ def nonlinear_block_jac_change():
     vbox.add_class("top")
     left_box.add_class("left")
     left_box.add_class("right")
-    vbox.add_class("top")
     button.add_class("top")
     button.add_class("green")
 
