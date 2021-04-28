@@ -1,5 +1,4 @@
-from IPython.display import display
-from IPython.display import clear_output
+from IPython.display import clear_output, HTML, display
 import ipywidgets as widgets
 from ruamel.yaml import YAML
 import openmdao.solvers.linear as solvers
