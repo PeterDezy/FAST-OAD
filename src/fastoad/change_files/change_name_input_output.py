@@ -23,10 +23,7 @@ class ChangeNameInputOutput:
 
         self.outputf = None
 
-        self.i = widgets.Text(
-            value=self.inputf,
-            description='input_file:',
-        )
+        self.i = None
 
         self.o = None
 
@@ -72,7 +69,8 @@ class ChangeNameInputOutput:
 
         self.outputf = self.outputf[2:len(self.outputf) - 4]
 
-    def createwidgets(self):
+    def _initialize_widgets(self):
+
         self.i = widgets.Text(
             value=self.inputf,
             description='input_file:',
@@ -98,4 +96,9 @@ class ChangeNameInputOutput:
         self.button.on_click(on_save_button_clicked)
 
     def display(self) -> display:
-        return display(self.html, self.i, self.o, self.button)
+        clear_output(wait=True)
+        self._initialize_widgets()
+        ui = widgets.VBox(
+            [self.i, self.o, self.button]
+        )
+        return display(ui)
