@@ -19,13 +19,13 @@ import ipywidgets as widgets
 from ruamel.yaml import YAML
 
 
-class ChangeNameInputOutput:
+class ChangeTitle:
     """
     A class to change the title of the configuration file
     """
     def __init__(self):
         # The file name
-        self.file_name = "../notebooks/workdir/oad_process.yml"
+        self.file_name = "./workdir/oad_process.yml"
 
         # Css esthetics
         self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
@@ -49,23 +49,23 @@ class ChangeNameInputOutput:
         clear_output(wait=True)
         display(self.t, self.button)
 
-        with open(file_name) as f:
-            content = yaml.load(f)
+        with open(self.file_name) as f:
+            content = self.yaml.load(f)
 
             title = content["title"]
 
-    try:
-        content['title'] = t.value
-        with open(file_name, 'w') as f:
-            yaml.dump(content, f)
-            if title == t.value:
-                print("Title unchanged.\n")
-            else:
-                print("Successfuly changed title !\n")
-                print("Your new title :\n")
-                print(t.value + "\n")
-    except:
-        raise ValueError("Error while modifying.\n")
+        try:
+            content['title'] = self.t.value
+            with open(self.file_name, 'w') as f:
+                self.yaml.dump(content, f)
+                if self.title == self.t.value:
+                    print("Title unchanged.\n")
+                else:
+                    print("Successfuly changed title !\n")
+                    print("Your new title :\n")
+                    print(self.t.value + "\n")
+        except:
+            raise ValueError("Error while modifying.\n")
 
     def read(self):
         """
@@ -83,7 +83,7 @@ class ChangeNameInputOutput:
         """
 
         self.t = widgets.Text(
-            value=title,
+            value=self.title,
             description='title:',
         )
 

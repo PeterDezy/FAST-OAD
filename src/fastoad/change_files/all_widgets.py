@@ -18,6 +18,7 @@ from IPython.display import clear_output, display, HTML
 import ipywidgets as widgets
 from ruamel.yaml import YAML
 from fastoad.change_files.change_name_input_output import ChangeNameInputOutput
+from fastoad.change_files.change_title import ChangeTitle
 
 class AllWidgets:
     """
@@ -84,5 +85,7 @@ class AllWidgets:
         """
         clear_output(wait=True)
         self._initialize_widgets()
-        all = ChangeNameInputOutput().display(),self.button
-        return display(all)
+        inputoutput = ChangeNameInputOutput().display()
+        title = ChangeTitle().display()
+        all = inputoutput,title,self.button
+        return display(ChangeNameInputOutput().display(),ChangeTitle().display(),self.button)

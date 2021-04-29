@@ -8,7 +8,7 @@ import fastoad.api as oad
 class GenerateFiles:
     DATA_FOLDER_PATH = 'data'
 
-    WORK_FOLDER_PATH = '../notebooks/workdir'
+    WORK_FOLDER_PATH = 'workdir'
 
     CONFIGURATION_FILE = pth.join(WORK_FOLDER_PATH, 'oad_process.yml')
     SOURCE_FILE = pth.join(DATA_FOLDER_PATH, 'CeRAS01_baseline.xml')
