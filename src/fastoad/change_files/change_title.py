@@ -112,4 +112,4 @@ class ChangeTitle:
         ui = widgets.VBox(
             [self.t, self.button]
         )
-        return display(ui)
+        return display(ui,self.html)

@@ -132,4 +132,4 @@ class ChangeNameInputOutput:
         ui = widgets.VBox(
             [self.i, self.o, self.button]
         )
-        return display(ui)
+        return display(ui,self.html)

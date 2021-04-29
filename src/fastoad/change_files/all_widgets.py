@@ -78,14 +78,25 @@ class AllWidgets:
 
         self.button.on_click(on_save_button_clicked)
 
-    def display(self, change=None) -> display:
+    def displayinputoutput(self, change=None) -> display:
         """
         Display the user interface
         :return the display object
         """
         clear_output(wait=True)
         self._initialize_widgets()
-        inputoutput = ChangeNameInputOutput().display()
-        title = ChangeTitle().display()
-        all = inputoutput,title,self.button
-        return display(ChangeNameInputOutput().display(),ChangeTitle().display(),self.button)
+        return ChangeNameInputOutput().display()
+
+    def displaytitle(self, change=None) -> display:
+        """
+        Display the user interface
+        :return the display object
+        """
+        clear_output(wait=True)
+        self._initialize_widgets()
+        return ChangeTitle().display()
+
+    def display(self, change=None) -> display:
+
+        ui = self.displayinputoutput() + self.displaytitle()
+        return display(ui)
