@@ -1,36 +1,58 @@
-import yaml
-from IPython.display import display
-from IPython.display import clear_output
+"""
+Change the title of the configuration file
+"""
+#  This file is part of FAST-OAD : A framework for rapid Overall Aircraft Design
+#  Copyright (C) 2021 ONERA & ISAE-SUPAERO
+#  FAST is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from IPython.display import clear_output, display, HTML
 import ipywidgets as widgets
 from ruamel.yaml import YAML
 
-css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;} .save {margin-left: 6%;}"
-css += ".green {background-color: lightgreen;} </style>"
-html = HTML(css)
-display(html)
 
-file_name = "./workdir/oad_process.yml"
-yaml = YAML()
+class ChangeNameInputOutput:
+    """
+    A class to change the title of the configuration file
+    """
+    def __init__(self):
+        # The file name
+        self.file_name = "../notebooks/workdir/oad_process.yml"
 
-with open(file_name) as f:
-    content = yaml.load(f)
+        # Css esthetics
+        self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
+        self.css += ".save {margin-left: 6%;} .green {background-color: lightgreen;} </style>"
+        self.html = HTML(self.css)
 
-title = content["title"]
+        # Ruamel yaml
+        self.yaml = YAML()
 
-t = widgets.Text(
-    value=title,
-    description='title:',
-)
+        # Title name
+        self.title = None
 
+        # Widgets
+        self.t = None
+        self.button = None
 
-def save(b):
-    clear_output(wait=True)
-    display(t, button)
+    def save(self):
+        """
+        Save the new value of the title configuration file in the yaml file, and displays them
+        """
+        clear_output(wait=True)
+        display(self.t, self.button)
 
-    with open(file_name) as f:
-        content = yaml.load(f)
+        with open(file_name) as f:
+            content = yaml.load(f)
 
-        title = content["title"]
+            title = content["title"]
 
     try:
         content['title'] = t.value
@@ -45,15 +67,49 @@ def save(b):
     except:
         raise ValueError("Error while modifying.\n")
 
+    def read(self):
+        """
+        Read the configuration file to display the title of the configuration file
+        """
 
-button = widgets.Button(
-    description='Save',
-    icon='save'
-)
+        with open(self.file_name) as f:
+            content = self.yaml.load(f)
 
-button.add_class("save")
-button.add_class("top")
-button.add_class("green")
+        self.title = content["title"]
 
-display(t, button)
-button.on_click(save)
+    def _initialize_widgets(self):
+        """
+        Initialize the widget to change the title of the configuration file
+        """
+
+        self.t = widgets.Text(
+            value=title,
+            description='title:',
+        )
+
+        self.button = widgets.Button(
+            description='Save',
+            icon='save'
+        )
+
+        self.button.add_class("save")
+        self.button.add_class("top")
+        self.button.add_class("green")
+
+        def on_save_button_clicked(b):
+            self.save()
+
+        self.button.on_click(on_save_button_clicked)
+
+    def display(self, change=None) -> display:
+        """
+        Display the user interface
+        :return the display object
+        """
+        clear_output(wait=True)
+        self.read()
+        self._initialize_widgets()
+        ui = widgets.VBox(
+            [self.t, self.button]
+        )
+        return display(ui)
