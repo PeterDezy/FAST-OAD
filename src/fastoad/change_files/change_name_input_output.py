@@ -27,11 +27,6 @@ class ChangeNameInputOutput:
         # The file name
         self.file_name = "./workdir/oad_process.yml"
 
-        # Css esthetics
-        self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
-        self.css += ".save {margin-left: 6%;} .green {background-color: lightgreen;} </style>"
-        self.html = HTML(self.css)
-
         # Ruamel yaml
         self.yaml = YAML()
 
@@ -44,17 +39,16 @@ class ChangeNameInputOutput:
         # Widgets
         self.i = None
         self.o = None
-        self.button = None
 
     def save(self):
         """
         Save the new values of input & output file in the yaml file, and displays them
         """
         clear_output(wait=True)
-        display(self.i, self.o, self.button)
+        display(self.i, self.o)
 
         with open(self.file_name) as f:
-            content = self.yaml.load(f)
+            content = yaml.load(f)
 
             self.inputf = content["input_file"]
             self.outputf = content["output_file"]
@@ -65,8 +59,8 @@ class ChangeNameInputOutput:
         try:
             content['input_file'] = "./" + self.i.value + ".xml"
             content['output_file'] = "./" + self.o.value + ".xml"
-            with open(self.file_name, 'w') as f:
-                self.yaml.dump(content, f)
+            with open(file_name, 'w') as f:
+                yaml.dump(content, f)
                 if self.inputf == self.i.value and self.outputf == self.o.value:
                     print("Valeurs inchangées.\n")
                 else:
@@ -107,20 +101,6 @@ class ChangeNameInputOutput:
             description='output_file:',
         )
 
-        self.button = widgets.Button(
-            description='Save',
-            icon='save'
-        )
-
-        self.button.add_class("save")
-        self.button.add_class("top")
-        self.button.add_class("green")
-
-        def on_save_button_clicked(b):
-            self.save()
-
-        self.button.on_click(on_save_button_clicked)
-
     def display(self, change=None) -> display:
         """
         Display the user interface
@@ -130,6 +110,14 @@ class ChangeNameInputOutput:
         self.read()
         self._initialize_widgets()
         ui = widgets.VBox(
-            [self.i, self.o, self.button]
+            [self.i, self.o]
         )
-        return display(ui,self.html)
+        return ui
+
+    def ivalue(self):
+
+        return self.i.value
+
+    def ovalue(self):
+
+        return self.p.value

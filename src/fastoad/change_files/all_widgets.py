@@ -28,12 +28,31 @@ class AllWidgets:
 
         self.button = None
 
+        # The file name
+        self.file_name = "./workdir/oad_process.yml"
+
+        # Ruamel yaml
+        self.yaml = YAML()
+
+        self.inputf = None
+
+        self.outputf = None
+
+        # self.i = ChangeNameInputOutput().ivalue()
+        #
+        # self.o  = ChangeNameInputOutput().ovalue()
+
+        # Css esthetics
+        self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
+        self.css += ".save {margin-left: 6%;} .green {background-color: lightgreen;} </style>"
+        self.html = HTML(self.css)
+
     def save(self):
         """
         Save the new values, and displays them
         """
         clear_output(wait=True)
-        display(self.i, self.o, self.button)
+        self.display()
 
         with open(self.file_name) as f:
             content = self.yaml.load(f)
@@ -42,19 +61,19 @@ class AllWidgets:
             self.outputf = content["output_file"]
 
             self.inputf = self.inputf[2:len(self.inputf) - 4]
-
             self.outputf = self.outputf[2:len(self.outputf) - 4]
+
         try:
             content['input_file'] = "./" + self.i.value + ".xml"
             content['output_file'] = "./" + self.o.value + ".xml"
             with open(self.file_name, 'w') as f:
-                self.yaml.dump(content, f,)
+                self.yaml.dump(content, f)
                 if self.inputf == self.i.value and self.outputf == self.o.value:
                     print("Valeurs inchangées.\n")
                 else:
                     print("Successfuly changed values !\n")
                     print("Your new values :\n")
-                    print("./" + self.i.value + ".xml")
+                    print("./" + self.i.value+ ".xml")
                     print("./" + self.o.value + ".xml\n")
         except:
             raise ValueError("Error while modifying.\n")
@@ -78,25 +97,7 @@ class AllWidgets:
 
         self.button.on_click(on_save_button_clicked)
 
-    def displayinputoutput(self, change=None) -> display:
-        """
-        Display the user interface
-        :return the display object
-        """
-        clear_output(wait=True)
-        self._initialize_widgets()
-        return ChangeNameInputOutput().display()
-
-    def displaytitle(self, change=None) -> display:
-        """
-        Display the user interface
-        :return the display object
-        """
-        clear_output(wait=True)
-        self._initialize_widgets()
-        return ChangeTitle().display()
-
     def display(self, change=None) -> display:
 
-        ui = self.displayinputoutput() + self.displaytitle()
-        return display(ui)
+        self._initialize_widgets()
+        return display(ChangeNameInputOutput().display(),ChangeTitle().display(),self.button)

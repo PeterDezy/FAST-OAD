@@ -27,10 +27,6 @@ class ChangeTitle:
         # The file name
         self.file_name = "./workdir/oad_process.yml"
 
-        # Css esthetics
-        self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
-        self.css += ".save {margin-left: 6%;} .green {background-color: lightgreen;} </style>"
-        self.html = HTML(self.css)
 
         # Ruamel yaml
         self.yaml = YAML()
@@ -40,14 +36,13 @@ class ChangeTitle:
 
         # Widgets
         self.t = None
-        self.button = None
 
     def save(self):
         """
         Save the new value of the title configuration file in the yaml file, and displays them
         """
         clear_output(wait=True)
-        display(self.t, self.button)
+        display(self.t)
 
         with open(self.file_name) as f:
             content = self.yaml.load(f)
@@ -87,20 +82,6 @@ class ChangeTitle:
             description='title:',
         )
 
-        self.button = widgets.Button(
-            description='Save',
-            icon='save'
-        )
-
-        self.button.add_class("save")
-        self.button.add_class("top")
-        self.button.add_class("green")
-
-        def on_save_button_clicked(b):
-            self.save()
-
-        self.button.on_click(on_save_button_clicked)
-
     def display(self, change=None) -> display:
         """
         Display the user interface
@@ -110,6 +91,6 @@ class ChangeTitle:
         self.read()
         self._initialize_widgets()
         ui = widgets.VBox(
-            [self.t, self.button]
+            [self.t]
         )
-        return display(ui,self.html)
+        return ui
