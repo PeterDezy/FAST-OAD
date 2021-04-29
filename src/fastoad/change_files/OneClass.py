@@ -26,7 +26,7 @@ class OneClass:
 
     def __init__(self):
         # The file name
-        self.file_name = "../notebooks/workdir/oad_process.yml"
+        self.file_name = "./workdir/oad_process.yml"
 
         # Css esthetics
         self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
@@ -71,7 +71,6 @@ class OneClass:
         Save the new values, and displays them
         """
         clear_output(wait=True)
-        display(self.t, self.i, self.o, self.button)
         with open(self.file_name) as f:
             content = self.yaml.load(f)
         try:
@@ -80,16 +79,10 @@ class OneClass:
             content['output_file'] = "./" + self.o.value + ".xml"
             with open(self.file_name, 'w') as f:
                 self.yaml.dump(content, f)
-                if self.inp == self.i.value and self.oup == self.o.value and self.title == self.t.value:
-                    print("Values unchanged\n")
-                else:
-                    print("Successfully changed values !\n")
-                    print("Your new values :\n")
-                    print(self.t.value+"\n")
-                    print("./" + self.i.value + ".xml\n")
-                    print("./" + self.o.value + ".xml\n")
         except:
             raise ValueError("Error while modifying.\n")
+        self.display()
+        print("Successfully changed values !\n")
 
     def _initialize_widgets(self):
         """
@@ -116,6 +109,9 @@ class OneClass:
             icon='save'
         )
 
+        self.t.add_class("top")
+        self.i.add_class("top")
+        self.o.add_class("top")
         self.button.add_class("save")
         self.button.add_class("top")
         self.button.add_class("green")
@@ -136,4 +132,4 @@ class OneClass:
         ui = widgets.VBox(
             [self.t, self.i, self.o, self.button]
         )
-        return display(ui)
+        return display(ui,self.html)
