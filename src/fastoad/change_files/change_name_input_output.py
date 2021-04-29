@@ -25,7 +25,7 @@ class ChangeNameInputOutput:
     """
     def __init__(self):
         # The file name
-        self.file_name = "../notebooks/workdir/oad_process.yml"
+        self.file_name = "./workdir/oad_process.yml"
 
         # Css esthetics
         self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
@@ -66,7 +66,7 @@ class ChangeNameInputOutput:
             content['input_file'] = "./" + self.i.value + ".xml"
             content['output_file'] = "./" + self.o.value + ".xml"
             with open(self.file_name, 'w') as f:
-                self.yaml.dump(content, f,)
+                self.yaml.dump(content, f)
                 if self.inputf == self.i.value and self.outputf == self.o.value:
                     print("Valeurs inchangées.\n")
                 else:
