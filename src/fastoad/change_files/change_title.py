@@ -27,7 +27,6 @@ class ChangeTitle:
         # The file name
         self.file_name = "./workdir/oad_process.yml"
 
-
         # Ruamel yaml
         self.yaml = YAML()
 

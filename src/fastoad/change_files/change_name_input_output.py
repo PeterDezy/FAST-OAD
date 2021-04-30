@@ -113,11 +113,3 @@ class ChangeNameInputOutput:
             [self.i, self.o]
         )
         return ui
-
-    def ivalue(self):
-
-        return self.i.value
-
-    def ovalue(self):
-
-        return self.p.value

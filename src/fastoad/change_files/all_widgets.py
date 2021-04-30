@@ -1,5 +1,5 @@
 """
-Change the name of the input/output file in the configuration file
+Display all the wiggets to change the configuration file
 """
 #  This file is part of FAST-OAD : A framework for rapid Overall Aircraft Design
 #  Copyright (C) 2021 ONERA & ISAE-SUPAERO
@@ -38,9 +38,7 @@ class AllWidgets:
 
         self.outputf = None
 
-        # self.i = ChangeNameInputOutput().ivalue()
-        #
-        # self.o  = ChangeNameInputOutput().ovalue()
+        self.title = None
 
         # Css esthetics
         self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
@@ -51,14 +49,15 @@ class AllWidgets:
         """
         Save the new values, and displays them
         """
+
         clear_output(wait=True)
-        self.display()
 
         with open(self.file_name) as f:
             content = self.yaml.load(f)
 
             self.inputf = content["input_file"]
             self.outputf = content["output_file"]
+            self.title = content["title"]
 
             self.inputf = self.inputf[2:len(self.inputf) - 4]
             self.outputf = self.outputf[2:len(self.outputf) - 4]
@@ -66,21 +65,23 @@ class AllWidgets:
         try:
             content['input_file'] = "./" + self.i.value + ".xml"
             content['output_file'] = "./" + self.o.value + ".xml"
+            content['title'] = self.t.value
             with open(self.file_name, 'w') as f:
                 self.yaml.dump(content, f)
-                if self.inputf == self.i.value and self.outputf == self.o.value:
-                    print("Valeurs inchangées.\n")
+                if self.inputf == self.i.value and self.outputf == self.o.value and self.title == self.t.value:
+                    print("Values inchanched.\n")
                 else:
                     print("Successfuly changed values !\n")
                     print("Your new values :\n")
-                    print("./" + self.i.value+ ".xml")
-                    print("./" + self.o.value + ".xml\n")
+                    print("Input file : ./" + self.i.value + ".xml")
+                    print("Output file : ./" + self.o.value + ".xml")
+                    print("Title : " + self.t.value)
         except:
             raise ValueError("Error while modifying.\n")
 
     def _initialize_widgets(self):
         """
-        Initialize the button widget
+        Initialize the button widget, and add css to him
         """
 
         self.button = widgets.Button(
@@ -98,6 +99,19 @@ class AllWidgets:
         self.button.on_click(on_save_button_clicked)
 
     def display(self, change=None) -> display:
+        """
+        Display the user interface
+        :return the display object
+        """
 
         self._initialize_widgets()
-        return display(ChangeNameInputOutput().display(),ChangeTitle().display(),self.button)
+
+        self.i = ChangeNameInputOutput().display().children[0]
+        self.o = ChangeNameInputOutput().display().children[1]
+        self.t = ChangeTitle().display().children[0]
+
+        ui = widgets.VBox(
+            [self.i, self.o,self.t,self.button]
+        )
+
+        return ui
