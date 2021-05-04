@@ -16,6 +16,7 @@ Change the configuration file
 
 from IPython.display import clear_output, display, HTML
 import ipywidgets as widgets
+import ipyvuetify as v
 from ruamel.yaml import YAML
 
 
@@ -36,90 +37,101 @@ class OneClass:
         # Ruamel yaml
         self.yaml = YAML()
 
-        # Title name
-        self.title = None
-
-        # Input file name
-        self.inp = None
-
-        # Output file name
-        self.oup = None
-
-        # Widgets
-        self.t = None
-        self.i = None
-        self.o = None
-        self.button = None
-
     def read(self):
         """
-        Read the configuration file to display the name of the input & output file
+        Read the configuration file
         """
 
         with open(self.file_name) as f:
             content = self.yaml.load(f)
-            self.title = content["title"]
-            self.inp = content["input_file"]
-            self.oup = content["output_file"]
 
-        self.inp = self.inp[2:len(self.inp) - 4]
+        self.inputf = content["input_file"]
+        self.outputf = content["output_file"]
+        self.title = content["title"]
 
-        self.oup = self.oup[2:len(self.oup) - 4]
+        self.inputf = self.inputf[2:len(self.inputf) - 4]
+
+        self.outputf = self.outputf[2:len(self.outputf) - 4]
 
     def save(self):
         """
         Save the new values, and displays them
         """
-        clear_output(wait=True)
+
         with open(self.file_name) as f:
             content = self.yaml.load(f)
+
+            self.inputf = content["input_file"]
+            self.outputf = content["output_file"]
+            self.title = content["title"]
+
+            self.inputf = self.inputf[2:len(self.inputf) - 4]
+            self.outputf = self.outputf[2:len(self.outputf) - 4]
+
         try:
-            content['title'] = self.t.value
-            content['input_file'] = "./" + self.i.value + ".xml"
-            content['output_file'] = "./" + self.o.value + ".xml"
+            content['input_file'] = "./" + self.i.v_model + ".xml"
+            content['output_file'] = "./" + self.o.v_model + ".xml"
+            content['title'] = self.t.v_model
             with open(self.file_name, 'w') as f:
                 self.yaml.dump(content, f)
+                if self.inputf == self.i.v_model and self.outputf == self.o.v_model and self.title == self.t.v_model:
+                    print("Values inchanched.\n")
+                else:
+                    print("Successfuly changed values !\n")
+                    print("Your new values :\n")
+                    print("Input file : ./" + self.i.v_model + ".xml")
+                    print("Output file : ./" + self.o.v_model + ".xml")
+                    print("Title : " + self.t.v_model)
         except:
             raise ValueError("Error while modifying.\n")
-        self.display()
-        print("Successfully changed values !\n")
+
 
     def _initialize_widgets(self):
         """
         Initialize the button widget
         """
 
-        self.t = widgets.Text(
-            value=self.title,
-            description='title :'
+        self.t = v.TextField(
+            v_model=self.title,
+            label='Title :',
+            filled=True,
+            shaped=True,
+            clearable=True,
+            style_='width:500px'
         )
 
-        self.i = widgets.Text(
-            value=self.inp,
-            description='input_file :'
+        self.i = v.TextField(
+            v_model=self.inputf,
+            label='Input_file :',
+            suffix = ".yml",
+            filled=True,
+            shaped=True,
+            clearable=True,
+            style_='width:500px'
         )
 
-        self.o = widgets.Text(
-            value=self.oup,
-            description='output_file :'
+        self.o = v.TextField(
+            v_model=self.outputf,
+            label='Output_file :',
+            suffix = ".yml",
+            filled=True,
+            shaped=True,
+            clearable=True,
+            style_='width:500px'
         )
 
-        self.button = widgets.Button(
-            description='Save',
-            icon='save'
-        )
+        self.button = v.Btn(color='blue', elevation=4, style_='width:100px', outlined=True, children=[
+            v.Icon(left=True, children=[
+                'get_app'
+            ]),
+            'Save'
+        ])
 
-        self.t.add_class("top")
-        self.i.add_class("top")
-        self.o.add_class("top")
-        self.button.add_class("save")
-        self.button.add_class("top")
-        self.button.add_class("green")
-
-        def on_save_button_clicked(b):
+        def on_save_button_clicked(widget, event, data):
             self.save()
 
-        self.button.on_click(on_save_button_clicked)
+        self.button.on_event('click', on_save_button_clicked)
+
 
     def display(self, change=None) -> display:
         """

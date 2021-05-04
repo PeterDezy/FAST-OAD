@@ -16,6 +16,7 @@ Change the driver in the configuration file
 
 from IPython.display import clear_output, display, HTML
 import ipywidgets as widgets
+import ipyvuetify as v
 import openmdao.drivers as driver
 from ruamel.yaml import YAML
 
@@ -963,7 +964,7 @@ class ChangeDriver:
 
         def onchange(change):
 
-            clear_output(wait=True)
+
             display(self.select,self.html)
 
             if change['new'] == 'scipy_optimizer':
@@ -987,7 +988,7 @@ class ChangeDriver:
         self.select.observe(onchange, names='value')
 
         clear_output(wait=True)
-        display(self.select, self.html)
+        display(self.html)
         self.scipy_optimizer_change()
 
     def display(self, change=None) -> display:

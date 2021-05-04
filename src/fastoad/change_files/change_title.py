@@ -60,7 +60,8 @@ class ChangeTitle:
         self.t = v.Textarea(
             v_model=self.title,
             label='title:',
-            rows="1"
+            rows="1",
+            auto_grow=True
         )
 
     def display(self, change=None) -> display:

@@ -103,7 +103,7 @@ class AllWidgets:
         self.d = ChangeDriver().display().children[0]
 
         ui = widgets.VBox(
-            [self.i, self.o,self.t,self.d,self.button]
+            [self.t, self.i,self.o,self.d,self.button]
         )
 
         return ui
