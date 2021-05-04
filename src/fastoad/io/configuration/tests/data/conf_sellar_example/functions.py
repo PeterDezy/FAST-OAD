@@ -15,6 +15,7 @@
 from math import exp
 
 from fastoad.module_management.service_registry import RegisterOpenMDAOSystem
+
 from .functions_base import FunctionsBase
 
 

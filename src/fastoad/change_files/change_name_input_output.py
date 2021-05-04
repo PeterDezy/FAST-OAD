@@ -40,37 +40,6 @@ class ChangeNameInputOutput:
         self.i = None
         self.o = None
 
-    def save(self):
-        """
-        Save the new values of input & output file in the yaml file, and displays them
-        """
-        clear_output(wait=True)
-        display(self.i, self.o)
-
-        with open(self.file_name) as f:
-            content = yaml.load(f)
-
-            self.inputf = content["input_file"]
-            self.outputf = content["output_file"]
-
-            self.inputf = self.inputf[2:len(self.inputf) - 4]
-
-            self.outputf = self.outputf[2:len(self.outputf) - 4]
-        try:
-            content['input_file'] = "./" + self.i.value + ".xml"
-            content['output_file'] = "./" + self.o.value + ".xml"
-            with open(file_name, 'w') as f:
-                yaml.dump(content, f)
-                if self.inputf == self.i.value and self.outputf == self.o.value:
-                    print("Valeurs inchangées.\n")
-                else:
-                    print("Successfuly changed values !\n")
-                    print("Your new values :\n")
-                    print("./" + self.i.value + ".xml")
-                    print("./" + self.o.value + ".xml\n")
-        except:
-            raise ValueError("Error while modifying.\n")
-
     def read(self):
         """
         Read the configuration file to display the name of the input & output file
@@ -90,7 +59,6 @@ class ChangeNameInputOutput:
         """
         Initialize the widgets to change the name of the input/output file
         """
-
         self.i = widgets.Text(
             value=self.inputf,
             description='input_file:',

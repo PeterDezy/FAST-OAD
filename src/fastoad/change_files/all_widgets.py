@@ -16,9 +16,11 @@ Display all the wiggets to change the configuration file
 
 from IPython.display import clear_output, display, HTML
 import ipywidgets as widgets
+import ipyvuetify as v
 from ruamel.yaml import YAML
 from fastoad.change_files.change_name_input_output import ChangeNameInputOutput
 from fastoad.change_files.change_title import ChangeTitle
+from fastoad.change_files.change_driver import ChangeDriver
 
 class AllWidgets:
     """
@@ -40,17 +42,10 @@ class AllWidgets:
 
         self.title = None
 
-        # Css esthetics
-        self.css = "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;}"
-        self.css += ".save {margin-left: 6%;} .green {background-color: lightgreen;} </style>"
-        self.html = HTML(self.css)
-
     def save(self):
         """
         Save the new values, and displays them
         """
-
-        clear_output(wait=True)
 
         with open(self.file_name) as f:
             content = self.yaml.load(f)
@@ -65,17 +60,17 @@ class AllWidgets:
         try:
             content['input_file'] = "./" + self.i.value + ".xml"
             content['output_file'] = "./" + self.o.value + ".xml"
-            content['title'] = self.t.value
+            content['title'] = self.t.v_model
             with open(self.file_name, 'w') as f:
                 self.yaml.dump(content, f)
-                if self.inputf == self.i.value and self.outputf == self.o.value and self.title == self.t.value:
+                if self.inputf == self.i.value and self.outputf == self.o.value and self.title == self.t.v_model:
                     print("Values inchanched.\n")
                 else:
                     print("Successfuly changed values !\n")
                     print("Your new values :\n")
                     print("Input file : ./" + self.i.value + ".xml")
                     print("Output file : ./" + self.o.value + ".xml")
-                    print("Title : " + self.t.value)
+                    print("Title : " + self.t.v_model)
         except:
             raise ValueError("Error while modifying.\n")
 
@@ -83,35 +78,32 @@ class AllWidgets:
         """
         Initialize the button widget, and add css to him
         """
-
-        self.button = widgets.Button(
-            description='Save',
-            icon='save'
-        )
-
-        self.button.add_class("save")
-        self.button.add_class("top")
-        self.button.add_class("green")
-
-        def on_save_button_clicked(b):
+        self.button = v.Btn(color='blue', elevation=4, style_='width:100px', outlined=True, children=[
+            v.Icon(left=True, children=[
+                'get_app'
+            ]),
+            'Save'
+        ]
+                            )
+        def on_save_button_clicked(widget, event, data):
             self.save()
 
-        self.button.on_click(on_save_button_clicked)
+        self.button.on_event('click', on_save_button_clicked)
 
     def display(self, change=None) -> display:
         """
         Display the user interface
         :return the display object
         """
-
         self._initialize_widgets()
 
         self.i = ChangeNameInputOutput().display().children[0]
         self.o = ChangeNameInputOutput().display().children[1]
         self.t = ChangeTitle().display().children[0]
+        self.d = ChangeDriver().display().children[0]
 
         ui = widgets.VBox(
-            [self.i, self.o,self.t,self.button]
+            [self.i, self.o,self.t,self.d,self.button]
         )
 
         return ui

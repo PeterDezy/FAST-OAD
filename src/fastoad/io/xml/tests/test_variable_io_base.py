@@ -18,9 +18,9 @@ import os.path as pth
 from shutil import rmtree
 
 import pytest
+from fastoad.openmdao.variables import VariableList
 from pytest import approx
 
-from fastoad.openmdao.variables import VariableList
 from .. import VariableXmlBaseFormatter
 from ..translator import VarXpathTranslator
 from ...variable_io import VariableIO

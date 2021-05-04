@@ -14,6 +14,7 @@
 
 from fastoad.module_management.constants import ModelDomain
 from fastoad.module_management.service_registry import RegisterOpenMDAOSystem
+
 from .disc1_base import Disc1Base
 
 

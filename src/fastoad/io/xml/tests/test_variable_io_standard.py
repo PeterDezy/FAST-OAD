@@ -19,12 +19,12 @@ from shutil import rmtree
 
 import numpy as np
 import pytest
-from lxml import etree
-from numpy.testing import assert_allclose
-
 from fastoad.io import VariableIO
 from fastoad.io.xml import VariableXmlStandardFormatter
 from fastoad.openmdao.variables import VariableList
+from lxml import etree
+from numpy.testing import assert_allclose
+
 from ..exceptions import FastXPathEvalError
 
 DATA_FOLDER_PATH = pth.join(pth.dirname(__file__), "data")

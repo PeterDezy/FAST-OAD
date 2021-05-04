@@ -18,6 +18,7 @@ from importlib.resources import open_text
 
 from fastoad.io.xml import VariableXmlBaseFormatter
 from fastoad.io.xml.translator import VarXpathTranslator
+
 from . import resources
 
 CONVERSION_FILENAME_1 = "legacy1.txt"

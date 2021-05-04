@@ -16,6 +16,7 @@ from fnmatch import fnmatchcase
 from typing import IO, List, Sequence, Union
 
 from fastoad.openmdao.variables import VariableList
+
 from . import IVariableIOFormatter
 from .xml import VariableXmlStandardFormatter
 

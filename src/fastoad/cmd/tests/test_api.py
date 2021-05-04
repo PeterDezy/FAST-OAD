@@ -20,10 +20,10 @@ import shutil
 from filecmp import cmp
 from shutil import rmtree
 
-import pytest
-
 import fastoad.models
+import pytest
 from fastoad.openmdao.variables import Variable
+
 from .. import api
 from ..api import SAMPLE_FILENAME
 from ..exceptions import FastFileExistsError

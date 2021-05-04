@@ -21,13 +21,13 @@ from shutil import rmtree
 
 import pytest
 import tomlkit
-from jsonschema import ValidationError
-from ruamel import yaml
-
 from fastoad.io.configuration.configuration import FASTOADProblemConfigurator
 from fastoad.module_management._bundle_loader import BundleLoader
 from fastoad.module_management._plugins import load_plugins
 from fastoad.module_management.exceptions import FastBundleLoaderUnknownFactoryNameError
+from jsonschema import ValidationError
+from ruamel import yaml
+
 from ..exceptions import (
     FASTConfigurationBadOpenMDAOInstructionError,
     FASTConfigurationNanInInputFile,

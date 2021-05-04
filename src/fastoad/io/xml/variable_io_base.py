@@ -21,13 +21,6 @@ import warnings
 from typing import IO, Union
 
 import numpy as np
-from lxml import etree
-from lxml.etree import (
-    XPathEvalError,
-    _Element,
-)  # pylint: disable=protected-access  # Useful for type hinting
-from openmdao.vectors.vector import Vector
-
 from fastoad._utils.files import make_parent_dir
 from fastoad._utils.strings import get_float_list_from_string
 from fastoad.io.formatter import IVariableIOFormatter
@@ -39,6 +32,13 @@ from fastoad.io.xml.exceptions import (
 )
 from fastoad.io.xml.translator import VarXpathTranslator
 from fastoad.openmdao.variables import VariableList
+from lxml import etree
+from lxml.etree import (
+    XPathEvalError,
+    _Element,
+)  # pylint: disable=protected-access  # Useful for type hinting
+from openmdao.vectors.vector import Vector
+
 from .constants import DEFAULT_IO_ATTRIBUTE, DEFAULT_UNIT_ATTRIBUTE, ROOT_TAG
 
 _LOGGER = logging.getLogger(__name__)  # Logger for this module

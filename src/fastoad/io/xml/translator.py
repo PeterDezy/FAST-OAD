@@ -17,7 +17,6 @@ Conversion from OpenMDAO variables to XPath
 from typing import Sequence, Union, IO, Set
 
 import numpy as np
-
 from fastoad.io.xml.exceptions import (
     FastXpathTranslatorInconsistentLists,
     FastXpathTranslatorDuplicates,

@@ -16,6 +16,7 @@ Change the title of the configuration file
 
 from IPython.display import clear_output, display, HTML
 import ipywidgets as widgets
+import ipyvuetify as v
 from ruamel.yaml import YAML
 
 
@@ -36,31 +37,6 @@ class ChangeTitle:
         # Widgets
         self.t = None
 
-    def save(self):
-        """
-        Save the new value of the title configuration file in the yaml file, and displays them
-        """
-        clear_output(wait=True)
-        display(self.t)
-
-        with open(self.file_name) as f:
-            content = self.yaml.load(f)
-
-            title = content["title"]
-
-        try:
-            content['title'] = self.t.value
-            with open(self.file_name, 'w') as f:
-                self.yaml.dump(content, f)
-                if self.title == self.t.value:
-                    print("Title unchanged.\n")
-                else:
-                    print("Successfuly changed title !\n")
-                    print("Your new title :\n")
-                    print(self.t.value + "\n")
-        except:
-            raise ValueError("Error while modifying.\n")
-
     def read(self):
         """
         Read the configuration file to display the title of the configuration file
@@ -76,9 +52,15 @@ class ChangeTitle:
         Initialize the widget to change the title of the configuration file
         """
 
-        self.t = widgets.Text(
-            value=self.title,
-            description='title:',
+        # self.t = widgets.Text(
+        #     value=self.title,
+        #     description='title:',
+        # )
+
+        self.t = v.Textarea(
+            v_model=self.title,
+            label='title:',
+            rows="1"
         )
 
     def display(self, change=None) -> display:

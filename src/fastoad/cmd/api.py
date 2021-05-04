@@ -25,10 +25,6 @@ import openmdao.api as om
 import requests
 from IPython import InteractiveShell
 from IPython.display import HTML, clear_output, display
-from tabulate import tabulate
-from whatsopt.show_utils import generate_xdsm_html
-from whatsopt.whatsopt_client import PROD_URL, WhatsOpt
-
 from fastoad._utils.files import make_parent_dir
 from fastoad._utils.resource_management.copy import copy_resource
 from fastoad.cmd.exceptions import FastFileExistsError
@@ -41,6 +37,10 @@ from fastoad.module_management._bundle_loader import BundleLoader
 from fastoad.module_management.service_registry import RegisterOpenMDAOSystem, RegisterPropulsion
 from fastoad.openmdao.problem import FASTOADProblem
 from fastoad.openmdao.variables import VariableList
+from tabulate import tabulate
+from whatsopt.show_utils import generate_xdsm_html
+from whatsopt.whatsopt_client import PROD_URL, WhatsOpt
+
 from . import resources
 
 DEFAULT_WOP_URL = "https://ether.onera.fr/whatsopt"

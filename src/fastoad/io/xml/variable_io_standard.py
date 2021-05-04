@@ -17,6 +17,7 @@ import logging
 from typing import Union, IO
 
 from fastoad.openmdao.variables import VariableList
+
 from .exceptions import FastXPathEvalError
 from .translator import VarXpathTranslator
 from .variable_io_base import VariableXmlBaseFormatter
