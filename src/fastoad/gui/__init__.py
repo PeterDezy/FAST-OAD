@@ -21,4 +21,3 @@ from .analysis_and_plots import (
 from .mission_viewer import MissionViewer
 from .optimization_viewer import OptimizationViewer
 from .variable_viewer import VariableViewer
-

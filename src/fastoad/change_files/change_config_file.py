@@ -20,6 +20,7 @@ import ipyvuetify as v
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
 
+
 class Change_config_file:
     """
     A class which display all the widgets for the configuration file
@@ -31,7 +32,6 @@ class Change_config_file:
 
         # Ruamel yaml
         self.yaml = YAML()
-
 
     def read(self):
         """
@@ -45,9 +45,9 @@ class Change_config_file:
         self.outputf = content["output_file"]
         self.title = content["title"]
 
-        self.inputf = self.inputf[2:len(self.inputf) - 4]
+        self.inputf = self.inputf[2 : len(self.inputf) - 4]
 
-        self.outputf = self.outputf[2:len(self.outputf) - 4]
+        self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
     def save(self):
         """
@@ -61,16 +61,20 @@ class Change_config_file:
             self.outputf = content["output_file"]
             self.title = content["title"]
 
-            self.inputf = self.inputf[2:len(self.inputf) - 4]
-            self.outputf = self.outputf[2:len(self.outputf) - 4]
+            self.inputf = self.inputf[2 : len(self.inputf) - 4]
+            self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
         try:
-            content['input_file'] = "./" + self.i.v_model + ".xml"
-            content['output_file'] = "./" + self.o.v_model + ".xml"
-            content['title'] = self.t.v_model
-            with open(self.file_name, 'w') as f:
+            content["input_file"] = "./" + self.i.v_model + ".xml"
+            content["output_file"] = "./" + self.o.v_model + ".xml"
+            content["title"] = self.t.v_model
+            with open(self.file_name, "w") as f:
                 self.yaml.dump(content, f)
-                if self.inputf == self.i.v_model and self.outputf == self.o.v_model and self.title == self.t.v_model:
+                if (
+                    self.inputf == self.i.v_model
+                    and self.outputf == self.o.v_model
+                    and self.title == self.t.v_model
+                ):
                     print("Values inchanched.\n")
                 else:
                     print("Successfuly changed values !\n")
@@ -81,19 +85,19 @@ class Change_config_file:
         except:
             raise ValueError("Error while modifying.\n")
 
-
     def _initialize_widgets(self):
         """
         Initialize the button widget
         """
+
         def title():
 
             t = v.TextField(
                 v_model=self.title,
-                label='Title :',
+                label="Title :",
                 outlined=True,
                 clearable=True,
-                style_='margin-top:20px'
+                style_="margin-top:20px",
             )
 
             display(t)
@@ -102,91 +106,89 @@ class Change_config_file:
 
             i = v.TextField(
                 v_model=self.inputf,
-                label='Input_file :',
-                suffix = ".yml",
+                label="Input_file :",
+                suffix=".yml",
                 outlined=True,
                 clearable=True,
-                style_='margin-top:5px'
+                style_="margin-top:5px",
             )
 
             o = v.TextField(
                 v_model=self.outputf,
-                label='Output_file :',
-                suffix = ".yml",
+                label="Output_file :",
+                suffix=".yml",
                 outlined=True,
                 clearable=True,
-                style_='margin-top:5px'
+                style_="margin-top:5px",
             )
 
-            display(i,o)
-
+            display(i, o)
 
         def button():
 
-            button = v.Btn(color='blue', elevation=4, style_='width:150px;margin:auto', outlined=True, children=[
-                v.Icon(
-                    children=['get_app']
-                ),
-                'Save'
-            ])
+            button = v.Btn(
+                color="blue",
+                elevation=4,
+                style_="width:150px;margin:auto",
+                outlined=True,
+                children=[v.Icon(children=["get_app"]), "Save"],
+            )
 
             def on_save_button_clicked(widget, event, data):
                 self.save()
 
-            button.on_event('click', on_save_button_clicked)
+            button.on_event("click", on_save_button_clicked)
 
             display(button)
 
-
         def drivers():
-
             def scipy_optimizer_change():
 
                 drive = driver.scipy_optimizer.ScipyOptimizeDriver()
 
                 optimizers = v.Select(
-                    items=list(drive.options.__dict__['_dict']['optimizer'].get('values')),
-                    v_model=drive.options.__dict__['_dict']['optimizer'].get('value'),
-                    label='Optimizers :',
+                    items=list(drive.options.__dict__["_dict"]["optimizer"].get("values")),
+                    v_model=drive.options.__dict__["_dict"]["optimizer"].get("value"),
+                    label="Optimizers :",
                     outlined=True,
-                    style_='width:500px;margin-top:5px'
+                    style_="width:500px;margin-top:5px",
                 )
 
                 tol = v.TextField(
-                    v_model=drive.options.__dict__['_dict']['tol'].get('value'),
-                    min=drive.options.__dict__['_dict']['tol'].get('lower'),
+                    v_model=drive.options.__dict__["_dict"]["tol"].get("value"),
+                    min=drive.options.__dict__["_dict"]["tol"].get("lower"),
                     max=1,
-                    label='Tol :',
+                    label="Tol :",
                     outlined=True,
                     style_="width:500px;margin-left:50px;margin-top:6px",
                 )
 
                 maxiter = v.TextField(
-                    v_model=drive.options.__dict__['_dict']['maxiter'].get('value'),
-                    min=drive.options.__dict__['_dict']['maxiter'].get('lower'),
+                    v_model=drive.options.__dict__["_dict"]["maxiter"].get("value"),
+                    min=drive.options.__dict__["_dict"]["maxiter"].get("lower"),
                     max=1000,
-                    label='Maxiter :',
+                    label="Maxiter :",
                     type="number",
                     outlined=True,
                 )
 
                 disp = v.Checkbox(
-                    v_model=drive.options.__dict__['_dict']['disp'].get('value'),
-                    label='Disp',
+                    v_model=drive.options.__dict__["_dict"]["disp"].get("value"),
+                    label="Disp",
                     style_="margin-left:50px",
-                    class_="d-flex justify-center mb-6"
+                    class_="d-flex justify-center mb-6",
                 )
 
-                vbox = v.Html(tag='div', class_='d-flex justify-center mb-6', children=[
-                    v.Html(tag='div', class_='d-flex flex-column', children=[
-                        optimizers,
-                        maxiter
-                    ]),
-                    v.Html(tag='div', class_='d-flex flex-column', children=[
-                        tol,
-                        disp
-                    ]),
-                ])
+                vbox = v.Html(
+                    tag="div",
+                    class_="d-flex justify-center mb-6",
+                    children=[
+                        v.Html(
+                            tag="div", class_="d-flex flex-column", children=[optimizers, maxiter]
+                        ),
+                        v.Html(tag="div", class_="d-flex flex-column", children=[tol, disp]),
+                    ],
+                )
 
                 display(vbox)
                 button()
@@ -195,97 +197,96 @@ class Change_config_file:
 
                 drive = driver.differential_evolution_driver.DifferentialEvolutionDriver()
 
-                style = {'description_width': 'initial'}
+                style = {"description_width": "initial"}
 
                 maxgen = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['max_gen'].get('value'),
+                    value=drive.options.__dict__["_dict"]["max_gen"].get("value"),
                     min=0,
                     max=1000,
-                    description='Max generations :',
+                    description="Max generations :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 popsize = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['pop_size'].get('value'),
+                    value=drive.options.__dict__["_dict"]["pop_size"].get("value"),
                     min=0,
                     max=100,
-                    description='Number of points in the GA :',
+                    description="Number of points in the GA :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 runparallel = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['run_parallel'].get('value'),
-                    description='Run parallel',
+                    value=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
+                    description="Run parallel",
                     disabled=False,
                 )
 
                 procspermodel = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['procs_per_model'].get('value'),
-                    min=drive.options.__dict__['_dict']['procs_per_model'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
+                    min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                     max=100,
-                    description='Processors per model :',
+                    description="Processors per model :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 penaltyparameter = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['penalty_parameter'].get('value'),
-                    min=drive.options.__dict__['_dict']['penalty_parameter'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["penalty_parameter"].get("value"),
+                    min=drive.options.__dict__["_dict"]["penalty_parameter"].get("lower"),
                     max=100,
-                    description='Penalty parameter :',
+                    description="Penalty parameter :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 penaltyexponent = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['penalty_exponent'].get('value'),
+                    value=drive.options.__dict__["_dict"]["penalty_exponent"].get("value"),
                     min=0,
                     max=100,
-                    description='Penalty exponent :',
+                    description="Penalty exponent :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 pc = widgets.BoundedFloatText(
-                    value=drive.options.__dict__['_dict']['Pc'].get('value'),
-                    min=drive.options.__dict__['_dict']['Pc'].get('lower'),
-                    max=drive.options.__dict__['_dict']['Pc'].get('upper'),
-                    description='Crossover probability :',
+                    value=drive.options.__dict__["_dict"]["Pc"].get("value"),
+                    min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
+                    max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
+                    description="Crossover probability :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 dr = widgets.BoundedFloatText(
-                    value=drive.options.__dict__['_dict']['F'].get('value'),
-                    min=drive.options.__dict__['_dict']['F'].get('lower'),
-                    max=drive.options.__dict__['_dict']['F'].get('upper'),
-                    description='Differential rate :',
+                    value=drive.options.__dict__["_dict"]["F"].get("value"),
+                    min=drive.options.__dict__["_dict"]["F"].get("lower"),
+                    max=drive.options.__dict__["_dict"]["F"].get("upper"),
+                    description="Differential rate :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 multiobjweights = widgets.Text(
-                    value='{}',
-                    description='Multi objective weights :',
-                    style=style,
-                    disabled=False
+                    value="{}", description="Multi objective weights :", style=style, disabled=False
                 )
 
                 multiobjexponent = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['multi_obj_exponent'].get('value'),
-                    min=drive.options.__dict__['_dict']['multi_obj_exponent'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("value"),
+                    min=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("lower"),
                     max=100,
-                    description='Multi-objective weighting exponent :',
+                    description="Multi-objective weighting exponent :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 left_box = widgets.VBox(
-                    [maxgen, runparallel, penaltyparameter, pc, multiobjweights])
+                    [maxgen, runparallel, penaltyparameter, pc, multiobjweights]
+                )
                 right_box = widgets.VBox(
-                    [popsize, procspermodel, penaltyexponent, dr, multiobjexponent])
+                    [popsize, procspermodel, penaltyexponent, dr, multiobjexponent]
+                )
                 vbox = widgets.HBox([left_box, right_box])
 
                 # left Widgets
@@ -313,7 +314,7 @@ class Change_config_file:
 
                 drive = driver.doe_driver.DOEDriver()
 
-                style = {'description_width': 'initial'}
+                style = {"description_width": "initial"}
 
                 def onchangegenerator(widget, event, data):
 
@@ -322,51 +323,59 @@ class Change_config_file:
                     inputoutput()
                     display(select)
 
-                    if data == 'DOEGenerator':
+                    if data == "DOEGenerator":
                         DOEGenerator()
-                    elif data == 'ListGenerator':
+                    elif data == "ListGenerator":
                         ListGenerator()
-                    elif data == 'CSVGenerator':
+                    elif data == "CSVGenerator":
                         CSVGenerator()
-                    elif data == 'UniformGenerator':
+                    elif data == "UniformGenerator":
                         UniformGenerator()
-                    elif data == '_pyDOE_Generator':
+                    elif data == "_pyDOE_Generator":
                         _pyDOE_Generator()
-                    elif data == 'FullFactorialGenerator':
+                    elif data == "FullFactorialGenerator":
                         FullFactorialGenerator()
-                    elif data == 'GeneralizedSubsetGenerator':
+                    elif data == "GeneralizedSubsetGenerator":
                         GeneralizedSubsetGenerator()
-                    elif data == 'PlackettBurmanGenerator':
+                    elif data == "PlackettBurmanGenerator":
                         PlackettBurmanGenerator()
-                    elif data == 'BoxBehnkenGenerator':
+                    elif data == "BoxBehnkenGenerator":
                         BoxBehnkenGenerator()
-                    elif data == 'LatinHypercubeGenerator':
+                    elif data == "LatinHypercubeGenerator":
                         LatinHypercubeGenerator()
 
                 generator = v.Select(
-                    items=['DOEGenerator', 'ListGenerator', 'CSVGenerator', 'UniformGenerator', '_pyDOE_Generator',
-                             'FullFactorialGenerator',
-                             'GeneralizedSubsetGenerator', 'PlackettBurmanGenerator', 'BoxBehnkenGenerator',
-                             'LatinHypercubeGenerator'],
-                    v_model='DOEGenerator',
-                    label='Generator :',
+                    items=[
+                        "DOEGenerator",
+                        "ListGenerator",
+                        "CSVGenerator",
+                        "UniformGenerator",
+                        "_pyDOE_Generator",
+                        "FullFactorialGenerator",
+                        "GeneralizedSubsetGenerator",
+                        "PlackettBurmanGenerator",
+                        "BoxBehnkenGenerator",
+                        "LatinHypercubeGenerator",
+                    ],
+                    v_model="DOEGenerator",
+                    label="Generator :",
                     filled=True,
                     shaped=True,
-                    style_='width:500px;'
+                    style_="width:500px;",
                 )
 
                 procspermodel = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['procs_per_model'].get('value'),
-                    min=drive.options.__dict__['_dict']['procs_per_model'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
+                    min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                     max=100,
-                    description='Processors per model :',
+                    description="Processors per model :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 runparallel = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['run_parallel'].get('value'),
-                    description='Run parallel',
+                    value=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
+                    description="Run parallel",
                     disabled=False,
                 )
 
@@ -392,10 +401,10 @@ class Change_config_file:
                     drive = driver.doe_generators.ListGenerator()
 
                     _data = widgets.Text(
-                        value='[]',
-                        description='List of collections of name :',
+                        value="[]",
+                        description="List of collections of name :",
                         style=style,
-                        disabled=False
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([_data, runparallel])
@@ -416,10 +425,7 @@ class Change_config_file:
 
                 def CSVGenerator():
 
-                    _filename = widgets.Text(
-                        description='File name  :',
-                        disabled=False
-                    )
+                    _filename = widgets.Text(description="File name  :", disabled=False)
 
                     left_box = widgets.VBox([_filename, runparallel])
                     right_box = widgets.VBox([procspermodel])
@@ -442,20 +448,20 @@ class Change_config_file:
                     drive = driver.doe_generators.UniformGenerator()
 
                     _num_samples = widgets.BoundedIntText(
-                        value=drive.__dict__['_num_samples'],
+                        value=drive.__dict__["_num_samples"],
                         min=0,
                         max=100,
-                        description='Number of samples :',
+                        description="Number of samples :",
                         style=style,
-                        disabled=False
+                        disabled=False,
                     )
 
                     _seed = widgets.BoundedIntText(
-                        value=drive.__dict__['_seed'],
+                        value=drive.__dict__["_seed"],
                         min=0,
                         max=100,
-                        description='Seed  :',
-                        disabled=False
+                        description="Seed  :",
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([_num_samples, procspermodel])
@@ -483,22 +489,20 @@ class Change_config_file:
 
                     def onchangelevels(change):
 
-                        if change['new'] == 'Int':
+                        if change["new"] == "Int":
 
                             _levels = widgets.BoundedIntText(
-                                value=drive.__dict__['_levels'],
-                                description='Levels  :',
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False
+                                disabled=False,
                             )
 
-                        elif change['new'] == 'Dict':
+                        elif change["new"] == "Dict":
 
                             _levels = widgets.Text(
-                                value='[]',
-                                description='Levels  :',
-                                disabled=False
+                                value="[]", description="Levels  :", disabled=False
                             )
 
                         clear_output(wait=True)
@@ -527,26 +531,26 @@ class Change_config_file:
                         button()
 
                     selectlevels = widgets.RadioButtons(
-                        options=['Int', 'Dict'],
-                        value='Int',
-                        description='Levels type  :',
-                        disabled=False
+                        options=["Int", "Dict"],
+                        value="Int",
+                        description="Levels type  :",
+                        disabled=False,
                     )
 
                     _levels = widgets.BoundedIntText(
-                        value=drive.__dict__['_levels'],
-                        description='Levels  :',
+                        value=drive.__dict__["_levels"],
+                        description="Levels  :",
                         min=0,
                         max=1000,
-                        disabled=False
+                        disabled=False,
                     )
 
                     _sizes = widgets.BoundedIntText(
-                        value=drive.__dict__['_sizes'],
+                        value=drive.__dict__["_sizes"],
                         min=0,
                         max=100,
-                        description='Sizes  :',
-                        disabled=False
+                        description="Sizes  :",
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([selectlevels, _sizes, runparallel])
@@ -566,7 +570,7 @@ class Change_config_file:
                     left_box.add_class("right")
                     vbox.add_class("top")
 
-                    selectlevels.observe(onchangelevels, names='value')
+                    selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
@@ -576,22 +580,20 @@ class Change_config_file:
 
                     def onchangelevels(change):
 
-                        if change['new'] == 'Int':
+                        if change["new"] == "Int":
 
                             _levels = widgets.BoundedIntText(
-                                value=drive.__dict__['_levels'],
-                                description='Levels  :',
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False
+                                disabled=False,
                             )
 
-                        elif change['new'] == 'Dict':
+                        elif change["new"] == "Dict":
 
                             _levels = widgets.Text(
-                                value='[]',
-                                description='Levels  :',
-                                disabled=False
+                                value="[]", description="Levels  :", disabled=False
                             )
 
                         clear_output(wait=True)
@@ -619,26 +621,26 @@ class Change_config_file:
                         display(select, generator, vbox, html)
 
                     selectlevels = widgets.RadioButtons(
-                        options=['Int', 'Dict'],
-                        value='Int',
-                        description='Levels type  :',
-                        disabled=False
+                        options=["Int", "Dict"],
+                        value="Int",
+                        description="Levels type  :",
+                        disabled=False,
                     )
 
                     _levels = widgets.BoundedIntText(
-                        value=drive.__dict__['_levels'],
-                        description='Levels  :',
+                        value=drive.__dict__["_levels"],
+                        description="Levels  :",
                         min=0,
                         max=1000,
-                        disabled=False
+                        disabled=False,
                     )
 
                     _sizes = widgets.BoundedIntText(
-                        value=drive.__dict__['_sizes'],
+                        value=drive.__dict__["_sizes"],
                         min=0,
                         max=100,
-                        description='Sizes  :',
-                        disabled=False
+                        description="Sizes  :",
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([selectlevels, _sizes, runparallel])
@@ -658,7 +660,7 @@ class Change_config_file:
                     left_box.add_class("right")
                     vbox.add_class("top")
 
-                    selectlevels.observe(onchangelevels, names='value')
+                    selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
@@ -683,22 +685,20 @@ class Change_config_file:
 
                     def onchangelevels(change):
 
-                        if change['new'] == 'Int':
+                        if change["new"] == "Int":
 
                             _levels = widgets.BoundedIntText(
-                                value=drive.__dict__['_levels'],
-                                description='Levels  :',
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False
+                                disabled=False,
                             )
 
-                        elif change['new'] == 'Dict':
+                        elif change["new"] == "Dict":
 
                             _levels = widgets.Text(
-                                value='[]',
-                                description='Levels  :',
-                                disabled=False
+                                value="[]", description="Levels  :", disabled=False
                             )
 
                         clear_output(wait=True)
@@ -726,26 +726,26 @@ class Change_config_file:
                         display(select, generator, vbox, html)
 
                     selectlevels = widgets.RadioButtons(
-                        options=['Int', 'Dict'],
-                        value='Int',
-                        description='Levels type  :',
-                        disabled=False
+                        options=["Int", "Dict"],
+                        value="Int",
+                        description="Levels type  :",
+                        disabled=False,
                     )
 
                     _levels = widgets.BoundedIntText(
-                        value=drive.__dict__['_levels'],
-                        description='Levels  :',
+                        value=drive.__dict__["_levels"],
+                        description="Levels  :",
                         min=0,
                         max=1000,
-                        disabled=False
+                        disabled=False,
                     )
 
                     _sizes = widgets.BoundedIntText(
-                        value=drive.__dict__['_sizes'],
+                        value=drive.__dict__["_sizes"],
                         min=0,
                         max=100,
-                        description='Sizes  :',
-                        disabled=False
+                        description="Sizes  :",
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([selectlevels, _sizes, runparallel])
@@ -765,7 +765,7 @@ class Change_config_file:
                     left_box.add_class("right")
                     vbox.add_class("top")
 
-                    selectlevels.observe(onchangelevels, names='value')
+                    selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
@@ -775,22 +775,20 @@ class Change_config_file:
 
                     def onchangelevels(change):
 
-                        if change['new'] == 'Int':
+                        if change["new"] == "Int":
 
                             _levels = widgets.BoundedIntText(
-                                value=drive.__dict__['_levels'],
-                                description='Levels  :',
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False
+                                disabled=False,
                             )
 
-                        elif change['new'] == 'Dict':
+                        elif change["new"] == "Dict":
 
                             _levels = widgets.Text(
-                                value='[]',
-                                description='Levels  :',
-                                disabled=False
+                                value="[]", description="Levels  :", disabled=False
                             )
 
                         clear_output(wait=True)
@@ -819,34 +817,34 @@ class Change_config_file:
                         display(select, generator, vbox, html)
 
                     selectlevels = widgets.RadioButtons(
-                        options=['Int', 'Dict'],
-                        value='Int',
-                        description='Levels type  :',
-                        disabled=False
+                        options=["Int", "Dict"],
+                        value="Int",
+                        description="Levels type  :",
+                        disabled=False,
                     )
 
                     _levels = widgets.BoundedIntText(
-                        value=drive.__dict__['_levels'],
-                        description='Levels  :',
+                        value=drive.__dict__["_levels"],
+                        description="Levels  :",
                         min=0,
                         max=1000,
-                        disabled=False
+                        disabled=False,
                     )
 
                     _sizes = widgets.BoundedIntText(
-                        value=drive.__dict__['_sizes'],
+                        value=drive.__dict__["_sizes"],
                         min=0,
                         max=100,
-                        description='Sizes  :',
-                        disabled=False
+                        description="Sizes  :",
+                        disabled=False,
                     )
 
                     _center = widgets.BoundedIntText(
-                        value=drive.__dict__['_center'],
+                        value=drive.__dict__["_center"],
                         min=0,
                         max=100,
-                        description='Center  :',
-                        disabled=False
+                        description="Center  :",
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([selectlevels, _sizes, procspermodel])
@@ -867,7 +865,7 @@ class Change_config_file:
                     left_box.add_class("right")
                     vbox.add_class("top")
 
-                    selectlevels.observe(onchangelevels, names='value')
+                    selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
@@ -876,37 +874,37 @@ class Change_config_file:
                     drive = driver.doe_generators.LatinHypercubeGenerator()
 
                     _samples = widgets.BoundedIntText(
-                        value=drive.__dict__['_samples'],
+                        value=drive.__dict__["_samples"],
                         min=0,
                         max=100,
-                        description='Number of samples to generate :',
+                        description="Number of samples to generate :",
                         style=style,
-                        disabled=False
+                        disabled=False,
                     )
 
                     _criterion = v.Select(
-                        items=['None', 'center', 'maximin', 'centermaximin', 'correlation'],
-                        v_model=drive.__dict__['_criterion'],
-                        label='Criterion :',
+                        items=["None", "center", "maximin", "centermaximin", "correlation"],
+                        v_model=drive.__dict__["_criterion"],
+                        label="Criterion :",
                         filled=True,
                         shaped=True,
-                        style_='width:500px;'
+                        style_="width:500px;",
                     )
 
                     _iterations = widgets.BoundedIntText(
-                        value=drive.__dict__['_iterations'],
+                        value=drive.__dict__["_iterations"],
                         min=0,
                         max=100,
-                        description='Iterations  :',
-                        disabled=False
+                        description="Iterations  :",
+                        disabled=False,
                     )
 
                     _seed = widgets.BoundedIntText(
-                        value=drive.__dict__['_seed'],
+                        value=drive.__dict__["_seed"],
                         min=0,
                         max=100,
-                        description='Seed :',
-                        disabled=False
+                        description="Seed :",
+                        disabled=False,
                     )
 
                     left_box = widgets.VBox([_samples, _iterations, procspermodel])
@@ -930,8 +928,7 @@ class Change_config_file:
                     display(vbox)
                     button()
 
-
-                generator.on_event('change', onchangegenerator)
+                generator.on_event("change", onchangegenerator)
                 display(generator)
                 DOEGenerator()
 
@@ -939,130 +936,144 @@ class Change_config_file:
 
                 drive = driver.genetic_algorithm_driver.SimpleGADriver()
 
-                style = {'description_width': 'initial'}
+                style = {"description_width": "initial"}
 
                 bits = widgets.Text(
-                    value='{}',
-                    description='Number of bits of resolution :',
+                    value="{}",
+                    description="Number of bits of resolution :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 elitism = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['elitism'].get('value'),
-                    description='Elitism',
+                    value=drive.options.__dict__["_dict"]["elitism"].get("value"),
+                    description="Elitism",
                     disabled=False,
                 )
 
                 gray = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['gray'].get('value'),
-                    description='Gray',
+                    value=drive.options.__dict__["_dict"]["gray"].get("value"),
+                    description="Gray",
                     disabled=False,
                 )
 
                 crossbits = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['cross_bits'].get('value'),
-                    description='Cross bits',
+                    value=drive.options.__dict__["_dict"]["cross_bits"].get("value"),
+                    description="Cross bits",
                     disabled=False,
                 )
 
                 maxgen = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['max_gen'].get('value'),
+                    value=drive.options.__dict__["_dict"]["max_gen"].get("value"),
                     min=0,
                     max=1000,
-                    description='Number of generations :',
+                    description="Number of generations :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 popsize = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['pop_size'].get('value'),
+                    value=drive.options.__dict__["_dict"]["pop_size"].get("value"),
                     min=0,
                     max=100,
-                    description='Number of points in the GA :',
+                    description="Number of points in the GA :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 runparallel = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['run_parallel'].get('value'),
-                    description='Run parallel',
+                    value=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
+                    description="Run parallel",
                     disabled=False,
                 )
 
                 procspermodel = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['procs_per_model'].get('value'),
-                    min=drive.options.__dict__['_dict']['procs_per_model'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
+                    min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                     max=100,
-                    description='Processors per model :',
+                    description="Processors per model :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 penaltyparameter = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['penalty_parameter'].get('value'),
-                    min=drive.options.__dict__['_dict']['penalty_parameter'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["penalty_parameter"].get("value"),
+                    min=drive.options.__dict__["_dict"]["penalty_parameter"].get("lower"),
                     max=100,
-                    description='Penalty parameter :',
+                    description="Penalty parameter :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 penaltyexponent = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['penalty_exponent'].get('value'),
+                    value=drive.options.__dict__["_dict"]["penalty_exponent"].get("value"),
                     min=0,
                     max=100,
-                    description='Penalty exponent :',
+                    description="Penalty exponent :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 pc = widgets.BoundedFloatText(
-                    value=drive.options.__dict__['_dict']['Pc'].get('value'),
-                    min=drive.options.__dict__['_dict']['Pc'].get('lower'),
-                    max=drive.options.__dict__['_dict']['Pc'].get('upper'),
-                    description='Crossover probability :',
+                    value=drive.options.__dict__["_dict"]["Pc"].get("value"),
+                    min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
+                    max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
+                    description="Crossover probability :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 pm = widgets.BoundedFloatText(
-                    value=drive.options.__dict__['_dict']['Pm'].get('value'),
-                    min=drive.options.__dict__['_dict']['Pm'].get('lower'),
-                    max=drive.options.__dict__['_dict']['Pm'].get('upper'),
-                    description='Mutation rate :',
+                    value=drive.options.__dict__["_dict"]["Pm"].get("value"),
+                    min=drive.options.__dict__["_dict"]["Pm"].get("lower"),
+                    max=drive.options.__dict__["_dict"]["Pm"].get("upper"),
+                    description="Mutation rate :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 multiobjweights = widgets.Text(
-                    value='{}',
-                    description='Multi objective weights :',
-                    style=style,
-                    disabled=False
+                    value="{}", description="Multi objective weights :", style=style, disabled=False
                 )
 
                 multiobjexponent = widgets.BoundedIntText(
-                    value=drive.options.__dict__['_dict']['multi_obj_exponent'].get('value'),
-                    min=drive.options.__dict__['_dict']['multi_obj_exponent'].get('lower'),
+                    value=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("value"),
+                    min=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("lower"),
                     max=100,
-                    description='Multi-objective weighting exponent :',
+                    description="Multi-objective weighting exponent :",
                     style=style,
-                    disabled=False
+                    disabled=False,
                 )
 
                 computepareto = widgets.Checkbox(
-                    value=drive.options.__dict__['_dict']['compute_pareto'].get('value'),
-                    description='Compute pareto',
+                    value=drive.options.__dict__["_dict"]["compute_pareto"].get("value"),
+                    description="Compute pareto",
                     disabled=False,
                 )
 
                 left_box = widgets.VBox(
-                    [bits, gray, maxgen, runparallel, penaltyparameter, pc,
-                     multiobjweights, computepareto])
+                    [
+                        bits,
+                        gray,
+                        maxgen,
+                        runparallel,
+                        penaltyparameter,
+                        pc,
+                        multiobjweights,
+                        computepareto,
+                    ]
+                )
                 right_box = widgets.VBox(
-                    [elitism, crossbits, popsize, procspermodel, penaltyexponent, pm,
-                     multiobjexponent])
+                    [
+                        elitism,
+                        crossbits,
+                        popsize,
+                        procspermodel,
+                        penaltyexponent,
+                        pm,
+                        multiobjexponent,
+                    ]
+                )
                 vbox = widgets.HBox([left_box, right_box])
 
                 # left Widgets
@@ -1101,27 +1112,32 @@ class Change_config_file:
                 title()
                 inputoutput()
                 display(select)
-                if data == 'scipy_optimizer':
+                if data == "scipy_optimizer":
                     scipy_optimizer_change()
-                elif data == 'differential_evolution_driver':
+                elif data == "differential_evolution_driver":
                     differential_evolution_driver_change()
-                elif data == 'doe_driver':
+                elif data == "doe_driver":
                     doe_driver_change()
-                elif data == 'genetic_algorithm_driver':
+                elif data == "genetic_algorithm_driver":
                     genetic_algorithm_driver_change()
-                elif data == 'pyoptsparse_driver':
+                elif data == "pyoptsparse_driver":
                     pyoptsparse_driver_change()
 
             select = v.Select(
-                items=['differential_evolution_driver', 'doe_driver', 'genetic_algorithm_driver',
-                         'pyoptsparse_driver', 'scipy_optimizer'],
-                v_model='scipy_optimizer',
-                label='Driver :',
+                items=[
+                    "differential_evolution_driver",
+                    "doe_driver",
+                    "genetic_algorithm_driver",
+                    "pyoptsparse_driver",
+                    "scipy_optimizer",
+                ],
+                v_model="scipy_optimizer",
+                label="Driver :",
                 outlined=True,
-                style_='margin-top:5px'
+                style_="margin-top:5px",
             )
 
-            select.on_event('change', onchange)
+            select.on_event("change", onchange)
 
             display(select)
 
@@ -1130,7 +1146,6 @@ class Change_config_file:
         title()
         inputoutput()
         drivers()
-
 
     def display(self):
         """

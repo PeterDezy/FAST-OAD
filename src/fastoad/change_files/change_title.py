@@ -24,6 +24,7 @@ class ChangeTitle:
     """
     A class to change the title of the configuration file
     """
+
     def __init__(self):
         # The file name
         self.file_name = "./workdir/oad_process.yml"
@@ -57,12 +58,7 @@ class ChangeTitle:
         #     description='title:',
         # )
 
-        self.t = v.Textarea(
-            v_model=self.title,
-            label='title:',
-            rows="1",
-            auto_grow=True
-        )
+        self.t = v.Textarea(v_model=self.title, label="title:", rows="1", auto_grow=True)
 
     def display(self, change=None) -> display:
         """
@@ -72,7 +68,5 @@ class ChangeTitle:
         clear_output(wait=True)
         self.read()
         self._initialize_widgets()
-        ui = widgets.VBox(
-            [self.t]
-        )
+        ui = widgets.VBox([self.t])
         return ui
