@@ -14,14 +14,14 @@ Change the configuration file
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display, HTML
+from IPython.display import clear_output, display
 import ipywidgets as widgets
 import ipyvuetify as v
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
 
 
-class Change_config_file:
+class ChangeConfigFile:
     """
     A class which display all the widgets for the configuration file
     """
@@ -32,14 +32,19 @@ class Change_config_file:
 
         # Ruamel yaml
         self.yaml = YAML()
+        # Parameters config file
+        self.inputf = None
+        self.outputf = None
+        self.title = None
+
 
     def read(self):
         """
         Read the configuration file
         """
 
-        with open(self.file_name) as f:
-            content = self.yaml.load(f)
+        with open(self.file_name) as file:
+            content = self.yaml.load(file)
 
         self.inputf = content["input_file"]
         self.outputf = content["output_file"]
@@ -54,8 +59,8 @@ class Change_config_file:
         Save the new values, and displays them
         """
 
-        with open(self.file_name) as f:
-            content = self.yaml.load(f)
+        with open(self.file_name) as file:
+            content = self.yaml.load(file)
 
             self.inputf = content["input_file"]
             self.outputf = content["output_file"]
@@ -68,8 +73,8 @@ class Change_config_file:
             content["input_file"] = "./" + self.i.v_model + ".xml"
             content["output_file"] = "./" + self.o.v_model + ".xml"
             content["title"] = self.t.v_model
-            with open(self.file_name, "w") as f:
-                self.yaml.dump(content, f)
+            with open(self.file_name, "w") as file:
+                self.yaml.dump(content, file)
                 if (
                     self.inputf == self.i.v_model
                     and self.outputf == self.o.v_model
@@ -92,7 +97,7 @@ class Change_config_file:
 
         def title():
 
-            t = v.TextField(
+            title = v.TextField(
                 v_model=self.title,
                 label="Title :",
                 outlined=True,
@@ -100,11 +105,11 @@ class Change_config_file:
                 style_="margin-top:20px",
             )
 
-            display(t)
+            display(title)
 
         def inputoutput():
 
-            i = v.TextField(
+            input = v.TextField(
                 v_model=self.inputf,
                 label="Input_file :",
                 suffix=".yml",
@@ -113,7 +118,7 @@ class Change_config_file:
                 style_="margin-top:5px",
             )
 
-            o = v.TextField(
+            output = v.TextField(
                 v_model=self.outputf,
                 label="Output_file :",
                 suffix=".yml",
@@ -122,7 +127,7 @@ class Change_config_file:
                 style_="margin-top:5px",
             )
 
-            display(i, o)
+            display(input, output)
 
         def button():
 
@@ -184,9 +189,9 @@ class Change_config_file:
                     class_="d-flex justify-center mb-6",
                     children=[
                         v.Html(
-                            tag="div", class_="d-flex flex-column", children=[optimizers, maxiter]
+                            tag="div", children=[optimizers, maxiter]
                         ),
-                        v.Html(tag="div", class_="d-flex flex-column", children=[tol, disp]),
+                        v.Html(tag="div", children=[tol, disp]),
                     ],
                 )
 
@@ -250,7 +255,7 @@ class Change_config_file:
                     disabled=False,
                 )
 
-                pc = widgets.BoundedFloatText(
+                cross_prob = widgets.BoundedFloatText(
                     value=drive.options.__dict__["_dict"]["Pc"].get("value"),
                     min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
                     max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
@@ -259,7 +264,7 @@ class Change_config_file:
                     disabled=False,
                 )
 
-                dr = widgets.BoundedFloatText(
+                diff_rate = widgets.BoundedFloatText(
                     value=drive.options.__dict__["_dict"]["F"].get("value"),
                     min=drive.options.__dict__["_dict"]["F"].get("lower"),
                     max=drive.options.__dict__["_dict"]["F"].get("upper"),
@@ -282,30 +287,12 @@ class Change_config_file:
                 )
 
                 left_box = widgets.VBox(
-                    [maxgen, runparallel, penaltyparameter, pc, multiobjweights]
+                    [maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights]
                 )
                 right_box = widgets.VBox(
-                    [popsize, procspermodel, penaltyexponent, dr, multiobjexponent]
+                    [popsize, procspermodel, penaltyexponent, diff_rate, multiobjexponent]
                 )
                 vbox = widgets.HBox([left_box, right_box])
-
-                # left Widgets
-                runparallel.add_class("top")
-                penaltyparameter.add_class("top")
-                pc.add_class("top")
-                multiobjweights.add_class("top")
-
-                # Right Widgets
-                procspermodel.add_class("top")
-                penaltyexponent.add_class("top")
-                dr.add_class("top")
-                multiobjexponent.add_class("top")
-
-                # VBox & Button Widgets
-                vbox.add_class("top")
-                left_box.add_class("left")
-                left_box.add_class("right")
-                vbox.add_class("top")
 
                 display(vbox)
                 button()
@@ -324,25 +311,25 @@ class Change_config_file:
                     display(select)
 
                     if data == "DOEGenerator":
-                        DOEGenerator()
+                        doe_generator()
                     elif data == "ListGenerator":
-                        ListGenerator()
+                        list_generator()
                     elif data == "CSVGenerator":
-                        CSVGenerator()
+                        csv_generator()
                     elif data == "UniformGenerator":
-                        UniformGenerator()
+                        uniform_generator()
                     elif data == "_pyDOE_Generator":
-                        _pyDOE_Generator()
+                        pydoe_generator()
                     elif data == "FullFactorialGenerator":
-                        FullFactorialGenerator()
+                        full_factorial_generator()
                     elif data == "GeneralizedSubsetGenerator":
-                        GeneralizedSubsetGenerator()
+                        generalized_subset_generator()
                     elif data == "PlackettBurmanGenerator":
-                        PlackettBurmanGenerator()
+                        plackett_burman_generator()
                     elif data == "BoxBehnkenGenerator":
-                        BoxBehnkenGenerator()
+                        box_behnken_generator()
                     elif data == "LatinHypercubeGenerator":
-                        LatinHypercubeGenerator()
+                        latin_hypercube_generator()
 
                 generator = v.Select(
                     items=[
@@ -379,7 +366,7 @@ class Change_config_file:
                     disabled=False,
                 )
 
-                def DOEGenerator():
+                def doe_generator():
 
                     drive = driver.doe_generators.DOEGenerator()
 
@@ -387,16 +374,10 @@ class Change_config_file:
                     right_box = widgets.VBox([runparallel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     display(vbox)
                     button()
 
-                def ListGenerator():
+                def list_generator():
 
                     drive = driver.doe_generators.ListGenerator()
 
@@ -411,19 +392,10 @@ class Change_config_file:
                     right_box = widgets.VBox([procspermodel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    runparallel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     display(vbox)
                     button()
 
-                def CSVGenerator():
+                def csv_generator():
 
                     _filename = widgets.Text(description="File name  :", disabled=False)
 
@@ -431,19 +403,10 @@ class Change_config_file:
                     right_box = widgets.VBox([procspermodel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    runparallel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     display(vbox)
                     button()
 
-                def UniformGenerator():
+                def uniform_generator():
 
                     drive = driver.doe_generators.UniformGenerator()
 
@@ -468,22 +431,10 @@ class Change_config_file:
                     right_box = widgets.VBox([_seed, runparallel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    procspermodel.add_class("top")
-
-                    # Right Widgets
-                    runparallel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     display(vbox)
                     button()
 
-                def _pyDOE_Generator():
+                def pydoe_generator():
 
                     drive = driver.doe_generators._pyDOE_Generator()
 
@@ -513,19 +464,6 @@ class Change_config_file:
                         left_box = widgets.VBox([selectlevels, _sizes, runparallel])
                         right_box = widgets.VBox([_levels, procspermodel])
                         vbox = widgets.HBox([left_box, right_box])
-
-                        # left Widgets
-                        _sizes.add_class("top")
-                        runparallel.add_class("top")
-
-                        # Right Widgets
-                        procspermodel.add_class("top")
-
-                        # VBox & Button Widgets
-                        vbox.add_class("top")
-                        left_box.add_class("left")
-                        left_box.add_class("right")
-                        vbox.add_class("top")
 
                         display(select, generator, vbox)
                         button()
@@ -557,24 +495,11 @@ class Change_config_file:
                     right_box = widgets.VBox([_levels, procspermodel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    _sizes.add_class("top")
-                    runparallel.add_class("top")
-
-                    # Right Widgets
-                    procspermodel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
-                def FullFactorialGenerator():
+                def full_factorial_generator():
 
                     drive = driver.doe_generators.FullFactorialGenerator()
 
@@ -605,20 +530,7 @@ class Change_config_file:
                         right_box = widgets.VBox([_levels, procspermodel])
                         vbox = widgets.HBox([left_box, right_box])
 
-                        # left Widgets
-                        _sizes.add_class("top")
-                        runparallel.add_class("top")
-
-                        # Right Widgets
-                        procspermodel.add_class("top")
-
-                        # VBox & Button Widgets
-                        vbox.add_class("top")
-                        left_box.add_class("left")
-                        left_box.add_class("right")
-                        vbox.add_class("top")
-
-                        display(select, generator, vbox, html)
+                        display(select, generator, vbox)
 
                     selectlevels = widgets.RadioButtons(
                         options=["Int", "Dict"],
@@ -647,39 +559,20 @@ class Change_config_file:
                     right_box = widgets.VBox([_levels, procspermodel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    _sizes.add_class("top")
-                    runparallel.add_class("top")
-
-                    # Right Widgets
-                    procspermodel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
-                def GeneralizedSubsetGenerator():
+                def generalized_subset_generator():
 
                     left_box = widgets.VBox([procspermodel])
                     right_box = widgets.VBox([runparallel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     display(vbox)
                     button()
 
-                def PlackettBurmanGenerator():
+                def plackett_burman_generator():
 
                     drive = driver.doe_generators.PlackettBurmanGenerator()
 
@@ -710,20 +603,7 @@ class Change_config_file:
                         right_box = widgets.VBox([_levels, procspermodel])
                         vbox = widgets.HBox([left_box, right_box])
 
-                        # left Widgets
-                        _sizes.add_class("top")
-                        runparallel.add_class("top")
-
-                        # Right Widgets
-                        procspermodel.add_class("top")
-
-                        # VBox & Button Widgets
-                        vbox.add_class("top")
-                        left_box.add_class("left")
-                        left_box.add_class("right")
-                        vbox.add_class("top")
-
-                        display(select, generator, vbox, html)
+                        display(select, generator, vbox)
 
                     selectlevels = widgets.RadioButtons(
                         options=["Int", "Dict"],
@@ -752,24 +632,11 @@ class Change_config_file:
                     right_box = widgets.VBox([_levels, procspermodel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    _sizes.add_class("top")
-                    runparallel.add_class("top")
-
-                    # Right Widgets
-                    procspermodel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
-                def BoxBehnkenGenerator():
+                def box_behnken_generator():
 
                     drive = driver.doe_generators.BoxBehnkenGenerator()
 
@@ -800,21 +667,7 @@ class Change_config_file:
                         right_box = widgets.VBox([_levels, _center, runparallel])
                         vbox = widgets.HBox([left_box, right_box])
 
-                        # left Widgets
-                        _sizes.add_class("top")
-                        procspermodel.add_class("top")
-
-                        # Right Widgets
-                        _center.add_class("top")
-                        runparallel.add_class("top")
-
-                        # VBox & Button Widgets
-                        vbox.add_class("top")
-                        left_box.add_class("left")
-                        left_box.add_class("right")
-                        vbox.add_class("top")
-
-                        display(select, generator, vbox, html)
+                        display(select, generator, vbox)
 
                     selectlevels = widgets.RadioButtons(
                         options=["Int", "Dict"],
@@ -851,25 +704,11 @@ class Change_config_file:
                     right_box = widgets.VBox([_levels, _center, runparallel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    _sizes.add_class("top")
-                    procspermodel.add_class("top")
-
-                    # Right Widgets
-                    _center.add_class("top")
-                    runparallel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     selectlevels.observe(onchangelevels, names="value")
                     display(vbox)
                     button()
 
-                def LatinHypercubeGenerator():
+                def latin_hypercube_generator():
 
                     drive = driver.doe_generators.LatinHypercubeGenerator()
 
@@ -911,26 +750,12 @@ class Change_config_file:
                     right_box = widgets.VBox([_criterion, _seed, runparallel])
                     vbox = widgets.HBox([left_box, right_box])
 
-                    # left Widgets
-                    _iterations.add_class("top")
-                    procspermodel.add_class("top")
-
-                    # Right Widgets
-                    _seed.add_class("top")
-                    runparallel.add_class("top")
-
-                    # VBox & Button Widgets
-                    vbox.add_class("top")
-                    left_box.add_class("left")
-                    left_box.add_class("right")
-                    vbox.add_class("top")
-
                     display(vbox)
                     button()
 
                 generator.on_event("change", onchangegenerator)
                 display(generator)
-                DOEGenerator()
+                doe_generator()
 
             def genetic_algorithm_driver_change():
 
@@ -1014,7 +839,7 @@ class Change_config_file:
                     disabled=False,
                 )
 
-                pc = widgets.BoundedFloatText(
+                cross_prob = widgets.BoundedFloatText(
                     value=drive.options.__dict__["_dict"]["Pc"].get("value"),
                     min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
                     max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
@@ -1023,7 +848,7 @@ class Change_config_file:
                     disabled=False,
                 )
 
-                pm = widgets.BoundedFloatText(
+                mut_rate = widgets.BoundedFloatText(
                     value=drive.options.__dict__["_dict"]["Pm"].get("value"),
                     min=drive.options.__dict__["_dict"]["Pm"].get("lower"),
                     max=drive.options.__dict__["_dict"]["Pm"].get("upper"),
@@ -1058,7 +883,7 @@ class Change_config_file:
                         maxgen,
                         runparallel,
                         penaltyparameter,
-                        pc,
+                        cross_prob,
                         multiobjweights,
                         computepareto,
                     ]
@@ -1070,34 +895,11 @@ class Change_config_file:
                         popsize,
                         procspermodel,
                         penaltyexponent,
-                        pm,
+                        mut_rate,
                         multiobjexponent,
                     ]
                 )
                 vbox = widgets.HBox([left_box, right_box])
-
-                # left Widgets
-                gray.add_class("top")
-                maxgen.add_class("top")
-                runparallel.add_class("top")
-                penaltyparameter.add_class("top")
-                pc.add_class("top")
-                multiobjweights.add_class("top")
-                computepareto.add_class("top")
-
-                # Right Widgets
-                crossbits.add_class("top")
-                popsize.add_class("top")
-                procspermodel.add_class("top")
-                penaltyexponent.add_class("top")
-                pm.add_class("top")
-                multiobjexponent.add_class("top")
-
-                # VBox & Button Widgets
-                vbox.add_class("top")
-                left_box.add_class("left")
-                left_box.add_class("right")
-                vbox.add_class("top")
 
                 display(vbox)
                 button()

@@ -22,10 +22,12 @@ from fastoad.change_files.change_name_input_output import ChangeNameInputOutput
 from fastoad.change_files.change_title import ChangeTitle
 from fastoad.change_files.change_driver import ChangeDriver
 
+
 class AllWidgets:
     """
     A class which display all the widgets for the configuration file
     """
+
     def __init__(self):
 
         self.button = None
@@ -54,16 +56,20 @@ class AllWidgets:
             self.outputf = content["output_file"]
             self.title = content["title"]
 
-            self.inputf = self.inputf[2:len(self.inputf) - 4]
-            self.outputf = self.outputf[2:len(self.outputf) - 4]
+            self.inputf = self.inputf[2 : len(self.inputf) - 4]
+            self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
         try:
-            content['input_file'] = "./" + self.i.value + ".xml"
-            content['output_file'] = "./" + self.o.value + ".xml"
-            content['title'] = self.t.v_model
-            with open(self.file_name, 'w') as f:
+            content["input_file"] = "./" + self.i.value + ".xml"
+            content["output_file"] = "./" + self.o.value + ".xml"
+            content["title"] = self.t.v_model
+            with open(self.file_name, "w") as f:
                 self.yaml.dump(content, f)
-                if self.inputf == self.i.value and self.outputf == self.o.value and self.title == self.t.v_model:
+                if (
+                    self.inputf == self.i.value
+                    and self.outputf == self.o.value
+                    and self.title == self.t.v_model
+                ):
                     print("Values inchanched.\n")
                 else:
                     print("Successfuly changed values !\n")
@@ -78,17 +84,18 @@ class AllWidgets:
         """
         Initialize the button widget, and add css to him
         """
-        self.button = v.Btn(color='blue', elevation=4, style_='width:100px', outlined=True, children=[
-            v.Icon(left=True, children=[
-                'get_app'
-            ]),
-            'Save'
-        ]
-                            )
+        self.button = v.Btn(
+            color="blue",
+            elevation=4,
+            style_="width:100px",
+            outlined=True,
+            children=[v.Icon(left=True, children=["get_app"]), "Save"],
+        )
+
         def on_save_button_clicked(widget, event, data):
             self.save()
 
-        self.button.on_event('click', on_save_button_clicked)
+        self.button.on_event("click", on_save_button_clicked)
 
     def display(self, change=None) -> display:
         """
@@ -102,8 +109,6 @@ class AllWidgets:
         self.t = ChangeTitle().display().children[0]
         self.d = ChangeDriver().display().children[0]
 
-        ui = widgets.VBox(
-            [self.t, self.i,self.o,self.d,self.button]
-        )
+        ui = widgets.VBox([self.t, self.i, self.o, self.d, self.button])
 
         return ui

@@ -23,6 +23,7 @@ class ChangeNameInputOutput:
     """
     A class to change the name of the input/output file in the configuration file
     """
+
     def __init__(self):
         # The file name
         self.file_name = "./workdir/oad_process.yml"
@@ -51,23 +52,17 @@ class ChangeNameInputOutput:
         self.inputf = content["input_file"]
         self.outputf = content["output_file"]
 
-        self.inputf = self.inputf[2:len(self.inputf) - 4]
+        self.inputf = self.inputf[2 : len(self.inputf) - 4]
 
-        self.outputf = self.outputf[2:len(self.outputf) - 4]
+        self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
     def _initialize_widgets(self):
         """
         Initialize the widgets to change the name of the input/output file
         """
-        self.i = widgets.Text(
-            value=self.inputf,
-            description='input_file:',
-        )
+        self.i = widgets.Text(value=self.inputf, description="input_file:",)
 
-        self.o = widgets.Text(
-            value=self.outputf,
-            description='output_file:',
-        )
+        self.o = widgets.Text(value=self.outputf, description="output_file:",)
 
     def display(self, change=None) -> display:
         """
@@ -77,7 +72,5 @@ class ChangeNameInputOutput:
         clear_output(wait=True)
         self.read()
         self._initialize_widgets()
-        ui = widgets.VBox(
-            [self.i, self.o]
-        )
+        ui = widgets.VBox([self.i, self.o])
         return ui
