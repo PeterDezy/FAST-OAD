@@ -62,6 +62,15 @@ class ChangeConfigFile:
         )
         self.button = v.Html(
             tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+        self.generator = v.Html(
+            tag="div",
             children=[
                 v.Html(
                     tag="div", children=[]
@@ -167,7 +176,7 @@ class ChangeConfigFile:
         btn = v.Btn(
             color="blue",
             elevation=4,
-            style_="width:150px;margin:auto",
+            style_="width:150px",
             outlined=True,
             children=[v.Icon(children=["get_app"]), "Save"],
         )
@@ -220,6 +229,9 @@ class ChangeConfigFile:
 
             def scipy_optimizer_change():
 
+                self.generator.children[0].children = []
+                self.vboxdoedriver.children[0].children = []
+                self.vboxdoedriver.children[1].children = []
                 self.vbox.children[0].children = [optimizers, maxiter]
                 self.vbox.children[1].children = [tol, disp]
 
@@ -312,6 +324,9 @@ class ChangeConfigFile:
 
             def differential_evolution_driver_change():
 
+                self.generator.children[0].children = []
+                self.vboxdoedriver.children[0].children = []
+                self.vboxdoedriver.children[1].children = []
                 self.vbox.children[0].children = [maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights]
                 self.vbox.children[1].children = [popsize, procspermodel, penaltyexponent, diff_rate, multiobjexponent]
 
@@ -319,6 +334,7 @@ class ChangeConfigFile:
 
                 self.vbox.children[0].children = []
                 self.vbox.children[1].children = []
+                self.button.children[0].children = []
 
                 drive = driver.doe_driver.DOEDriver()
 
@@ -402,10 +418,11 @@ class ChangeConfigFile:
 
                     self.vboxdoedriver.children[0].children = [_data, runparallel]
                     self.vboxdoedriver.children[1].children = [procspermodel]
-                    button()
 
 
-                _filename = widgets.Text(description="File name  :", disabled=False)
+                _filename = widgets.Text(
+                    description="File name  :",
+                )
 
                 def csv_generator():
 
@@ -441,32 +458,102 @@ class ChangeConfigFile:
 
                 def onchangelevels(change):
 
-                    if change["new"] == "Int":
+                    if generator.v_model == '_pyDOE_Generator':
+                        drive = drive = driver.doe_generators._pyDOE_Generator()
 
-                        _levels = widgets.BoundedIntText(
-                            value=drive.__dict__["_levels"],
-                            description="Levels  :",
-                            min=0,
-                            max=1000,
-                            disabled=False,
-                        )
+                        if change["new"] == "Int":
 
-                    elif change["new"] == "Dict":
+                            _levelspydoe = widgets.BoundedIntText(
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
+                                min=0,
+                                max=1000,
+                                disabled=False,
+                            )
 
-                        _levels = widgets.Text(
-                            value="[]", description="Levels  :", disabled=False
-                        )
+                        elif change["new"] == "Dict":
 
-                selectlevelspydoe = widgets.RadioButtons(
+                            _levelspydoe = widgets.Text(
+                                value="[]", description="Levels  :", disabled=False
+                            )
+
+                        self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodel]
+
+                    elif generator.v_model == 'FullFactorialGenerator':
+                        drive = driver.doe_generators.FullFactorialGenerator()
+
+                        if change["new"] == "Int":
+
+                            _levelsfull = widgets.BoundedIntText(
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
+                                min=0,
+                                max=1000,
+                                disabled=False,
+                            )
+
+                        elif change["new"] == "Dict":
+
+                            _levelsfull = widgets.Text(
+                                value="[]", description="Levels  :", disabled=False
+                            )
+
+                        self.vboxdoedriver.children[1].children = [_levelsfull, procspermodel]
+
+                    elif generator.v_model == 'PlackettBurmanGenerator':
+                        drive = driver.doe_generators.PlackettBurmanGenerator()
+
+                        if change["new"] == "Int":
+
+                            _levelsplackett = widgets.BoundedIntText(
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
+                                min=0,
+                                max=1000,
+                                disabled=False,
+                            )
+
+                        elif change["new"] == "Dict":
+
+                            _levelsplackett = widgets.Text(
+                                value="[]", description="Levels  :", disabled=False
+                            )
+
+                        self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodel]
+
+                    elif generator.v_model == 'BoxBehnkenGenerator':
+                        drive = driver.doe_generators.BoxBehnkenGenerator()
+
+                        if change["new"] == "Int":
+
+                            _levelsbox = widgets.BoundedIntText(
+                                value=drive.__dict__["_levels"],
+                                description="Levels  :",
+                                min=0,
+                                max=1000,
+                                disabled=False,
+                            )
+
+                        elif change["new"] == "Dict":
+
+                            _levelsbox = widgets.Text(
+                                value="[]", description="Levels  :", disabled=False
+                            )
+
+                        self.vboxdoedriver.children[1].children = [_levelsbox, procspermodel]
+
+
+                selectlevels = widgets.RadioButtons(
                     options=["Int", "Dict"],
                     value="Int",
                     description="Levels type  :",
                     disabled=False,
                 )
 
-                selectlevelspydoe.observe(onchangelevels, names="value")
+                selectlevels.observe(onchangelevels, names="value")
 
-                _levels = widgets.BoundedIntText(
+
+                _levelspydoe = widgets.BoundedIntText(
                     value=drive.__dict__["_levels"],
                     description="Levels  :",
                     min=0,
@@ -484,22 +571,14 @@ class ChangeConfigFile:
 
                 def pydoe_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevelspydoe, _sizes, runparallel]
-                    self.vboxdoedriver.children[1].children = [_levels, procspermodel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, runparallel]
+                    self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodel]
 
 
                 drive = driver.doe_generators.FullFactorialGenerator()
 
-                selectlevelsfull = widgets.RadioButtons(
-                    options=["Int", "Dict"],
-                    value="Int",
-                    description="Levels type  :",
-                    disabled=False,
-                )
 
-                selectlevelsfull.observe(onchangelevels, names="value")
-
-                _levels = widgets.BoundedIntText(
+                _levelsfull = widgets.BoundedIntText(
                     value=drive.__dict__["_levels"],
                     description="Levels  :",
                     min=0,
@@ -517,9 +596,8 @@ class ChangeConfigFile:
 
                 def full_factorial_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevelsfull, _sizes, runparallel]
-                    self.vboxdoedriver.children[1].children = [_levels, procspermodel]
-                    button()
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, runparallel]
+                    self.vboxdoedriver.children[1].children = [_levelsfull, procspermodel]
 
 
                 def generalized_subset_generator():
@@ -530,16 +608,7 @@ class ChangeConfigFile:
                 drive = driver.doe_generators.PlackettBurmanGenerator()
 
 
-                selectlevelsplackett = widgets.RadioButtons(
-                    options=["Int", "Dict"],
-                    value="Int",
-                    description="Levels type  :",
-                    disabled=False,
-                )
-
-                selectlevelsplackett.observe(onchangelevels, names="value")
-
-                _levels = widgets.BoundedIntText(
+                _levelsplackett = widgets.BoundedIntText(
                     value=drive.__dict__["_levels"],
                     description="Levels  :",
                     min=0,
@@ -557,22 +626,13 @@ class ChangeConfigFile:
 
                 def plackett_burman_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevelsplackett, _sizes, runparallel]
-                    self.vboxdoedriver.children[1].children = [_levels, procspermodel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, runparallel]
+                    self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodel]
 
 
                 drive = driver.doe_generators.BoxBehnkenGenerator()
 
-                selectlevelsbox = widgets.RadioButtons(
-                    options=["Int", "Dict"],
-                    value="Int",
-                    description="Levels type  :",
-                    disabled=False,
-                )
-
-                selectlevelsbox.observe(onchangelevels, names="value")
-
-                _levels = widgets.BoundedIntText(
+                _levelsbox = widgets.BoundedIntText(
                     value=drive.__dict__["_levels"],
                     description="Levels  :",
                     min=0,
@@ -598,8 +658,8 @@ class ChangeConfigFile:
 
                 def box_behnken_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevelsbox, _sizes, procspermodel]
-                    self.vboxdoedriver.children[1].children = [_levels, _center, runparallel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, procspermodel]
+                    self.vboxdoedriver.children[1].children = [_levelsbox, _center, runparallel]
 
 
                 drive = driver.doe_generators.LatinHypercubeGenerator()
@@ -645,11 +705,9 @@ class ChangeConfigFile:
 
 
                 generator.on_event("change", onchangegenerator)
-                display(generator)
                 doe_generator()
-                display(self.vboxdoedriver)
-                button()
-                display(btn)
+                self.generator.children[0].children = [generator]
+                self.button.children[0].children = [btn]
 
 
             drive = driver.genetic_algorithm_driver.SimpleGADriver()
@@ -771,8 +829,19 @@ class ChangeConfigFile:
 
             def genetic_algorithm_driver_change():
 
-                self.vbox.children[0].children = bits, gray, maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights, computepareto,
-                self.vbox.children[1].children = elitism, crossbits, popsize, procspermodel, penaltyexponent, mut_rate, multiobjexponent,
+                self.generator.children[0].children = []
+                self.vboxdoedriver.children[0].children = []
+                self.vboxdoedriver.children[1].children = []
+                self.vbox.children[0].children = [bits, gray, maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights, computepareto]
+                self.vbox.children[1].children = [elitism, crossbits, popsize, procspermodel, penaltyexponent, mut_rate, multiobjexponent]
+
+            def pyoptsparse_driver_change():
+
+                self.generator.children[0].children = []
+                self.vboxdoedriver.children[0].children = []
+                self.vboxdoedriver.children[1].children = []
+                self.vbox.children[0].children = []
+                self.vbox.children[1].children = []
 
 
             def onchange(widget, event, data):
@@ -786,8 +855,7 @@ class ChangeConfigFile:
                 elif data == "genetic_algorithm_driver":
                     genetic_algorithm_driver_change()
                 elif data == "pyoptsparse_driver":
-                    self.vbox.children[0].children = []
-                    self.vbox.children[1].children = []
+                    pyoptsparse_driver_change()
 
             select = v.Select(
                 items=[
@@ -808,8 +876,10 @@ class ChangeConfigFile:
             display(select)
             scipy_optimizer_change()
             display(self.vbox)
+            display(self.generator)
+            display(self.vboxdoedriver)
             button()
-            display(btn)
+            display(self.button)
 
         title()
         inputoutput()
