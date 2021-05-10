@@ -1,5 +1,5 @@
 """
-Change the name of the input/output file in the configuration file
+Display the name of the input / output file in the configuration file
 """
 #  This file is part of FAST-OAD : A framework for rapid Overall Aircraft Design
 #  Copyright (C) 2021 ONERA & ISAE-SUPAERO
@@ -14,40 +14,34 @@ Change the name of the input/output file in the configuration file
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display, HTML
-import ipywidgets as widgets
+import ipyvuetify as v
 from ruamel.yaml import YAML
 
 
 class ChangeNameInputOutput:
     """
-    A class to change the name of the input/output file in the configuration file
+    A class to Display the name of the input / output file in the configuration file
     """
 
     def __init__(self):
+
         # The file name
         self.file_name = "./workdir/oad_process.yml"
 
         # Ruamel yaml
         self.yaml = YAML()
 
-        # Input file name
+        # Parameters config file
         self.inputf = None
-
-        # Output file name
         self.outputf = None
-
-        # Widgets
-        self.i = None
-        self.o = None
 
     def read(self):
         """
-        Read the configuration file to display the name of the input & output file
+        Read the configuration file
         """
 
-        with open(self.file_name) as f:
-            content = self.yaml.load(f)
+        with open(self.file_name) as file:
+            content = self.yaml.load(file)
 
         self.inputf = content["input_file"]
         self.outputf = content["output_file"]
@@ -56,21 +50,34 @@ class ChangeNameInputOutput:
 
         self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
-    def _initialize_widgets(self):
-        """
-        Initialize the widgets to change the name of the input/output file
-        """
-        self.i = widgets.Text(value=self.inputf, description="input_file:",)
 
-        self.o = widgets.Text(value=self.outputf, description="output_file:",)
+    def init_widgets(self):
 
-    def display(self, change=None) -> display:
-        """
-        Display the user interface
-        :return the display object
-        """
-        clear_output(wait=True)
+        self.input = v.TextField(
+            v_model=self.inputf,
+            label="Input_file :",
+            suffix=".yml",
+            outlined=True,
+            clearable=True,
+            style_="margin-top:5px",
+        )
+
+        self.output = v.TextField(
+            v_model=self.outputf,
+            label="Output_file :",
+            suffix=".yml",
+            outlined=True,
+            clearable=True,
+            style_="margin-top:5px",
+        )
+
+        display(self.input,self.output)
+
+    def display(self):
+
         self.read()
-        self._initialize_widgets()
-        ui = widgets.VBox([self.i, self.o])
-        return ui
+        self.init_widgets()
+
+    def returninputoutput(self):
+
+        return self.input.v_model, self.output.v_model

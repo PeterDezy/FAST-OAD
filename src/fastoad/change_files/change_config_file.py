@@ -36,7 +36,7 @@ class ChangeConfigFile:
         self.inputf = None
         self.outputf = None
         self.title = None
-        self.vbox = v.Html(
+        self.vboxdriver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
             children=[
@@ -207,6 +207,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["tol"].get("lower"),
                 max=1,
                 label="Tol :",
+                type="number",
                 outlined=True,
                 style_="width:500px;margin-left:50px;margin-top:6px",
             )
@@ -224,7 +225,6 @@ class ChangeConfigFile:
                 v_model=drive.options.__dict__["_dict"]["disp"].get("value"),
                 label="Disp",
                 style_="margin-left:50px",
-                class_="d-flex justify-center mb-6",
             )
 
             def scipy_optimizer_change():
@@ -232,94 +232,104 @@ class ChangeConfigFile:
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = [optimizers, maxiter]
-                self.vbox.children[1].children = [tol, disp]
+                self.vboxdriver.children[0].children = [optimizers, maxiter]
+                self.vboxdriver.children[1].children = [tol, disp]
 
 
             drive = driver.differential_evolution_driver.DifferentialEvolutionDriver()
+            
 
-            style = {"description_width": "initial"}
-
-            maxgen = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["max_gen"].get("value"),
+            maxgendiff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["max_gen"].get("value"),
                 min=0,
                 max=1000,
-                description="Max generations :",
-                style=style,
-                disabled=False,
+                label="Max generations :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-top:5px'
             )
 
-            popsize = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["pop_size"].get("value"),
+            popsizediff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["pop_size"].get("value"),
                 min=0,
                 max=100,
-                description="Number of points in the GA :",
-                style=style,
-                disabled=False,
+                label="Number of points in the GA :",
+                type="number",
+                outlined=True,
+                style_='width:500px;margin-left:50px;margin-top:5px'
             )
 
-            runparallel = widgets.Checkbox(
-                value=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
-                description="Run parallel",
-                disabled=False,
+            runparalleldiff = v.Checkbox(
+                v_model=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
+                label="Run parallel",
+                style_='margin-bottom:20px'
             )
 
-            procspermodel = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
+            procspermodeldiff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
                 min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                 max=100,
-                description="Processors per model :",
-                style=style,
-                disabled=False,
+                label="Processors per model :",
+                type="number",
+                outlined=True,
+                style_='width:500px;margin-left:50px'
             )
 
-            penaltyparameter = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["penalty_parameter"].get("value"),
+            penaltyparameterdiff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["penalty_parameter"].get("value"),
                 min=drive.options.__dict__["_dict"]["penalty_parameter"].get("lower"),
                 max=100,
-                description="Penalty parameter :",
-                style=style,
-                disabled=False,
+                label="Penalty parameter :",
+                type="number",
+                outlined=True,
+                style_='width:500px'
             )
 
-            penaltyexponent = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["penalty_exponent"].get("value"),
+            penaltyexponentdiff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["penalty_exponent"].get("value"),
                 min=0,
                 max=100,
-                description="Penalty exponent :",
-                style=style,
-                disabled=False,
+                label="Penalty exponent :",
+                type="number",
+                outlined=True,
+                style_='width:500px;margin-left:50px'
             )
 
-            cross_prob = widgets.BoundedFloatText(
-                value=drive.options.__dict__["_dict"]["Pc"].get("value"),
+            cross_probdiff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["Pc"].get("value"),
                 min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
                 max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
-                description="Crossover probability :",
-                style=style,
-                disabled=False,
+                label="Crossover probability :",
+                type="number",
+                outlined=True,
+                style_='width:500px'
             )
 
-            diff_rate = widgets.BoundedFloatText(
-                value=drive.options.__dict__["_dict"]["F"].get("value"),
+            diff_rate = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["F"].get("value"),
                 min=drive.options.__dict__["_dict"]["F"].get("lower"),
                 max=drive.options.__dict__["_dict"]["F"].get("upper"),
-                description="Differential rate :",
-                style=style,
-                disabled=False,
+                label="Differential rate :",
+                type="number",
+                outlined=True,
+                style_='width:500px;margin-left:50px'
             )
 
-            multiobjweights = widgets.Text(
-                value="{}", description="Multi objective weights :", style=style, disabled=False
+            multiobjweightsdiff = v.TextField(
+                v_model="{}",
+                label="Multi objective weights :",
+                outlined=True,
+                style_='width:500px'
             )
 
-            multiobjexponent = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("value"),
+            multiobjexponentdiff = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("value"),
                 min=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("lower"),
                 max=100,
-                description="Multi-objective weighting exponent :",
-                style=style,
-                disabled=False,
+                label="Multi-objective weighting exponent :",
+                type="number",
+                outlined=True,
+                style_='width:500px;margin-left:50px'
             )
 
             def differential_evolution_driver_change():
@@ -327,18 +337,16 @@ class ChangeConfigFile:
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = [maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights]
-                self.vbox.children[1].children = [popsize, procspermodel, penaltyexponent, diff_rate, multiobjexponent]
+                self.vboxdriver.children[0].children = [maxgendiff, runparalleldiff, penaltyparameterdiff, cross_probdiff, multiobjweightsdiff]
+                self.vboxdriver.children[1].children = [popsizediff, procspermodeldiff, penaltyexponentdiff, diff_rate, multiobjexponentdiff]
 
             def doe_driver_change():
 
-                self.vbox.children[0].children = []
-                self.vbox.children[1].children = []
+                self.vboxdriver.children[0].children = []
+                self.vboxdriver.children[1].children = []
                 self.button.children[0].children = []
 
                 drive = driver.doe_driver.DOEDriver()
-
-                style = {"description_width": "initial"}
 
                 def onchangegenerator(widget, event, data):
 
@@ -383,325 +391,375 @@ class ChangeConfigFile:
                     style_="width:500px;margin-top:5px",
                 )
 
-                procspermodel = widgets.BoundedIntText(
-                    value=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
+                procspermodeldoe = v.TextField(
+                    v_model=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
                     min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                     max=100,
-                    description="Processors per model :",
-                    style=style,
-                    disabled=False,
+                    label="Processors per model :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-top:5px'
                 )
 
-                runparallel = widgets.Checkbox(
-                    value=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
-                    description="Run parallel",
-                    disabled=False,
+                runparalleldoe = v.Checkbox(
+                    v_model=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
+                    label="Run parallel",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-left:50px'
                 )
 
                 drive = driver.doe_generators.DOEGenerator()
 
                 def doe_generator():
 
-                    self.vboxdoedriver.children[0].children = [procspermodel]
-                    self.vboxdoedriver.children[1].children = [runparallel]
+                    self.vboxdoedriver.children[0].children = [procspermodeldoe]
+                    self.vboxdoedriver.children[1].children = [runparalleldoe]
 
                 drive = driver.doe_generators.ListGenerator()
 
-                _data = widgets.Text(
-                    value="[]",
-                    description="List of collections of name :",
-                    style=style,
-                    disabled=False,
+                _data = v.TextField(
+                    v_model="[]",
+                    label="List of collections of name :",
+                    outlined=True,
+                    style_='width:500px;margin-top:5px'
                 )
 
                 def list_generator():
 
-                    self.vboxdoedriver.children[0].children = [_data, runparallel]
-                    self.vboxdoedriver.children[1].children = [procspermodel]
+                    self.vboxdoedriver.children[0].children = [_data, runparalleldoe]
+                    self.vboxdoedriver.children[1].children = [procspermodeldoe]
 
 
-                _filename = widgets.Text(
-                    description="File name  :",
+                _filename = v.TextField(
+                    label="File name  :",
+                    outlined=True,
+                    style_='width:500px;margin-top:5px'
                 )
 
                 def csv_generator():
 
-                    self.vboxdoedriver.children[0].children = [_filename, runparallel]
-                    self.vboxdoedriver.children[1].children = [procspermodel]
+                    self.vboxdoedriver.children[0].children = [_filename, runparalleldoe]
+                    self.vboxdoedriver.children[1].children = [procspermodeldoe]
 
                 drive = driver.doe_generators.UniformGenerator()
 
-                _num_samples = widgets.BoundedIntText(
-                    value=drive.__dict__["_num_samples"],
+                _num_samples = v.TextField(
+                    v_model=drive.__dict__["_num_samples"],
                     min=0,
                     max=100,
-                    description="Number of samples :",
-                    style=style,
-                    disabled=False,
+                    label="Number of samples :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-top:5px'
                 )
 
-                _seed = widgets.BoundedIntText(
-                    value=drive.__dict__["_seed"],
+                _seeduniform = v.TextField(
+                    v_model=drive.__dict__["_seed"],
                     min=0,
                     max=100,
-                    description="Seed  :",
-                    disabled=False,
+                    label="Seed :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-left:50px;margin-top:5px',
                 )
 
                 def uniform_generator():
 
-                    self.vboxdoedriver.children[0].children = [_num_samples, procspermodel]
-                    self.vboxdoedriver.children[1].children = [_seed, runparallel]
+                    self.vboxdoedriver.children[0].children = [_num_samples, procspermodeldoe]
+                    self.vboxdoedriver.children[1].children = [_seeduniform, runparalleldoe]
 
 
                 drive = driver.doe_generators._pyDOE_Generator()
 
-                def onchangelevels(change):
+                def onchangelevels(widget, event, data):
 
                     if generator.v_model == '_pyDOE_Generator':
                         drive = drive = driver.doe_generators._pyDOE_Generator()
 
-                        if change["new"] == "Int":
+                        if data == "Int":
 
-                            _levelspydoe = widgets.BoundedIntText(
-                                value=drive.__dict__["_levels"],
-                                description="Levels  :",
+                            _levelspydoe = v.TextField(
+                                v_model=drive.__dict__["_levels"],
+                                label="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False,
+                                outlined=True,
+                                type='number',
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        elif change["new"] == "Dict":
+                        elif data == "Dict":
 
-                            _levelspydoe = widgets.Text(
-                                value="[]", description="Levels  :", disabled=False
+                            _levelspydoe = v.TextField(
+                                v_model="[]",
+                                label="Levels  :",
+                                outlined=True,
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodel]
+                        self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodeldoe]
 
                     elif generator.v_model == 'FullFactorialGenerator':
                         drive = driver.doe_generators.FullFactorialGenerator()
 
-                        if change["new"] == "Int":
+                        if data == "Int":
 
-                            _levelsfull = widgets.BoundedIntText(
-                                value=drive.__dict__["_levels"],
-                                description="Levels  :",
+                            _levelsfull = v.TextField(
+                                v_model=drive.__dict__["_levels"],
+                                label="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False,
+                                outlined=True,
+                                type='number',
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        elif change["new"] == "Dict":
+                        elif data == "Dict":
 
-                            _levelsfull = widgets.Text(
-                                value="[]", description="Levels  :", disabled=False
+                            _levelsfull = v.TextField(
+                                v_model="[]",
+                                label="Levels  :",
+                                outlined=True,
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        self.vboxdoedriver.children[1].children = [_levelsfull, procspermodel]
+                        self.vboxdoedriver.children[1].children = [_levelsfull, procspermodeldoe]
 
                     elif generator.v_model == 'PlackettBurmanGenerator':
                         drive = driver.doe_generators.PlackettBurmanGenerator()
 
-                        if change["new"] == "Int":
+                        if data == "Int":
 
-                            _levelsplackett = widgets.BoundedIntText(
-                                value=drive.__dict__["_levels"],
-                                description="Levels  :",
+                            _levelsplackett = v.TextField(
+                                v_model=drive.__dict__["_levels"],
+                                label="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False,
+                                outlined=True,
+                                type='number',
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        elif change["new"] == "Dict":
+                        elif data == "Dict":
 
-                            _levelsplackett = widgets.Text(
-                                value="[]", description="Levels  :", disabled=False
+                            _levelsplackett = v.TextField(
+                                v_model="[]",
+                                label="Levels  :",
+                                outlined=True,
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodel]
+                        self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodeldoe]
 
                     elif generator.v_model == 'BoxBehnkenGenerator':
                         drive = driver.doe_generators.BoxBehnkenGenerator()
 
-                        if change["new"] == "Int":
+                        if data == "Int":
 
-                            _levelsbox = widgets.BoundedIntText(
-                                value=drive.__dict__["_levels"],
-                                description="Levels  :",
+                            _levelsbox = v.TextField(
+                                v_model=drive.__dict__["_levels"],
+                                label="Levels  :",
                                 min=0,
                                 max=1000,
-                                disabled=False,
+                                outlined=True,
+                                type='number',
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        elif change["new"] == "Dict":
+                        elif data == "Dict":
 
-                            _levelsbox = widgets.Text(
-                                value="[]", description="Levels  :", disabled=False
+                            _levelsbox = v.TextField(
+                                v_model="[]",
+                                label="Levels  :",
+                                outlined=True,
+                                style_='width:500px;margin-top:27px'
                             )
 
-                        self.vboxdoedriver.children[1].children = [_levelsbox, procspermodel]
+                        self.vboxdoedriver.children[1].children = [_levelsbox, procspermodeldoe]
 
 
-                selectlevels = widgets.RadioButtons(
-                    options=["Int", "Dict"],
-                    value="Int",
-                    description="Levels type  :",
-                    disabled=False,
+                selectlevels = v.RadioGroup(
+                    children=[
+                        v.Radio(label='Int', value='Int'),
+                        v.Radio(label='Dict', value='Dict'),
+                    ],
+                    v_model="Int",
+                    label="Levels type  :",
                 )
 
-                selectlevels.observe(onchangelevels, names="value")
+                selectlevels.on_event('change', onchangelevels)
 
 
-                _levelspydoe = widgets.BoundedIntText(
-                    value=drive.__dict__["_levels"],
-                    description="Levels  :",
+                _levelspydoe = v.TextField(
+                    v_model=drive.__dict__["_levels"],
+                    label="Levels  :",
                     min=0,
                     max=1000,
-                    disabled=False,
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-top:27px'
                 )
 
-                _sizes = widgets.BoundedIntText(
-                    value=drive.__dict__["_sizes"],
+                _sizespy = v.TextField(
+                    v_model=drive.__dict__["_sizes"],
                     min=0,
                     max=100,
-                    description="Sizes  :",
-                    disabled=False,
+                    label="Sizes  :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px'
                 )
 
                 def pydoe_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, runparallel]
-                    self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizespy, runparalleldoe]
+                    self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodeldoe]
 
 
                 drive = driver.doe_generators.FullFactorialGenerator()
 
-
-                _levelsfull = widgets.BoundedIntText(
-                    value=drive.__dict__["_levels"],
-                    description="Levels  :",
+                _levelsfull = v.TextField(
+                    v_model=drive.__dict__["_levels"],
+                    label="Levels  :",
                     min=0,
                     max=1000,
-                    disabled=False,
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-top:27px'
                 )
 
-                _sizes = widgets.BoundedIntText(
-                    value=drive.__dict__["_sizes"],
+                _sizesfull = v.TextField(
+                    v_model=drive.__dict__["_sizes"],
                     min=0,
                     max=100,
-                    description="Sizes  :",
-                    disabled=False,
+                    label="Sizes  :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px'
                 )
 
                 def full_factorial_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, runparallel]
-                    self.vboxdoedriver.children[1].children = [_levelsfull, procspermodel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizesfull, runparalleldoe]
+                    self.vboxdoedriver.children[1].children = [_levelsfull, procspermodeldoe]
 
 
                 def generalized_subset_generator():
 
-                    self.vboxdoedriver.children[0].children = [procspermodel]
-                    self.vboxdoedriver.children[1].children = [runparallel]
+                    self.vboxdoedriver.children[0].children = [procspermodeldoe]
+                    self.vboxdoedriver.children[1].children = [runparalleldoe]
 
                 drive = driver.doe_generators.PlackettBurmanGenerator()
 
-
-                _levelsplackett = widgets.BoundedIntText(
-                    value=drive.__dict__["_levels"],
-                    description="Levels  :",
+                _levelsplackett = v.TextField(
+                    v_model=drive.__dict__["_levels"],
+                    label="Levels  :",
                     min=0,
                     max=1000,
-                    disabled=False,
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-top:27px'
                 )
 
-                _sizes = widgets.BoundedIntText(
-                    value=drive.__dict__["_sizes"],
+                _sizesplackett = v.TextField(
+                    v_model=drive.__dict__["_sizes"],
                     min=0,
                     max=100,
-                    description="Sizes  :",
-                    disabled=False,
+                    label="Sizes  :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px'
                 )
 
                 def plackett_burman_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, runparallel]
-                    self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizesplackett, runparalleldoe]
+                    self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodeldoe]
 
 
                 drive = driver.doe_generators.BoxBehnkenGenerator()
 
-                _levelsbox = widgets.BoundedIntText(
-                    value=drive.__dict__["_levels"],
-                    description="Levels  :",
+                _levelsbox = v.TextField(
+                    v_model=drive.__dict__["_levels"],
+                    label="Levels  :",
                     min=0,
                     max=1000,
-                    disabled=False,
+                    outlined=True,
+                    type='number',
+                    style_='width:500px;margin-top:27px;margin-left:50px'
                 )
 
-                _sizes = widgets.BoundedIntText(
-                    value=drive.__dict__["_sizes"],
+                _sizesbox = v.TextField(
+                    v_model=drive.__dict__["_sizes"],
                     min=0,
                     max=100,
-                    description="Sizes  :",
-                    disabled=False,
+                    label="Sizes  :",
+                    outlined=True,
+                    type='number',
+                    style_='width:500px'
                 )
 
-                _center = widgets.BoundedIntText(
-                    value=drive.__dict__["_center"],
+                _center = v.TextField(
+                    v_model=drive.__dict__["_center"],
                     min=0,
                     max=100,
-                    description="Center  :",
-                    disabled=False,
+                    label="Center  :",
+                    type='number',
+                    outlined=True,
+                    style_='width:500px;margin-top:5px;margin-left:50px'
                 )
 
                 def box_behnken_generator():
 
-                    self.vboxdoedriver.children[0].children = [selectlevels, _sizes, procspermodel]
-                    self.vboxdoedriver.children[1].children = [_levelsbox, _center, runparallel]
+                    self.vboxdoedriver.children[0].children = [selectlevels, _sizesbox, procspermodeldoe]
+                    self.vboxdoedriver.children[1].children = [_levelsbox, _center, runparalleldoe]
 
 
                 drive = driver.doe_generators.LatinHypercubeGenerator()
 
-                _samples = widgets.BoundedIntText(
-                    value=drive.__dict__["_samples"],
+                _samples = v.TextField(
+                    v_model=drive.__dict__["_samples"],
                     min=0,
                     max=100,
-                    description="Number of samples to generate :",
-                    style=style,
-                    disabled=False,
+                    label="Number of samples to generate :",
+                    type='number',
+                    outlined=True,
+                    style_="width:500px;margin-top:5px",
                 )
 
                 _criterion = v.Select(
                     items=["None", "center", "maximin", "centermaximin", "correlation"],
                     v_model=drive.__dict__["_criterion"],
                     label="Criterion :",
-                    filled=True,
-                    shaped=True,
-                    style_="width:500px;",
+                    outlined=True,
+                    style_="width:500px;margin-top:5px;margin-left:50px",
                 )
 
-                _iterations = widgets.BoundedIntText(
-                    value=drive.__dict__["_iterations"],
+                _iterations = v.TextField(
+                    v_model=drive.__dict__["_iterations"],
                     min=0,
                     max=100,
-                    description="Iterations  :",
-                    disabled=False,
+                    label="Iterations  :",
+                    outlined=True,
+                    type='number',
+                    style_="width:500px;margin-top:5px",
                 )
 
-                _seed = widgets.BoundedIntText(
-                    value=drive.__dict__["_seed"],
+                _seedlatin = v.TextField(
+                    v_model=drive.__dict__["_seed"],
                     min=0,
                     max=100,
-                    description="Seed :",
-                    disabled=False,
+                    label="Seed :",
+                    outlined=True,
+                    type='number',
+                    style_="width:500px;margin-top:5px;margin-left:50px",
                 )
 
                 def latin_hypercube_generator():
 
-                    self.vboxdoedriver.children[0].children = [_samples, _iterations, procspermodel]
-                    self.vboxdoedriver.children[1].children = [_criterion, _seed, runparallel]
+                    self.vboxdoedriver.children[0].children = [_samples, _iterations, procspermodeldoe]
+                    self.vboxdoedriver.children[1].children = [_criterion, _seedlatin, runparalleldoe]
 
 
                 generator.on_event("change", onchangegenerator)
@@ -712,119 +770,129 @@ class ChangeConfigFile:
 
             drive = driver.genetic_algorithm_driver.SimpleGADriver()
 
-            style = {"description_width": "initial"}
 
-            bits = widgets.Text(
-                value="{}",
-                description="Number of bits of resolution :",
-                style=style,
-                disabled=False,
+            bits = v.TextField(
+                v_model="{}",
+                label="Number of bits of resolution :",
+                outlined=True,
+                style_='width:500px;margin-top:5px',
             )
 
-            elitism = widgets.Checkbox(
-                value=drive.options.__dict__["_dict"]["elitism"].get("value"),
-                description="Elitism",
-                disabled=False,
+            elitism = v.Checkbox(
+                v_model=drive.options.__dict__["_dict"]["elitism"].get("value"),
+                label="Elitism",
+                style_='width:500px;margin-left:50px;margin-bottom:40px',
             )
 
-            gray = widgets.Checkbox(
-                value=drive.options.__dict__["_dict"]["gray"].get("value"),
-                description="Gray",
-                disabled=False,
+            gray = v.Checkbox(
+                v_model=drive.options.__dict__["_dict"]["gray"].get("value"),
+                label="Gray",
+                style_='width:500px;margin-bottom:20px',
             )
 
-            crossbits = widgets.Checkbox(
-                value=drive.options.__dict__["_dict"]["cross_bits"].get("value"),
-                description="Cross bits",
-                disabled=False,
+            crossbits = v.Checkbox(
+                v_model=drive.options.__dict__["_dict"]["cross_bits"].get("value"),
+                label="Cross bits",
+                style_='width:500px;margin-left:50px;margin-bottom:20px',
             )
 
-            maxgen = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["max_gen"].get("value"),
+            maxgengenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["max_gen"].get("value"),
                 min=0,
                 max=1000,
-                description="Number of generations :",
-                style=style,
-                disabled=False,
+                label="Number of generations :",
+                type='number',
+                outlined=True,
+                style_='width:500px',
             )
 
-            popsize = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["pop_size"].get("value"),
+            popsizegenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["pop_size"].get("value"),
                 min=0,
                 max=100,
-                description="Number of points in the GA :",
-                style=style,
-                disabled=False,
+                label="Number of points in the GA :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-left:50px',
             )
 
-            runparallel = widgets.Checkbox(
-                value=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
-                description="Run parallel",
-                disabled=False,
+            runparallelgenetic = v.Checkbox(
+                v_model=drive.options.__dict__["_dict"]["run_parallel"].get("value"),
+                label="Run parallel",
+                style_='width:500px;margin-bottom:20px',
             )
 
-            procspermodel = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
+            procspermodelgenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
                 min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                 max=100,
-                description="Processors per model :",
-                style=style,
-                disabled=False,
+                label="Processors per model :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-left:50px',
             )
 
-            penaltyparameter = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["penalty_parameter"].get("value"),
+            penaltyparametergenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["penalty_parameter"].get("value"),
                 min=drive.options.__dict__["_dict"]["penalty_parameter"].get("lower"),
                 max=100,
-                description="Penalty parameter :",
-                style=style,
-                disabled=False,
+                label="Penalty parameter :",
+                type='number',
+                outlined=True,
+                style_='width:500px',
             )
 
-            penaltyexponent = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["penalty_exponent"].get("value"),
+            penaltyexponentgenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["penalty_exponent"].get("value"),
                 min=0,
                 max=100,
-                description="Penalty exponent :",
-                style=style,
-                disabled=False,
+                label="Penalty exponent :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-left:50px',
             )
 
-            cross_prob = widgets.BoundedFloatText(
-                value=drive.options.__dict__["_dict"]["Pc"].get("value"),
+            cross_probgenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["Pc"].get("value"),
                 min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
                 max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
-                description="Crossover probability :",
-                style=style,
-                disabled=False,
+                label="Crossover probability :",
+                type='number',
+                outlined=True,
+                style_='width:500px',
             )
 
-            mut_rate = widgets.BoundedFloatText(
-                value=drive.options.__dict__["_dict"]["Pm"].get("value"),
+            mut_rate = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["Pm"].get("value"),
                 min=drive.options.__dict__["_dict"]["Pm"].get("lower"),
                 max=drive.options.__dict__["_dict"]["Pm"].get("upper"),
-                description="Mutation rate :",
-                style=style,
-                disabled=False,
+                label="Mutation rate :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-left:50px',
             )
 
-            multiobjweights = widgets.Text(
-                value="{}", description="Multi objective weights :", style=style, disabled=False
+            multiobjweightsgenetic = v.TextField(
+                v_model="{}",
+                label="Multi objective weights :",
+                outlined=True,
+                style_='width:500px',
             )
 
-            multiobjexponent = widgets.BoundedIntText(
-                value=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("value"),
+            multiobjexponentgenetic = v.TextField(
+                v_model=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("value"),
                 min=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("lower"),
                 max=100,
-                description="Multi-objective weighting exponent :",
-                style=style,
-                disabled=False,
+                label="Multi-objective weighting exponent :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-left:50px',
             )
 
-            computepareto = widgets.Checkbox(
-                value=drive.options.__dict__["_dict"]["compute_pareto"].get("value"),
-                description="Compute pareto",
-                disabled=False,
+            computepareto = v.Checkbox(
+                v_model=drive.options.__dict__["_dict"]["compute_pareto"].get("value"),
+                label="Compute pareto",
+                style_='width:500px',
             )
 
             def genetic_algorithm_driver_change():
@@ -832,16 +900,16 @@ class ChangeConfigFile:
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = [bits, gray, maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights, computepareto]
-                self.vbox.children[1].children = [elitism, crossbits, popsize, procspermodel, penaltyexponent, mut_rate, multiobjexponent]
+                self.vboxdriver.children[0].children = [bits, gray, maxgengenetic, runparallelgenetic, penaltyparametergenetic, cross_probgenetic, multiobjweightsgenetic, computepareto]
+                self.vboxdriver.children[1].children = [elitism, crossbits, popsizegenetic, procspermodelgenetic, penaltyexponentgenetic, mut_rate, multiobjexponentgenetic]
 
             def pyoptsparse_driver_change():
 
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = []
-                self.vbox.children[1].children = []
+                self.vboxdriver.children[0].children = []
+                self.vboxdriver.children[1].children = []
 
 
             def onchange(widget, event, data):
@@ -875,15 +943,10 @@ class ChangeConfigFile:
 
             display(select)
             scipy_optimizer_change()
-            display(self.vbox)
+            display(self.vboxdriver)
             display(self.generator)
             display(self.vboxdoedriver)
-            button()
-            display(self.button)
 
-        title()
-        inputoutput()
-        drivers()
 
     def display(self):
         """

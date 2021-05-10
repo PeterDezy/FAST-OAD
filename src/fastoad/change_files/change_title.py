@@ -1,5 +1,5 @@
 """
-Change the title of the configuration file
+Display the title of the configuration file
 """
 #  This file is part of FAST-OAD : A framework for rapid Overall Aircraft Design
 #  Copyright (C) 2021 ONERA & ISAE-SUPAERO
@@ -14,59 +14,49 @@ Change the title of the configuration file
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display, HTML
-import ipywidgets as widgets
 import ipyvuetify as v
 from ruamel.yaml import YAML
 
 
 class ChangeTitle:
     """
-    A class to change the title of the configuration file
+    A class to Display the title of the configuration file
     """
 
     def __init__(self):
+
         # The file name
         self.file_name = "./workdir/oad_process.yml"
 
         # Ruamel yaml
         self.yaml = YAML()
 
-        # Title name
-        self.title = None
-
-        # Widgets
-        self.t = None
-
     def read(self):
         """
-        Read the configuration file to display the title of the configuration file
+        Read the configuration file
         """
 
-        with open(self.file_name) as f:
-            content = self.yaml.load(f)
+        with open(self.file_name) as file:
+            content = self.yaml.load(file)
 
         self.title = content["title"]
 
-    def _initialize_widgets(self):
-        """
-        Initialize the widget to change the title of the configuration file
-        """
+    def init_widgets(self):
 
-        # self.t = widgets.Text(
-        #     value=self.title,
-        #     description='title:',
-        # )
+        self.title = v.TextField(
+            v_model=self.title,
+            label="Title :",
+            outlined=True,
+            clearable=True,
+            style_="margin-top:20px",
+        )
 
-        self.t = v.Textarea(v_model=self.title, label="title:", rows="1", auto_grow=True)
+        display(self.title)
 
-    def display(self, change=None) -> display:
-        """
-        Display the user interface
-        :return the display object
-        """
-        clear_output(wait=True)
+    def display(self):
+
         self.read()
-        self._initialize_widgets()
-        ui = widgets.VBox([self.t])
-        return ui
+        self.init_widgets()
+
+    def returntitle(self):
+        return self.title
