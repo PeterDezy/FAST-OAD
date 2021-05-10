@@ -19,6 +19,7 @@ import ipywidgets as widgets
 import ipyvuetify as v
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
+import openmdao.solvers.nonlinear as solversnonlinear
 
 
 class ChangeConfigFile:
@@ -36,7 +37,7 @@ class ChangeConfigFile:
         self.inputf = None
         self.outputf = None
         self.title = None
-        self.vbox = v.Html(
+        self.vboxdriver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
             children=[
@@ -49,6 +50,18 @@ class ChangeConfigFile:
             ],
         )
         self.vboxdoedriver = v.Html(
+            tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+        self.vboxnonlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
             children=[
@@ -232,20 +245,18 @@ class ChangeConfigFile:
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = [optimizers, maxiter]
-                self.vbox.children[1].children = [tol, disp]
+                self.vboxdriver.children[0].children = [optimizers, maxiter]
+                self.vboxdriver.children[1].children = [tol, disp]
 
 
             drive = driver.differential_evolution_driver.DifferentialEvolutionDriver()
-
-            style = {"description_width": "initial"}
 
             maxgen = widgets.BoundedIntText(
                 value=drive.options.__dict__["_dict"]["max_gen"].get("value"),
                 min=0,
                 max=1000,
                 description="Max generations :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -254,7 +265,7 @@ class ChangeConfigFile:
                 min=0,
                 max=100,
                 description="Number of points in the GA :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -269,7 +280,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                 max=100,
                 description="Processors per model :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -278,7 +289,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["penalty_parameter"].get("lower"),
                 max=100,
                 description="Penalty parameter :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -287,7 +298,7 @@ class ChangeConfigFile:
                 min=0,
                 max=100,
                 description="Penalty exponent :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -296,7 +307,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
                 max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
                 description="Crossover probability :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -305,12 +316,12 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["F"].get("lower"),
                 max=drive.options.__dict__["_dict"]["F"].get("upper"),
                 description="Differential rate :",
-                style=style,
+                
                 disabled=False,
             )
 
             multiobjweights = widgets.Text(
-                value="{}", description="Multi objective weights :", style=style, disabled=False
+                value="{}", description="Multi objective weights :",  disabled=False
             )
 
             multiobjexponent = widgets.BoundedIntText(
@@ -318,7 +329,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("lower"),
                 max=100,
                 description="Multi-objective weighting exponent :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -327,18 +338,16 @@ class ChangeConfigFile:
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = [maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights]
-                self.vbox.children[1].children = [popsize, procspermodel, penaltyexponent, diff_rate, multiobjexponent]
+                self.vboxdriver.children[0].children = [maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights]
+                self.vboxdriver.children[1].children = [popsize, procspermodel, penaltyexponent, diff_rate, multiobjexponent]
 
             def doe_driver_change():
 
-                self.vbox.children[0].children = []
-                self.vbox.children[1].children = []
+                self.vboxdriver.children[0].children = []
+                self.vboxdriver.children[1].children = []
                 self.button.children[0].children = []
 
                 drive = driver.doe_driver.DOEDriver()
-
-                style = {"description_width": "initial"}
 
                 def onchangegenerator(widget, event, data):
 
@@ -388,7 +397,7 @@ class ChangeConfigFile:
                     min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                     max=100,
                     description="Processors per model :",
-                    style=style,
+                    
                     disabled=False,
                 )
 
@@ -410,7 +419,7 @@ class ChangeConfigFile:
                 _data = widgets.Text(
                     value="[]",
                     description="List of collections of name :",
-                    style=style,
+                    
                     disabled=False,
                 )
 
@@ -436,7 +445,7 @@ class ChangeConfigFile:
                     min=0,
                     max=100,
                     description="Number of samples :",
-                    style=style,
+                    
                     disabled=False,
                 )
 
@@ -669,7 +678,7 @@ class ChangeConfigFile:
                     min=0,
                     max=100,
                     description="Number of samples to generate :",
-                    style=style,
+                    
                     disabled=False,
                 )
 
@@ -712,12 +721,10 @@ class ChangeConfigFile:
 
             drive = driver.genetic_algorithm_driver.SimpleGADriver()
 
-            style = {"description_width": "initial"}
-
             bits = widgets.Text(
                 value="{}",
                 description="Number of bits of resolution :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -744,7 +751,7 @@ class ChangeConfigFile:
                 min=0,
                 max=1000,
                 description="Number of generations :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -753,7 +760,7 @@ class ChangeConfigFile:
                 min=0,
                 max=100,
                 description="Number of points in the GA :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -768,7 +775,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
                 max=100,
                 description="Processors per model :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -777,7 +784,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["penalty_parameter"].get("lower"),
                 max=100,
                 description="Penalty parameter :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -786,7 +793,7 @@ class ChangeConfigFile:
                 min=0,
                 max=100,
                 description="Penalty exponent :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -795,7 +802,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["Pc"].get("lower"),
                 max=drive.options.__dict__["_dict"]["Pc"].get("upper"),
                 description="Crossover probability :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -804,12 +811,12 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["Pm"].get("lower"),
                 max=drive.options.__dict__["_dict"]["Pm"].get("upper"),
                 description="Mutation rate :",
-                style=style,
+                
                 disabled=False,
             )
 
             multiobjweights = widgets.Text(
-                value="{}", description="Multi objective weights :", style=style, disabled=False
+                value="{}", description="Multi objective weights :",  disabled=False
             )
 
             multiobjexponent = widgets.BoundedIntText(
@@ -817,7 +824,7 @@ class ChangeConfigFile:
                 min=drive.options.__dict__["_dict"]["multi_obj_exponent"].get("lower"),
                 max=100,
                 description="Multi-objective weighting exponent :",
-                style=style,
+                
                 disabled=False,
             )
 
@@ -832,16 +839,16 @@ class ChangeConfigFile:
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = [bits, gray, maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights, computepareto]
-                self.vbox.children[1].children = [elitism, crossbits, popsize, procspermodel, penaltyexponent, mut_rate, multiobjexponent]
+                self.vboxdriver.children[0].children = [bits, gray, maxgen, runparallel, penaltyparameter, cross_prob, multiobjweights, computepareto]
+                self.vboxdriver.children[1].children = [elitism, crossbits, popsize, procspermodel, penaltyexponent, mut_rate, multiobjexponent]
 
             def pyoptsparse_driver_change():
 
                 self.generator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
-                self.vbox.children[0].children = []
-                self.vbox.children[1].children = []
+                self.vboxdriver.children[0].children = []
+                self.vboxdriver.children[1].children = []
 
 
             def onchange(widget, event, data):
@@ -875,15 +882,324 @@ class ChangeConfigFile:
 
             display(select)
             scipy_optimizer_change()
-            display(self.vbox)
+            display(self.vboxdriver)
             display(self.generator)
             display(self.vboxdoedriver)
+
+
+        def nonlinearsolvers():
+
+            solver = solversnonlinear.broyden.BroydenSolver()
+
+            maxiter = widgets.BoundedIntText(
+                value=solver.options.__dict__["_dict"]["maxiter"].get("value"),
+                min=0,
+                max=10000,
+                description="Maxiter :",
+                disabled=False,
+            )
+
+            atol = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["atol"].get("value"),
+                min=0,
+                max=1,
+                description="Absolute Error Tolerance :",
+
+                disabled=False,
+            )
+
+            rtol = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["rtol"].get("value"),
+                min=0,
+                max=1,
+                description="Relative Error Tolerance :",
+
+                disabled=False,
+            )
+
+            iprint = widgets.BoundedIntText(
+                value=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                description="Print the output :",
+
+                disabled=False,
+            )
+
+            err_on_non_converge = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
+                description="Err on non converge",
+                disabled=False,
+            )
+
+            debug_print = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["debug_print"].get("value"),
+                description="Debug Print",
+                disabled=False,
+            )
+
+            stall_limit = widgets.BoundedIntText(
+                value=solver.options.__dict__["_dict"]["stall_limit"].get("value"),
+                min=0,
+                max=100,
+                description="Stall Limit :",
+                disabled=False,
+            )
+
+            stall_tol = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["stall_tol"].get("value"),
+                min=0,
+                max=1,
+                description="Stall tol :",
+                disabled=False,
+            )
+
+            alpha = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["alpha"].get("value"),
+                min=0,
+                max=10,
+                description="Alpha :",
+                disabled=False,
+            )
+
+            compute_jacobian = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["compute_jacobian"].get("value"),
+                description="Compute Jacobian",
+                disabled=False,
+            )
+
+            converge_limit = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["converge_limit"].get("value"),
+                min=0,
+                max=100,
+                description="Compute limit :",
+
+                disabled=False,
+            )
+
+            cs_reconverge = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["cs_reconverge"].get("value"),
+                description="Cs reconverge",
+                disabled=False,
+            )
+
+            diverge_limit = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["diverge_limit"].get("value"),
+                min=0,
+                max=100,
+                description="Diverge Limit :",
+
+                disabled=False,
+            )
+
+            max_converge_failures = widgets.BoundedIntText(
+                value=solver.options.__dict__["_dict"]["max_converge_failures"].get("value"),
+                min=0,
+                max=100,
+                description="Max Converge Failures :",
+
+                disabled=False,
+            )
+
+            max_jacobians = widgets.BoundedIntText(
+                value=solver.options.__dict__["_dict"]["max_jacobians"].get("value"),
+                min=0,
+                max=100,
+                description="Max Jacobians :",
+
+                disabled=False,
+            )
+
+            state_vars = widgets.Text(
+                value="[]",
+                description="State Vars :",
+                disabled=False
+            )
+
+            update_broyden = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["update_broyden"].get("value"),
+                description="Update Broyden",
+                disabled=False,
+            )
+
+            reraise_child_analysiserror = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
+                description="Reraise child Analysiserror",
+                disabled=False,
+            )
+
+            def broyden_change():
+
+                self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit, alpha, converge_limit]
+                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, compute_jacobian]
+
+
+            solver = solversnonlinear.newton.NewtonSolver()
+
+
+            solve_subsystems = widgets.Checkbox(
+                value=False, description="Solve Subsystems", disabled=False,
+            )
+
+            max_sub_solves = widgets.BoundedIntText(
+                value=solver.options.__dict__["_dict"]["max_sub_solves"].get("value"),
+                min=0,
+                max=100,
+                description="Max Sub Solves :",
+
+                disabled=False,
+            )
+
+            cs_reconverge = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["cs_reconverge"].get("value"),
+                description="Cs reconverge",
+                disabled=False,
+            )
+
+            reraise_child_analysiserror = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
+                description="Reraise child Analysiserror",
+                disabled=False,
+            )
+
+            vb = widgets.VBox(children=[])
+
+            def change_use_solve_subsystems(b):
+
+                if b["new"]:
+                    vb.children = [max_sub_solves]
+                else:
+                    vb.children = []
+
+            solve_subsystems.observe(change_use_solve_subsystems, names="value")
+
+            def newton_change():
+
+                self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit, solve_subsystems, cs_reconverge]
+                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, vb, reraise_child_analysiserror]
+
+
+            solver = solversnonlinear.nonlinear_block_gs.NonlinearBlockGS()
+
+
+            use_aitken = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
+                description="Use Aitken relaxation",
+                disabled=False,
+            )
+
+            aitken_min_factor = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
+                min=0,
+                max=100,
+                description="Aitken min factor :",
+
+                disabled=False,
+            )
+
+            aitken_max_factor = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
+                min=0,
+                max=100,
+                description="Aitken max factor :",
+
+                disabled=False,
+            )
+
+            aitken_initial_factor = widgets.BoundedFloatText(
+                value=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
+                min=0,
+                max=1,
+                description="Aitken initial factor :",
+
+                disabled=False,
+            )
+
+            cs_reconverge = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["cs_reconverge"].get("value"),
+                description="Cs reconverge",
+                disabled=False,
+            )
+
+            use_apply_nonlinear = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["use_apply_nonlinear"].get("value"),
+                description="Use apply nonlinear",
+                disabled=False,
+            )
+
+            reraise_child_analysiserror = widgets.Checkbox(
+                value=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
+                description="Reraise child Analysiserror",
+                disabled=False,
+            )
+
+            vb = widgets.VBox(children=[])
+
+            def change_use_aitken(b):
+
+                if b["new"]:
+                    vb.children = [aitken_min_factor, aitken_max_factor, aitken_initial_factor]
+                else:
+                    vb.children = []
+
+            use_aitken.observe(change_use_aitken, names="value")
+
+            def nonlinear_block_gs_change():
+
+                self.vboxnonlinearsolver.children[0].children = [maxiter,rtol,err_on_non_converge,stall_limit,use_aitken,cs_reconverge,reraise_child_analysiserror]
+                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, vb, use_apply_nonlinear]
+
+
+            solver = solversnonlinear.nonlinear_block_jac.NonlinearBlockJac()
+
+
+            def nonlinear_block_jac_change():
+
+                self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit]
+                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol]
+
+
+            solver = solversnonlinear.nonlinear_runonce.NonlinearRunOnce()
+
+
+            def nonlinear_runonce_change():
+
+                self.vboxnonlinearsolver.children[0].children = [iprint]
+                self.vboxnonlinearsolver.children[1].children = []
+
+
+            def onchange(change):
+
+                if change["new"] == "broyden":
+                    broyden_change()
+                elif change["new"] == "newton":
+                    newton_change()
+                elif change["new"] == "nonlinear_block_gs":
+                    nonlinear_block_gs_change()
+                elif change["new"] == "nonlinear_block_jac":
+                    nonlinear_block_jac_change()
+                elif change["new"] == "nonlinear_runonce":
+                    nonlinear_runonce_change()
+
+            select = widgets.Dropdown(
+                options=["broyden", "newton", "nonlinear_block_gs", "nonlinear_block_jac", "nonlinear_runonce"],
+                value="nonlinear_block_gs",
+                description="Nonlinear solver :",
+
+            )
+
+            select.observe(onchange, names="value")
+
+            display(select)
+            nonlinear_block_gs_change()
+            display(self.vboxnonlinearsolver)
             button()
             display(self.button)
 
         title()
         inputoutput()
         drivers()
+        nonlinearsolvers()
 
     def display(self):
         """
