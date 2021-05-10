@@ -25,27 +25,14 @@ html = HTML(css)
 display(html)
 
 
-def ChangeLinearSolver():
+def linearsolvers():
 
     """
     A class to change the linear solver in the configuration file
     """
 
-    def __init__(self):
-        # The file name
-        self.file_name = "./workdir/oad_process.yml"
 
-        # Ruamel yaml
-        self.yaml = YAML()
-
-        # Css
-        self.css = (
-            "<style> .left {margin-left: 9%;} .right {margin-right: 10%;} .top {margin-top: 20px;} "
-        )
-        self.css += ".green {background-color: lightgreen;} </style>"
-        self.html = HTML(self.css)
-
-    def direct_change(self):
+    def direct_change():
 
         solver = solvers.direct.DirectSolver()
 
@@ -74,7 +61,7 @@ def ChangeLinearSolver():
             except:
                 raise ValueError("Error while modifying.\n")
 
-        self.iprint = widgets.BoundedIntText(
+        iprint = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["iprint"].get("value"),
             min=0,
             max=1,
@@ -83,35 +70,35 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.assemble_jac = widgets.Checkbox(
+        assemble_jac = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
             description="Activates use of assembled jacobian by this solver",
             style=style,
             disabled=False,
         )
 
-        self.err_on_singular = widgets.Checkbox(
+        err_on_singular = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["err_on_singular"].get("value"),
             description="Raise an error if LU decomposition is singular",
             style=style,
             disabled=False,
         )
 
-        left_box = widgets.VBox([self.iprint])
-        right_box = widgets.VBox([self.assemble_jac, self.err_on_singular])
-        self.vbox = widgets.HBox([left_box, right_box])
+        left_box = widgets.VBox([iprint])
+        right_box = widgets.VBox([assemble_jac, err_on_singular])
+        vbox = widgets.HBox([left_box, right_box])
 
         # Left Widgets
 
         # Right Widgets
-        self.err_on_singular.add_class("top")
+        err_on_singular.add_class("top")
 
         # VBox & Button Widgets
-        self.vbox.add_class("top")
+        vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
 
-        display(self.vbox)
+        display(vbox)
 
     def linear_block_gs_change():
 
@@ -160,7 +147,7 @@ def ChangeLinearSolver():
             except:
                 raise ValueError("Error while modifying.\n")
 
-        self.maxiter = widgets.BoundedIntText(
+        maxiter = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["maxiter"].get("value"),
             min=1,
             max=10000,
@@ -169,7 +156,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.atol = widgets.BoundedFloatText(
+        atol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["atol"].get("value"),
             min=1e-20,
             max=1,
@@ -178,7 +165,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.rtol = widgets.BoundedFloatText(
+        rtol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["rtol"].get("value"),
             min=10e-12,
             max=1,
@@ -187,7 +174,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.iprint = widgets.BoundedIntText(
+        iprint = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["iprint"].get("value"),
             min=0,
             max=1,
@@ -196,27 +183,27 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.err_on_non_converge = widgets.Checkbox(
+        err_on_non_converge = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
             description="When True, AnalysisError will be raised if we don't converge",
             style=style,
             disabled=False,
         )
 
-        self.assemble_jac = widgets.Checkbox(
+        assemble_jac = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
             description="Activates use of assembled jacobian by this solver",
             style=style,
             disabled=False,
         )
 
-        self.use_aitken = widgets.Checkbox(
+        use_aitken = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
             description="Use Aitken relaxation",
             disabled=False,
         )
 
-        self.aitken_min_factor = widgets.BoundedFloatText(
+        aitken_min_factor = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
             min=0,
             max=100,
@@ -225,7 +212,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.aitken_max_factor = widgets.BoundedFloatText(
+        aitken_max_factor = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
             min=0,
             max=100,
@@ -234,7 +221,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.aitken_initial_factor = widgets.BoundedFloatText(
+        aitken_initial_factor = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
             min=0,
             max=100,
@@ -243,15 +230,15 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.vb = widgets.VBox(children=[])
+        vb = widgets.VBox(children=[])
 
         def change_use_aitken(b):
 
             if b["new"]:
                 vb.children = [
-                    self.aitken_min_factor,
-                    self.aitken_max_factor,
-                    self.aitken_initial_factor,
+                    aitken_min_factor,
+                    aitken_max_factor,
+                    aitken_initial_factor,
                 ]
             else:
                 vb.children = []
@@ -259,26 +246,26 @@ def ChangeLinearSolver():
         use_aitken.observe(change_use_aitken, names="value")
 
         left_box = widgets.VBox(
-            [self.maxiter, self.rtol, self.err_on_non_converge, self.assemble_jac]
+            [maxiter, rtol, err_on_non_converge, assemble_jac]
         )
-        right_box = widgets.VBox([self.atol, self.iprint, self.use_aitken, self.vb])
-        self.vbox = widgets.HBox([left_box, right_box])
+        right_box = widgets.VBox([atol, iprint, use_aitken, vb])
+        vbox = widgets.HBox([left_box, right_box])
 
         # Left Widgets
-        self.rtol.add_class("top")
-        self.err_on_non_converge.add_class("top")
-        self.assemble_jac.add_class("top")
+        rtol.add_class("top")
+        err_on_non_converge.add_class("top")
+        assemble_jac.add_class("top")
 
         # Right Widgets
-        self.iprint.add_class("top")
-        self.use_aitken.add_class("top")
-        self.vb.add_class("top")
+        iprint.add_class("top")
+        use_aitken.add_class("top")
+        vb.add_class("top")
 
         # VBox & Button Widgets
-        self.vbox.add_class("top")
+        vbox.add_class("top")
         left_box.add_class("left")
 
-        display(self.vbox)
+        display(vbox)
 
     def linear_block_jac_change():
 
@@ -315,7 +302,7 @@ def ChangeLinearSolver():
             except:
                 raise ValueError("Error while modifying.\n")
 
-        self.maxiter = widgets.BoundedIntText(
+        maxiter = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["maxiter"].get("value"),
             min=1,
             max=10000,
@@ -324,7 +311,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.atol = widgets.BoundedFloatText(
+        atol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["atol"].get("value"),
             min=1e-20,
             max=1,
@@ -333,7 +320,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.rtol = widgets.BoundedFloatText(
+        rtol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["rtol"].get("value"),
             min=10e-12,
             max=1,
@@ -342,7 +329,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.iprint = widgets.BoundedIntText(
+        iprint = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["iprint"].get("value"),
             min=0,
             max=1,
@@ -351,38 +338,38 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.err_on_non_converge = widgets.Checkbox(
+        err_on_non_converge = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
             description="When True, AnalysisError will be raised if we don't converge",
             style=style,
             disabled=False,
         )
 
-        self.assemble_jac = widgets.Checkbox(
+        assemble_jac = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
             description="Activates use of assembled jacobian by this solver",
             style=style,
             disabled=False,
         )
 
-        left_box = widgets.VBox([self.maxiter, self.rtol, self.err_on_non_converge])
-        right_box = widgets.VBox([self.atol, self.iprint, self.assemble_jac])
-        self.vbox = widgets.HBox([left_box, right_box])
+        left_box = widgets.VBox([maxiter, rtol, err_on_non_converge])
+        right_box = widgets.VBox([atol, iprint, assemble_jac])
+        vbox = widgets.HBox([left_box, right_box])
 
         # Left Widgets
-        self.rtol.add_class("top")
-        self.err_on_non_converge.add_class("top")
+        rtol.add_class("top")
+        err_on_non_converge.add_class("top")
 
         # Right Widgets
-        self.iprint.add_class("top")
-        self.assemble_jac.add_class("top")
+        iprint.add_class("top")
+        assemble_jac.add_class("top")
 
         # VBox & Button Widgets
-        self.vbox.add_class("top")
+        vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
 
-        display(self.vbox)
+        display(vbox)
 
     def linear_runonce_change():
 
@@ -423,7 +410,7 @@ def ChangeLinearSolver():
             except:
                 raise ValueError("Error while modifying.\n")
 
-        self.iprint = widgets.BoundedIntText(
+        iprint = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["iprint"].get("value"),
             min=0,
             max=1,
@@ -432,20 +419,20 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.assemble_jac = widgets.Checkbox(
+        assemble_jac = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
             description="Activates use of assembled jacobian by this solver",
             style=style,
             disabled=False,
         )
 
-        self.use_aitken = widgets.Checkbox(
+        use_aitken = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
             description="Use Aitken relaxation",
             disabled=False,
         )
 
-        self.aitken_min_factor = widgets.BoundedFloatText(
+        aitken_min_factor = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
             min=0,
             max=100,
@@ -454,7 +441,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.aitken_max_factor = widgets.BoundedFloatText(
+        aitken_max_factor = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
             min=0,
             max=100,
@@ -463,7 +450,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.aitken_initial_factor = widgets.BoundedFloatText(
+        aitken_initial_factor = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
             min=0,
             max=100,
@@ -472,37 +459,37 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.vb = widgets.VBox(children=[])
+        vb = widgets.VBox(children=[])
 
         def change_use_aitken(b):
 
             if b["new"]:
                 vb.children = [
-                    self.aitken_min_factor,
-                    self.aitken_max_factor,
-                    self.aitken_initial_factor,
+                    aitken_min_factor,
+                    aitken_max_factor,
+                    aitken_initial_factor,
                 ]
             else:
                 vb.children = []
 
         use_aitken.observe(change_use_aitken, names="value")
 
-        left_box = widgets.VBox([self.iprint, self.assemble_jac])
-        right_box = widgets.VBox([self.use_aitken, self.vb])
-        self.vbox = widgets.HBox([left_box, right_box])
+        left_box = widgets.VBox([iprint, assemble_jac])
+        right_box = widgets.VBox([use_aitken, vb])
+        vbox = widgets.HBox([left_box, right_box])
 
         # Left Widgets
-        self.assemble_jac.add_class("top")
+        assemble_jac.add_class("top")
 
         # Right Widgets
-        self.vb.add_class("top")
+        vb.add_class("top")
 
         # VBox & Button Widgets
-        self.vbox.add_class("top")
+        vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
 
-        display(self.vbox)
+        display(vbox)
 
     def petsc_ksp_change():  # basique sans option celui là
         def save(b):
@@ -557,7 +544,7 @@ def ChangeLinearSolver():
             except:
                 raise ValueError("Error while modifying.\n")
 
-        self.maxiter = widgets.BoundedIntText(
+        maxiter = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["maxiter"].get("value"),
             min=1,
             max=10000,
@@ -566,7 +553,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.atol = widgets.BoundedFloatText(
+        atol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["atol"].get("value"),
             min=1e-20,
             max=1,
@@ -575,7 +562,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.rtol = widgets.BoundedFloatText(
+        rtol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["rtol"].get("value"),
             min=10e-12,
             max=1,
@@ -584,7 +571,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.iprint = widgets.BoundedIntText(
+        iprint = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["iprint"].get("value"),
             min=0,
             max=1,
@@ -593,21 +580,21 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.err_on_non_converge = widgets.Checkbox(
+        err_on_non_converge = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
             description="When True, AnalysisError will be raised if we don't converge",
             style=style,
             disabled=False,
         )
 
-        self.assemble_jac = widgets.Checkbox(
+        assemble_jac = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
             description="Activates use of assembled jacobian by this solver",
             style=style,
             disabled=False,
         )
 
-        self.restart = widgets.BoundedFloatText(
+        restart = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["restart"].get("value"),
             min=0,
             max=1000,
@@ -617,26 +604,26 @@ def ChangeLinearSolver():
         )
 
         left_box = widgets.VBox(
-            [self.maxiter, self.rtol, self.err_on_non_converge, self.assemble_jac]
+            [maxiter, rtol, err_on_non_converge, assemble_jac]
         )
-        right_box = widgets.VBox([self.atol, self.iprint, self.restart])
-        self.vbox = widgets.HBox([left_box, right_box])
+        right_box = widgets.VBox([atol, iprint, restart])
+        vbox = widgets.HBox([left_box, right_box])
 
         # Left Widgets
-        self.rtol.add_class("top")
-        self.err_on_non_converge.add_class("top")
-        self.assemble_jac.add_class("top")
+        rtol.add_class("top")
+        err_on_non_converge.add_class("top")
+        assemble_jac.add_class("top")
 
         # Right Widgets
-        self.iprint.add_class("top")
-        self.restart.add_class("top")
+        iprint.add_class("top")
+        restart.add_class("top")
 
         # VBox & Button Widgets
-        self.vbox.add_class("top")
+        vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
 
-        display(self.vbox)
+        display(vbox)
 
     def user_defined_change():
 
@@ -673,7 +660,7 @@ def ChangeLinearSolver():
             except:
                 raise ValueError("Error while modifying.\n")
 
-        self.maxiter = widgets.BoundedIntText(
+        maxiter = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["maxiter"].get("value"),
             min=1,
             max=10000,
@@ -682,7 +669,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.atol = widgets.BoundedFloatText(
+        atol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["atol"].get("value"),
             min=1e-20,
             max=1,
@@ -691,7 +678,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.rtol = widgets.BoundedFloatText(
+        rtol = widgets.BoundedFloatText(
             value=solver.options.__dict__["_dict"]["rtol"].get("value"),
             min=10e-12,
             max=1,
@@ -700,7 +687,7 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.iprint = widgets.BoundedIntText(
+        iprint = widgets.BoundedIntText(
             value=solver.options.__dict__["_dict"]["iprint"].get("value"),
             min=0,
             max=1,
@@ -709,14 +696,14 @@ def ChangeLinearSolver():
             disabled=False,
         )
 
-        self.err_on_non_converge = widgets.Checkbox(
+        err_on_non_converge = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
             description="When True, AnalysisError will be raised if we don't converge",
             style=style,
             disabled=False,
         )
 
-        self.assemble_jac = widgets.Checkbox(
+        assemble_jac = widgets.Checkbox(
             value=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
             description="Activates use of assembled jacobian by this solver",
             style=style,
@@ -724,25 +711,25 @@ def ChangeLinearSolver():
         )
 
         left_box = widgets.VBox(
-            [self.maxiter, self.rtol, self.err_on_non_converge, self.assemble_jac]
+            [maxiter, rtol, err_on_non_converge, assemble_jac]
         )
-        right_box = widgets.VBox([self.atol, self.iprint])
-        self.vbox = widgets.HBox([left_box, right_box])
+        right_box = widgets.VBox([atol, iprint])
+        vbox = widgets.HBox([left_box, right_box])
 
         # Left Widgets
-        self.rtol.add_class("top")
-        self.err_on_non_converge.add_class("top")
-        self.assemble_jac.add_class("top")
+        rtol.add_class("top")
+        err_on_non_converge.add_class("top")
+        assemble_jac.add_class("top")
 
         # Right Widgets
-        self.iprint.add_class("top")
+        iprint.add_class("top")
 
         # VBox & Button Widgets
-        self.vbox.add_class("top")
+        vbox.add_class("top")
         left_box.add_class("left")
         left_box.add_class("right")
 
-        display(self.vbox)
+        display(vbox)
 
     def onchange(change):
         clear_output(wait=True)
@@ -778,7 +765,7 @@ def ChangeLinearSolver():
 
     style = {"description_width": "initial"}
 
-    self.select = widgets.Dropdown(
+    select = widgets.Dropdown(
         options=[
             "direct",
             "linear_block_gs",
@@ -793,6 +780,6 @@ def ChangeLinearSolver():
         description="Linear solvers :",
     )
 
-    self.select.observe(onchange, names="value")
-    display(self.select)
+    select.observe(onchange, names="value")
+    display(select)
     direct_change()
