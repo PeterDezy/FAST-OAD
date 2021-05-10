@@ -16,6 +16,7 @@ Change the configuration file
 
 from IPython.display import clear_output, display
 import ipyvuetify as v
+import ipywidgets as widgets
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
 import openmdao.solvers.nonlinear as solversnonlinear
@@ -86,6 +87,30 @@ class ChangeConfigFile:
             ],
         )
         self.vboxsubsolves = v.Html(
+            tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+        self.vboxlinearsolver = v.Html(
+            tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+        self.vboxaitkenlinear = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
             children=[
@@ -1142,6 +1167,9 @@ class ChangeConfigFile:
 
             def broyden_change():
 
+                self.vboxsubsolves.children[0].children = []
+                self.vboxaitken.children[0].children = []
+                self.vboxaitken.children[1].children = []
                 self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit, alpha, converge_limit,diverge_limit,max_jacobians,update_broyden]
                 self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, compute_jacobian,cs_reconvergebroyden,max_converge_failures,state_vars,reraise_child_analysiserrorbroyden]
 
@@ -1161,7 +1189,7 @@ class ChangeConfigFile:
                 label="Max Sub Solves :",
                 type='number',
                 outlined=True,
-                style_='width:500px;',
+                style_='width:500px;margin-top:5px;',
             )
 
             cs_reconvergenewton = v.Checkbox(
@@ -1186,6 +1214,9 @@ class ChangeConfigFile:
 
             def newton_change():
 
+                solve_subsystems.v_model = False
+                self.vboxaitken.children[0].children = []
+                self.vboxaitken.children[1].children = []
                 self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit, solve_subsystems, cs_reconvergenewton]
                 self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, reraise_child_analysiserrornewton]
 
@@ -1259,12 +1290,17 @@ class ChangeConfigFile:
 
             def nonlinear_block_gs_change():
 
+                self.vboxsubsolves.children[0].children = []
+                use_aitken.v_model = False
                 self.vboxnonlinearsolver.children[0].children = [maxiter,rtol,err_on_non_converge,stall_limit,use_aitken,reraise_child_analysiserrorgs]
                 self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, cs_reconvergegs, use_apply_nonlinear]
 
 
             def nonlinear_block_jac_change():
 
+                self.vboxsubsolves.children[0].children = []
+                self.vboxaitken.children[0].children = []
+                self.vboxaitken.children[1].children = []
                 self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit]
                 self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol]
 
@@ -1280,6 +1316,7 @@ class ChangeConfigFile:
 
             def nonlinear_runonce_change():
 
+                self.vboxsubsolves.children[0].children = []
                 self.vboxnonlinearsolver.children[0].children = [iprintrunonce]
                 self.vboxnonlinearsolver.children[1].children = []
 
@@ -1302,7 +1339,7 @@ class ChangeConfigFile:
                 v_model="nonlinear_block_gs",
                 label="Nonlinear solver :",
                 outlined=True,
-                style_="margin-top:5px",
+                style_="margin-top:5px;",
             )
 
             select.on_event('change', onchange)
@@ -1312,13 +1349,471 @@ class ChangeConfigFile:
             display(self.vboxnonlinearsolver)
             display(self.vboxaitken)
             display(self.vboxsubsolves)
+
+
+        def linearsolvers():
+            """
+            A class to change the linear solver in the configuration file
+            """
+
+            solver = solvers.direct.DirectSolver()
+
+
+            iprint = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                label="Print the output :",
+                type='number',
+                outlined=True,
+                style_='width:500px;margin-top:5px;',
+            )
+
+            assemble_jac = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
+                label="Activates use of assembled jacobian by this solver",
+            )
+
+            err_on_singular = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["err_on_singular"].get("value"),
+                label="Raise an error if LU decomposition is singular",
+            )
+
+            def direct_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = [iprint]
+                self.vboxlinearsolver.children[1].children = [assemble_jac, err_on_singular]
+
+
+            solver = solvers.linear_block_gs.LinearBlockGS()
+
+
+            maxiter = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
+                min=1,
+                max=10000,
+                label="Maxiter :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            atol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
+                min=1e-20,
+                max=1,
+                label="Absolute Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            rtol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
+                min=10e-12,
+                max=1,
+                label="Relative Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            iprint = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                label="Print the output :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            err_on_non_converge = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
+                label="When True, AnalysisError will be raised if we don't converge",
+            )
+
+            assemble_jac = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
+                label="Activates use of assembled jacobian by this solver",
+            )
+
+            use_aitken = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
+                label="Use Aitken relaxation",
+            )
+
+            aitken_min_factor = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
+                min=0,
+                max=100,
+                label="Aitken min factor :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            aitken_max_factor = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
+                min=0,
+                max=100,
+                label="Aitken max factor :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            aitken_initial_factor = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
+                min=0,
+                max=100,
+                label="Aitken initial factor :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            def change_use_aitken(widget, event, data):
+
+                if data:
+                    self.vboxaitkenlinear.children[0].children = [aitken_min_factor, aitken_initial_factor]
+                    self.vboxaitkenlinear.children[1].children = [aitken_max_factor]
+                else:
+                    self.vboxaitkenlinear.children[0].children = []
+                    self.vboxaitkenlinear.children[1].children = []
+
+            use_aitken.on_event('change', change_use_aitken)
+
+            def linear_block_gs_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, assemble_jac]
+                self.vboxlinearsolver.children[1].children = [atol, iprint, use_aitken]
+
+
+            solver = solvers.linear_block_jac.LinearBlockJac()
+
+
+            maxiter = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
+                min=1,
+                max=10000,
+                label="Maxiter :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            atol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
+                min=1e-20,
+                max=1,
+                label="Absolute Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            rtol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
+                min=10e-12,
+                max=1,
+                label="Relative Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            iprint = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                label="Print the output :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            err_on_non_converge = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
+                label="When True, AnalysisError will be raised if we don't converge",
+            )
+
+            assemble_jac = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
+                label="Activates use of assembled jacobian by this solver",
+            )
+
+            def linear_block_jac_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge]
+                self.vboxlinearsolver.children[1].children = [atol, iprint, assemble_jac]
+
+
+            solver = solvers.linear_runonce.LinearRunOnce()
+
+
+            iprint = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                label="Print the output :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            assemble_jac = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
+                label="Activates use of assembled jacobian by this solver",
+            )
+
+            use_aitken = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
+                label="Use Aitken relaxation", 
+            )
+
+            aitken_min_factor = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
+                min=0,
+                max=100,
+                label="Aitken min factor :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            aitken_max_factor = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
+                min=0,
+                max=100,
+                label="Aitken max factor :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            aitken_initial_factor = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
+                min=0,
+                max=100,
+                label="Aitken initial factor :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            def change_use_aitken(widget, event, data):
+
+                if data:
+                    self.vboxaitkenlinear.children[0].children = [aitken_min_factor, aitken_initial_factor]
+                    self.vboxaitkenlinear.children[1].children = [aitken_max_factor]
+                else:
+                    self.vboxaitkenlinear.children[0].children = []
+                    self.vboxaitkenlinear.children[1].children = []
+
+            use_aitken.on_event('change', change_use_aitken)
+
+            def linear_runonce_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = [iprint, assemble_jac]
+                self.vboxlinearsolver.children[1].children = [use_aitken]
+
+
+            def petsc_ksp_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = []
+                self.vboxlinearsolver.children[1].children = []
+
+
+            solver = solvers.scipy_iter_solver.ScipyKrylov()
+
+
+            maxiter = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
+                min=1,
+                max=10000,
+                label="Maxiter :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            atol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
+                min=1e-20,
+                max=1,
+                label="Absolute Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            rtol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
+                min=10e-12,
+                max=1,
+                label="Relative Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            iprint = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                label="Print the output :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            err_on_non_converge = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
+                label="When True, AnalysisError will be raised if we don't converge",
+            )
+
+            assemble_jac = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
+                label="Activates use of assembled jacobian by this solver",
+            )
+
+            restart = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["restart"].get("value"),
+                min=0,
+                max=1000,
+                label="Restart :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            def scipy_iter_solver_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, assemble_jac]
+                self.vboxlinearsolver.children[1].children = [atol, iprint, restart]
+
+
+            solver = solvers.user_defined.LinearUserDefined()
+
+
+            maxiter = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
+                min=1,
+                max=10000,
+                label="Maxiter :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            atol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
+                min=1e-20,
+                max=1,
+                label="Absolute Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            rtol = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
+                min=10e-12,
+                max=1,
+                label="Relative Error Tolerance :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            iprint = v.TextField(
+                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
+                min=0,
+                max=1,
+                label="Print the output :",
+                type='number',
+                outlined=True,
+                style_='width:500px;',
+            )
+
+            err_on_non_converge = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
+                label="When True, AnalysisError will be raised if we don't converge",
+            )
+
+            assemble_jac = v.Checkbox(
+                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
+                label="Activates use of assembled jacobian by this solver",
+            )
+
+            def user_defined_change():
+
+                self.vboxaitkenlinear.children[0].children = []
+                self.vboxaitkenlinear.children[1].children = []
+                self.vboxlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, assemble_jac]
+                self.vboxlinearsolver.children[1].children = [atol, iprint]
+
+
+            def onchange(widget, event, data):
+
+                if data == "direct":
+                    direct_change()
+                elif data == "linear_block_gs":
+                    linear_block_gs_change()
+                elif data == "linear_block_jac":
+                    linear_block_jac_change()
+                elif data == "linear_runonce":
+                    linear_runonce_change()
+                elif data == "petsc_ksp":
+                    petsc_ksp_change()
+                elif data == "scipy_iter_solver":
+                    scipy_iter_solver_change()
+                elif data == "user_defined":
+                    user_defined_change()
+
+            select = v.Select(
+                items=[
+                    "direct",
+                    "linear_block_gs",
+                    "linear_block_jac",
+                    "linear_runonce",
+                    "petsc_ksp",
+                    "scipy_iter_solver",
+                    "user_defined",
+                ],
+                v_model="direct",
+                label="Linear solvers :",
+                outlined=True,
+            )
+
+            select.on_event('change', onchange)
+
+            display(select)
+            direct_change()
+            display(self.vboxlinearsolver)
+            display(self.vboxaitkenlinear)
             button()
             display(self.button)
+
 
         title()
         inputoutput()
         drivers()
         nonlinearsolvers()
+        linearsolvers()
 
 
     def display(self):
