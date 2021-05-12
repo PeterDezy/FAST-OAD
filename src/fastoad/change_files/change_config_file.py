@@ -44,6 +44,8 @@ class ChangeConfigFile:
         self.output = None
         self.title = None
 
+        self.selectDriver = None
+
 
         self.vboxdriver = v.Html(
             tag="div",
@@ -179,10 +181,25 @@ class ChangeConfigFile:
             self.inputf = self.inputf[2 : len(self.inputf) - 4]
             self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
+            items = [
+                        "differential_evolution_driver",
+                        "doe_driver",
+                        "genetic_algorithm_driver",
+                        "pyoptsparse_driver",
+                        "scipy_optimizer",
+                    ],
+
         try:
             content["input_file"] = "./" + self.input.v_model + ".xml"
             content["output_file"] = "./" + self.output.v_model + ".xml"
             content["title"] = self.title.v_model
+            if (self.selectDriver.v_model == "scipy_optimizer"):
+                content["driver"] = "om.ScipyOptimizeDriver(tol="+self.vboxdriver.children[1].children[0].v_model+","
+                content["driver"] += "optimizer="+self.vboxdriver.children[0].children[0].v_model+",maxiter="
+                content["driver"] += self.vboxdriver.children[0].children[1].v_model+",disp="
+                content["driver"] += str(self.vboxdriver.children[1].children[1].v_model)+")"
+            elif (self.selectDriver.v_model == "pyoptsparse_driver"):
+                content["driver"] = "om.pyOptSparseDriver()"
             with open(self.file_name, "w") as file:
                 self.yaml.dump(content, file)
                 if (
@@ -994,7 +1011,7 @@ class ChangeConfigFile:
                 elif data == "pyoptsparse_driver":
                     pyoptsparse_driver_change()
 
-            select = v.Select(
+            self.selectDriver = v.Select(
                 items=[
                     "differential_evolution_driver",
                     "doe_driver",
@@ -1008,9 +1025,9 @@ class ChangeConfigFile:
                 style_="margin-top:5px",
             )
 
-            select.on_event("change", onchange)
+            self.selectDriver.on_event("change", onchange)
 
-            display(select)
+            display(self.selectDriver)
             scipy_optimizer_change()
             display(self.vboxdriver)
             display(self.generator)
