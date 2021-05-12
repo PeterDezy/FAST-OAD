@@ -174,7 +174,7 @@ class ChangeConfigFile:
 
             self.inputf = content["input_file"]
             self.outputf = content["output_file"]
-            self.title = content["title"]
+            self.titlef = content["title"]
 
             self.inputf = self.inputf[2 : len(self.inputf) - 4]
             self.outputf = self.outputf[2 : len(self.outputf) - 4]
