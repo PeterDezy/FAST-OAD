@@ -29,15 +29,18 @@ class ChangeConfigFile:
     """
 
     def __init__(self):
-        # The file name
+        # The configuration file name
         self.file_name = "./workdir/oad_process.yml"
 
-        # Ruamel yaml
+        # Ruamel yaml ( read the .yml file )
         self.yaml = YAML()
-        # Parameters config file
+
+        # Values of the input, output and title
         self.inputf = None
         self.outputf = None
         self.title = None
+
+
         self.vboxdriver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
