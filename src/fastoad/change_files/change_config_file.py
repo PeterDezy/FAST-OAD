@@ -38,7 +38,13 @@ class ChangeConfigFile:
         # Values of the input, output and title
         self.inputf = None
         self.outputf = None
+        self.titlef = None
+
+        self.input = None
+        self.output = None
         self.title = None
+
+        self.selectDriver = None
 
 
         self.vboxdriver = v.Html(
@@ -154,7 +160,7 @@ class ChangeConfigFile:
 
         self.inputf = content["input_file"]
         self.outputf = content["output_file"]
-        self.title = content["title"]
+        self.titlef = content["title"]
 
         self.inputf = self.inputf[2 : len(self.inputf) - 4]
 
@@ -170,29 +176,44 @@ class ChangeConfigFile:
 
             self.inputf = content["input_file"]
             self.outputf = content["output_file"]
-            self.title = content["title"]
+            self.titlef = content["title"]
 
             self.inputf = self.inputf[2 : len(self.inputf) - 4]
             self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
+            items = [
+                        "differential_evolution_driver",
+                        "doe_driver",
+                        "genetic_algorithm_driver",
+                        "pyoptsparse_driver",
+                        "scipy_optimizer",
+                    ],
+
         try:
-            content["input_file"] = "./" + self.i.v_model + ".xml"
-            content["output_file"] = "./" + self.o.v_model + ".xml"
-            content["title"] = self.t.v_model
+            content["input_file"] = "./" + self.input.v_model + ".xml"
+            content["output_file"] = "./" + self.output.v_model + ".xml"
+            content["title"] = self.title.v_model
+            if (self.selectDriver.v_model == "scipy_optimizer"):
+                content["driver"] = "om.ScipyOptimizeDriver(tol="+self.vboxdriver.children[1].children[0].v_model+","
+                content["driver"] += "optimizer="+self.vboxdriver.children[0].children[0].v_model+",maxiter="
+                content["driver"] += self.vboxdriver.children[0].children[1].v_model+",disp="
+                content["driver"] += str(self.vboxdriver.children[1].children[1].v_model)+")"
+            elif (self.selectDriver.v_model == "pyoptsparse_driver"):
+                content["driver"] = "om.pyOptSparseDriver()"
             with open(self.file_name, "w") as file:
                 self.yaml.dump(content, file)
                 if (
-                    self.inputf == self.i.v_model
-                    and self.outputf == self.o.v_model
-                    and self.title == self.t.v_model
+                    self.inputf == self.input.v_model
+                    and self.outputf == self.output.v_model
+                    and self.title == self.title.v_model
                 ):
                     print("Values inchanched.\n")
                 else:
                     print("Successfuly changed values !\n")
                     print("Your new values :\n")
-                    print("Input file : ./" + self.i.v_model + ".xml")
-                    print("Output file : ./" + self.o.v_model + ".xml")
-                    print("Title : " + self.t.v_model)
+                    print("Input file : ./" + self.input.v_model + ".xml")
+                    print("Output file : ./" + self.output.v_model + ".xml")
+                    print("Title : " + self.title.v_model)
         except:
             raise ValueError("Error while modifying.\n")
 
@@ -201,8 +222,8 @@ class ChangeConfigFile:
         Initialize the button widget
         """
 
-        title = v.TextField(
-            v_model=self.title,
+        self.title = v.TextField(
+            v_model=self.titlef,
             label="Title :",
             outlined=True,
             clearable=True,
@@ -211,10 +232,10 @@ class ChangeConfigFile:
 
         def title():
 
-            display(title)
+            display(self.title)
 
 
-        input = v.TextField(
+        self.input = v.TextField(
             v_model=self.inputf,
             label="Input_file :",
             suffix=".yml",
@@ -223,7 +244,7 @@ class ChangeConfigFile:
             style_="margin-top:5px",
         )
 
-        output = v.TextField(
+        self.output = v.TextField(
             v_model=self.outputf,
             label="Output_file :",
             suffix=".yml",
@@ -235,7 +256,7 @@ class ChangeConfigFile:
 
         def inputoutput():
 
-            display(input, output)
+            display(self.input, self.output)
 
 
         btn = v.Btn(
@@ -990,7 +1011,7 @@ class ChangeConfigFile:
                 elif data == "pyoptsparse_driver":
                     pyoptsparse_driver_change()
 
-            select = v.Select(
+            self.selectDriver = v.Select(
                 items=[
                     "differential_evolution_driver",
                     "doe_driver",
@@ -1004,9 +1025,9 @@ class ChangeConfigFile:
                 style_="margin-top:5px",
             )
 
-            select.on_event("change", onchange)
+            self.selectDriver.on_event("change", onchange)
 
-            display(select)
+            display(self.selectDriver)
             scipy_optimizer_change()
             display(self.vboxdriver)
             display(self.generator)
