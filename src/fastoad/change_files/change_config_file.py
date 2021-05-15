@@ -46,6 +46,8 @@ class ChangeConfigFile:
 
         self.selectDriver = None
 
+        self.generator = None
+
 
         self.vboxdriver = v.Html(
             tag="div",
@@ -181,25 +183,68 @@ class ChangeConfigFile:
             self.inputf = self.inputf[2 : len(self.inputf) - 4]
             self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
-            items = [
-                        "differential_evolution_driver",
-                        "doe_driver",
-                        "genetic_algorithm_driver",
-                        "pyoptsparse_driver",
-                        "scipy_optimizer",
-                    ],
-
         try:
             content["input_file"] = "./" + self.input.v_model + ".xml"
             content["output_file"] = "./" + self.output.v_model + ".xml"
             content["title"] = self.title.v_model
-            if (self.selectDriver.v_model == "scipy_optimizer"):
-                content["driver"] = "om.ScipyOptimizeDriver(tol="+self.vboxdriver.children[1].children[0].v_model+","
-                content["driver"] += "optimizer="+self.vboxdriver.children[0].children[0].v_model+",maxiter="
-                content["driver"] += self.vboxdriver.children[0].children[1].v_model+",disp="
-                content["driver"] += str(self.vboxdriver.children[1].children[1].v_model)+")"
+            if (self.selectDriver.v_model == "differential_evolution_driver"):
+                content["driver"] = "om.DifferentialEvolutionDriver("
+                content["driver"] += "max_gen="+str(self.vboxdriver.children[0].children[0].v_model)
+                content["driver"] += ",pop_size="+str(self.vboxdriver.children[1].children[0].v_model)
+                content["driver"] += ",run_parallel="+str(self.vboxdriver.children[0].children[1].v_model)
+                content["driver"] += ",procs_per_model="+str(self.vboxdriver.children[1].children[1].v_model)
+                content["driver"] += ",penalty_parameter="+str(self.vboxdriver.children[0].children[2].v_model)
+                content["driver"] += ",penalty_exponent="+str(self.vboxdriver.children[1].children[2].v_model)
+                content["driver"] += ",Pc="+str(self.vboxdriver.children[0].children[3].v_model)
+                content["driver"] += ",F="+str(self.vboxdriver.children[1].children[3].v_model)
+                content["driver"] += ",multi_obj_weights="+str(self.vboxdriver.children[0].children[4].v_model)
+                content["driver"] += ",multi_obj_exponent="+str(self.vboxdriver.children[1].children[4].v_model)+")"
+            elif (self.selectDriver.v_model == "doe_driver"):
+                if (self.generator.v_model == "DOEGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "ListGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "CSVGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "UniformGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "_pyDOE_Generator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "FullFactorialGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "GeneralizedSubsetGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "PlackettBurmanGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "BoxBehnkenGenerator"):
+                    content["driver"] = ""
+                elif (self.generator.v_model == "LatinHypercubeGenerator"):
+                    content["driver"] = ""
+            elif (self.selectDriver.v_model == "genetic_algorithm_driver"):
+                content["driver"] = "om.SimpleGADriver("
+                content["driver"] += "bits="+str(self.vboxdriver.children[0].children[0].v_model)
+                content["driver"] += ",elitism="+str(self.vboxdriver.children[1].children[0].v_model)
+                content["driver"] += ",gray="+str(self.vboxdriver.children[0].children[1].v_model)
+                content["driver"] += ",cross_bits="+str(self.vboxdriver.children[1].children[1].v_model)
+                content["driver"] += ",max_gen="+str(self.vboxdriver.children[0].children[2].v_model)
+                content["driver"] += ",pop_size="+str(self.vboxdriver.children[1].children[2].v_model)
+                content["driver"] += ",run_parallel="+str(self.vboxdriver.children[0].children[3].v_model)
+                content["driver"] += ",procs_per_model="+str(self.vboxdriver.children[1].children[3].v_model)
+                content["driver"] += ",penalty_parameter="+str(self.vboxdriver.children[0].children[4].v_model)
+                content["driver"] += ",penalty_exponent="+str(self.vboxdriver.children[1].children[4].v_model)
+                content["driver"] += ",Pc="+str(self.vboxdriver.children[0].children[5].v_model)
+                content["driver"] += ",Pm="+str(self.vboxdriver.children[1].children[5].v_model)
+                content["driver"] += ",multi_obj_weights="+str(self.vboxdriver.children[0].children[6].v_model)
+                content["driver"] += ",multi_obj_exponent="+str(self.vboxdriver.children[1].children[6].v_model)
+                content["driver"] += ",compute_parato="+str(self.vboxdriver.children[0].children[7].v_model)+")"
             elif (self.selectDriver.v_model == "pyoptsparse_driver"):
                 content["driver"] = "om.pyOptSparseDriver()"
+            elif (self.selectDriver.v_model == "scipy_optimizer"):
+                content["driver"] = "om.ScipyOptimizeDriver("
+                content["driver"] += "optimizer=\'" + self.vboxdriver.children[0].children[0].v_model + "\'"
+                content["driver"] += ",tol="+str(self.vboxdriver.children[1].children[0].v_model)
+                content["driver"] += ",maxiter="+str(self.vboxdriver.children[0].children[1].v_model)
+                content["driver"] += ",disp="+str(self.vboxdriver.children[1].children[1].v_model)+")"
             with open(self.file_name, "w") as file:
                 self.yaml.dump(content, file)
                 if (
@@ -458,7 +503,7 @@ class ChangeConfigFile:
                     elif data == "LatinHypercubeGenerator":
                         latin_hypercube_generator()
 
-                generator = v.Select(
+                self.generator = v.Select(
                     items=[
                         "DOEGenerator",
                         "ListGenerator",
