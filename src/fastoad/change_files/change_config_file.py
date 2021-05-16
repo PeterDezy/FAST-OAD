@@ -259,18 +259,28 @@ class ChangeConfigFile:
                 content["driver"] += ",disp="+str(self.vboxdriver.children[1].children[1].v_model)+")"
             with open(self.file_name, "w") as file:
                 self.yaml.dump(content, file)
-                if (
-                    self.inputf == self.input.v_model
-                    and self.outputf == self.output.v_model
-                    and self.title == self.title.v_model
-                ):
-                    print("Values inchanched.\n")
-                else:
-                    print("Successfuly changed values !\n")
-                    print("Your new values :\n")
-                    print("Input file : ./" + self.input.v_model + ".xml")
-                    print("Output file : ./" + self.output.v_model + ".xml")
-                    print("Title : " + self.title.v_model)
+
+            success = v.Alert(
+                type='success',
+                children=['Successfuly changed values'],
+                elevation='2',
+            )
+
+            readfile = open(self.file_name)
+
+            for i in range(20):
+                line = readfile.readline()
+                print(line)
+
+            overview = v.Alert(
+                text=True,
+                children=[line],
+                elevation='2',
+                outlined=True,
+            )
+
+            display(success,overview)
+
         except:
             raise ValueError("Error while modifying.\n")
 
