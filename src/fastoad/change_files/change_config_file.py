@@ -14,9 +14,8 @@ Change the configuration file
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import clear_output, display, Markdown
 import ipyvuetify as v
-import ipywidgets as widgets
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
 import openmdao.solvers.nonlinear as solversnonlinear
@@ -132,6 +131,19 @@ class ChangeConfigFile:
         )
 
         self.vboxaitkenlinear = v.Html(
+            tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+
+        self.vboxmodel = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
             children=[
@@ -266,21 +278,12 @@ class ChangeConfigFile:
                 elevation='2',
             )
 
-            readfile = open(self.file_name)
-            textfile = "Overview :\n\n\nJU"
-            for i in range(20):
-                textfile += readfile.readline()
-                textfile += "\n"
+            textfile = ""
+            with open(self.file_name, "r") as file:
+                    textfile += file.readlines()
 
-            overview = v.Alert(
-                text=True,
-                children=[textfile],
-                elevation='2',
-                outlined=True,
-                style_="white-space: pre;",
-            )
-
-            display(success,overview)
+            display(success)
+            display(Markdown("```yaml\n" + textfile + "\n```"))
 
         except:
             raise ValueError("Error while modifying.\n")
@@ -2031,6 +2034,55 @@ class ChangeConfigFile:
             direct_change()
             display(self.vboxlinearsolver)
             display(self.vboxaitkenlinear)
+
+
+        def model():
+            """
+            Initialize widgets for the model, her subgroups & components
+            """
+
+            self.vboxmodel.children[0].children = []
+            self.vboxmodel.children[1].children = []
+
+            add = v.Btn(
+                color="primary",
+                elevation=4,
+                style_="width:150px",
+                children=["Add subgroup"],
+            )
+
+            def addsubgroup(widget, event, data):
+
+
+                subgroup = v.TextField(
+                    label="Subgroup name",
+                    outlined=True,
+                    style_='width:500px;margin-top:5px;',
+                )
+
+                usesolver = v.Checkbox(
+                    v_model=False,
+                    label="Use solver",
+                )
+
+                component = v.Select(
+                    items=[
+                        "Component 1",
+                        "Component 2"
+                    ],
+                    v_model="Component 1",
+                    label="Component :",
+                    outlined=True,
+                    style_='width:500px;margin-top:5px;margin-left:50px;',
+                )
+
+                self.vboxmodel.children[0].children = [subgroup, usesolver]
+                self.vboxmodel.children[1].children = [component]
+
+            add.on_event("click", addsubgroup)
+
+            display(add)
+            display(self.vboxmodel)
             button()
             display(self.button)
 
@@ -2040,6 +2092,7 @@ class ChangeConfigFile:
         drivers()
         nonlinearsolvers()
         linearsolvers()
+        model()
 
 
     def display(self):
