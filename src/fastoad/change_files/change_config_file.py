@@ -267,16 +267,17 @@ class ChangeConfigFile:
             )
 
             readfile = open(self.file_name)
-
+            textfile = "Overview :\n\n\nJU"
             for i in range(20):
-                line = readfile.readline()
-                print(line)
+                textfile += readfile.readline()
+                textfile += "\n"
 
             overview = v.Alert(
                 text=True,
-                children=[line],
+                children=[textfile],
                 elevation='2',
                 outlined=True,
+                style_="white-space: pre;",
             )
 
             display(success,overview)
