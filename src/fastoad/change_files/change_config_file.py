@@ -154,7 +154,7 @@ class ChangeConfigFile:
             ],
         )
 
-        self.generator = v.Html(
+        self.vboxgenerator = v.Html(
             tag="div",
             children=[
                 v.Html(
@@ -402,7 +402,7 @@ class ChangeConfigFile:
                 Adapt widgets & vbox widgets to only display widgets you need in this driver
                 """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = [optimizers, maxiter]
@@ -510,7 +510,7 @@ class ChangeConfigFile:
                 Adapt widgets & vbox widgets to only display widgets you need in this driver
                 """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = [maxgendiff, runparalleldiff, penaltyparameterdiff, cross_probdiff, multiobjweightsdiff]
@@ -523,7 +523,6 @@ class ChangeConfigFile:
 
                 self.vboxdriver.children[0].children = []
                 self.vboxdriver.children[1].children = []
-                self.button.children[0].children = []
 
                 drive = driver.doe_driver.DOEDriver()
 
@@ -571,6 +570,9 @@ class ChangeConfigFile:
                     outlined=True,
                     style_="width:500px;margin-top:5px",
                 )
+
+                self.vboxgenerator.children[0].children = [self.generator]
+                self.generator.on_event("change", onchangegenerator)
 
                 procspermodeldoe = v.TextField(
                     v_model=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
@@ -670,7 +672,7 @@ class ChangeConfigFile:
                     A function which change the type of the levels widget ( Int or Dict )
                     """
 
-                    if generator.v_model == '_pyDOE_Generator':
+                    if self.generator.v_model == '_pyDOE_Generator':
                         drive = drive = driver.doe_generators._pyDOE_Generator()
 
                         if data == "Int":
@@ -696,7 +698,7 @@ class ChangeConfigFile:
 
                         self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodeldoe]
 
-                    elif generator.v_model == 'FullFactorialGenerator':
+                    elif self.generator.v_model == 'FullFactorialGenerator':
                         drive = driver.doe_generators.FullFactorialGenerator()
 
                         if data == "Int":
@@ -722,7 +724,7 @@ class ChangeConfigFile:
 
                         self.vboxdoedriver.children[1].children = [_levelsfull, procspermodeldoe]
 
-                    elif generator.v_model == 'PlackettBurmanGenerator':
+                    elif self.generator.v_model == 'PlackettBurmanGenerator':
                         drive = driver.doe_generators.PlackettBurmanGenerator()
 
                         if data == "Int":
@@ -748,7 +750,7 @@ class ChangeConfigFile:
 
                         self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodeldoe]
 
-                    elif generator.v_model == 'BoxBehnkenGenerator':
+                    elif self.generator.v_model == 'BoxBehnkenGenerator':
                         drive = driver.doe_generators.BoxBehnkenGenerator()
 
                         if data == "Int":
@@ -975,11 +977,7 @@ class ChangeConfigFile:
                     self.vboxdoedriver.children[0].children = [_samples, _iterations, procspermodeldoe]
                     self.vboxdoedriver.children[1].children = [_criterion, _seedlatin, runparalleldoe]
 
-
-                generator.on_event("change", onchangegenerator)
                 doe_generator()
-                self.generator.children[0].children = [generator]
-                self.button.children[0].children = [btn]
 
 
             drive = driver.genetic_algorithm_driver.SimpleGADriver()
@@ -1114,7 +1112,7 @@ class ChangeConfigFile:
                 Adapt widgets & vbox widgets to only display widgets you need in this driver
                 """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = [bits, gray, maxgengenetic, runparallelgenetic, penaltyparametergenetic, cross_probgenetic, multiobjweightsgenetic, computepareto]
@@ -1125,7 +1123,7 @@ class ChangeConfigFile:
                 Adapt widgets & vbox widgets to only display widgets you need in this driver
                 """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = []
@@ -1165,10 +1163,10 @@ class ChangeConfigFile:
             self.selectDriver.on_event("change", onchange)
 
             display(self.selectDriver)
-            scipy_optimizer_change()
             display(self.vboxdriver)
-            display(self.generator)
+            display(self.vboxgenerator)
             display(self.vboxdoedriver)
+            scipy_optimizer_change()
 
         def nonlinearsolvers():
             """
