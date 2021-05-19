@@ -589,17 +589,17 @@ class LinearSolver:
             self.solver += ")"
         elif (self.select.v_model == "linear_block_jac"):
             self.solver += "om.LinearBlockJac("
-            self.solver += "maxiter=" + str(self.vboxlinearsolver.children[0].children[0].v_model)
+            self.solver += "maxiter="+str(self.vboxlinearsolver.children[0].children[0].v_model)
             self.solver += ",atol="+str(self.vboxlinearsolver.children[1].children[0].v_model)
             self.solver += ",rtol="+str(self.vboxlinearsolver.children[0].children[1].v_model)
             self.solver += ",iprint="+str(self.vboxlinearsolver.children[1].children[1].v_model)
             self.solver += ",err_on_non_converge="+str(self.vboxlinearsolver.children[0].children[2].v_model)
-            self.solver += ",assemble_jac=" + str(self.vboxlinearsolver.children[1].children[2].v_model)+")"
+            self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[1].children[2].v_model)+")"
         elif (self.select.v_model == "linear_runonce"):
             self.solver += "om.LinearRunOnce("
-            self.solver += "iprint=" + str(self.vboxlinearsolver.children[0].children[0].v_model)
-            self.solver += ",use_aitken=" + str(self.vboxlinearsolver.children[1].children[0].v_model)
-            self.solver += ",assemble_jac=" + str(self.vboxlinearsolver.children[0].children[1].v_model)
+            self.solver += "iprint="+str(self.vboxlinearsolver.children[0].children[0].v_model)
+            self.solver += ",use_aitken="+str(self.vboxlinearsolver.children[1].children[0].v_model)
+            self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[0].children[1].v_model)
             if(str(self.vboxlinearsolver.children[1].children[0].v_model)=="True"):
                 self.solver += ",aitken_min_factor="+str(self.vboxaitkenlinear.children[0].children[0].v_model)
                 self.solver += ",aitken_max_factor="+str(self.vboxaitkenlinear.children[1].children[0].v_model)
@@ -609,21 +609,21 @@ class LinearSolver:
             self.solver += "om.PETScKrylov()"
         elif (self.select.v_model == "scipy_iter_solver"):
             self.solver += "om.ScipyKrylov("
-            self.solver += "maxiter=" + str(self.vboxlinearsolver.children[0].children[0].v_model)
+            self.solver += "maxiter="+str(self.vboxlinearsolver.children[0].children[0].v_model)
             self.solver += ",atol="+str(self.vboxlinearsolver.children[1].children[0].v_model)
             self.solver += ",rtol="+str(self.vboxlinearsolver.children[0].children[1].v_model)
             self.solver += ",iprint="+str(self.vboxlinearsolver.children[1].children[1].v_model)
-            self.solver += ",err_on_non_converge=" + str(self.vboxlinearsolver.children[0].children[2].v_model)
-            self.solver += ",restart=" + str(self.vboxlinearsolver.children[1].children[2].v_model)
-            self.solver += ",assemble_jac=" + str(self.vboxlinearsolver.children[0].children[3].v_model)+")"
+            self.solver += ",err_on_non_converge="+str(self.vboxlinearsolver.children[0].children[2].v_model)
+            self.solver += ",restart="+str(self.vboxlinearsolver.children[1].children[2].v_model)
+            self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[0].children[3].v_model)+")"
         elif (self.select.v_model == "user_defined"):
             self.solver += "om.LinearUserDefined("
-            self.solver += "maxiter=" + str(self.vboxlinearsolver.children[0].children[0].v_model)
+            self.solver += "maxiter="+str(self.vboxlinearsolver.children[0].children[0].v_model)
             self.solver += ",atol="+str(self.vboxlinearsolver.children[1].children[0].v_model)
             self.solver += ",rtol="+str(self.vboxlinearsolver.children[0].children[1].v_model)
             self.solver += ",iprint="+str(self.vboxlinearsolver.children[1].children[1].v_model)
-            self.solver += ",err_on_non_converge=" + str(self.vboxlinearsolver.children[0].children[2].v_model)
-            self.solver += ",assemble_jac=" + str(self.vboxlinearsolver.children[1].children[2].v_model) + ")"
+            self.solver += ",err_on_non_converge="+str(self.vboxlinearsolver.children[0].children[2].v_model)
+            self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[1].children[2].v_model) + ")"
         print(self.solver)
 
     def display(self):

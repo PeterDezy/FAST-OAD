@@ -1274,7 +1274,7 @@ class ChangeConfigFile:
                 v_model=solver.options.__dict__["_dict"]["converge_limit"].get("value"),
                 min=0,
                 max=100,
-                label="Compute limit :",
+                label="Converge limit :",
                 type='number',
                 outlined=True,
                 style_='width:500px;',

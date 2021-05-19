@@ -167,7 +167,7 @@ class NonLinearSolver:
             v_model=solver.options.__dict__["_dict"]["converge_limit"].get("value"),
             min=0,
             max=100,
-            label="Compute limit :",
+            label="Converge limit :",
             type='number',
             outlined=True,
             style_='width:500px;',
@@ -223,7 +223,7 @@ class NonLinearSolver:
 
         reraise_child_analysiserrorbroyden = v.Checkbox(
             v_model=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
-            label="Reraise child Analysiserror",
+            label="Reraise child Analysis Error",
             style_='margin-left:50px;',
         )
 
@@ -266,7 +266,7 @@ class NonLinearSolver:
 
         reraise_child_analysiserrornewton = v.Checkbox(
             v_model=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
-            label="Reraise child Analysiserror",
+            label="Reraise child Analysis Error",
             style_='margin-left:50px;'
         )
 
@@ -346,7 +346,7 @@ class NonLinearSolver:
 
         reraise_child_analysiserrorgs = v.Checkbox(
             v_model=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
-            label="Reraise child Analysiserror",
+            label="Reraise child Analysis Error",
         )
 
         def change_use_aitken(widget, event, data):
@@ -455,6 +455,75 @@ class NonLinearSolver:
     def save(self):
 
         self.solver = "nonlinear_solver: "
+        if (self.select.v_model == "broyden"):
+            self.solver += "om.BroydenSolver("
+            self.solver += "maxiter="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)
+            self.solver += ",atol="+str(self.vboxnonlinearsolver.children[1].children[0].v_model)
+            self.solver += ",rtol="+str(self.vboxnonlinearsolver.children[0].children[1].v_model)
+            self.solver += ",iprint="+str(self.vboxnonlinearsolver.children[1].children[1].v_model)
+            self.solver += ",err_on_non_converge="+str(self.vboxnonlinearsolver.children[0].children[2].v_model)
+            self.solver += ",debug_print="+str(self.vboxnonlinearsolver.children[1].children[2].v_model)
+            self.solver += ",stall_limit="+str(self.vboxnonlinearsolver.children[0].children[3].v_model)
+            self.solver += ",stall_tol="+str(self.vboxnonlinearsolver.children[1].children[3].v_model)
+            self.solver += ",alpha="+str(self.vboxnonlinearsolver.children[0].children[4].v_model)
+            self.solver += ",compute_jacobian="+str(self.vboxnonlinearsolver.children[1].children[4].v_model)
+            self.solver += ",converge_limit="+str(self.vboxnonlinearsolver.children[0].children[5].v_model)
+            self.solver += ",cs_reconverge="+str(self.vboxnonlinearsolver.children[1].children[5].v_model)
+            self.solver += ",diverge_limit="+str(self.vboxnonlinearsolver.children[0].children[6].v_model)
+            self.solver += ",max_converge_failures="+str(self.vboxnonlinearsolver.children[1].children[6].v_model)
+            self.solver += ",max_jacobians="+str(self.vboxnonlinearsolver.children[0].children[7].v_model)
+            self.solver += ",state_vars="+str(self.vboxnonlinearsolver.children[1].children[7].v_model)
+            self.solver += ",update_broyden="+str(self.vboxnonlinearsolver.children[0].children[8].v_model)
+            self.solver += ",reraise_child_analysiserror="+str(self.vboxnonlinearsolver.children[1].children[8].v_model)
+            self.solver += ")"
+        elif (self.select.v_model == "newton"):
+            self.solver += "om.NewtonSolver("
+            self.solver += "maxiter="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)
+            self.solver += ",atol="+str(self.vboxnonlinearsolver.children[1].children[0].v_model)
+            self.solver += ",rtol="+str(self.vboxnonlinearsolver.children[0].children[1].v_model)
+            self.solver += ",iprint="+str(self.vboxnonlinearsolver.children[1].children[1].v_model)
+            self.solver += ",err_on_non_converge="+str(self.vboxnonlinearsolver.children[0].children[2].v_model)
+            self.solver += ",debug_print="+str(self.vboxnonlinearsolver.children[1].children[2].v_model)
+            self.solver += ",stall_limit="+str(self.vboxnonlinearsolver.children[0].children[3].v_model)
+            self.solver += ",stall_tol="+str(self.vboxnonlinearsolver.children[1].children[3].v_model)
+            self.solver += ",solve_subsystems="+str(self.vboxnonlinearsolver.children[0].children[4].v_model)
+            self.solver += ",cs_reconverge="+str(self.vboxnonlinearsolver.children[1].children[4].v_model)
+            self.solver += ",reraise_child_analysiserror="+str(self.vboxnonlinearsolver.children[0].children[5].v_model)
+            if (str(self.vboxnonlinearsolver.children[0].children[4].v_model) == "True"):
+                self.solver += ",max_sub_solves="+str(self.vboxsubsolves.children[0].children[0].v_model)
+            self.solver += ")"
+        elif (self.select.v_model == "nonlinear_block_gs"):
+            self.solver += "om.NonlinearBlockGS("
+            self.solver += "maxiter="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)
+            self.solver += ",atol="+str(self.vboxnonlinearsolver.children[1].children[0].v_model)
+            self.solver += ",rtol="+str(self.vboxnonlinearsolver.children[0].children[1].v_model)
+            self.solver += ",iprint="+str(self.vboxnonlinearsolver.children[1].children[1].v_model)
+            self.solver += ",err_on_non_converge="+str(self.vboxnonlinearsolver.children[0].children[2].v_model)
+            self.solver += ",debug_print="+str(self.vboxnonlinearsolver.children[1].children[2].v_model)
+            self.solver += ",stall_limit="+str(self.vboxnonlinearsolver.children[0].children[3].v_model)
+            self.solver += ",stall_tol="+str(self.vboxnonlinearsolver.children[1].children[3].v_model)
+            self.solver += ",use_aitken="+str(self.vboxnonlinearsolver.children[0].children[4].v_model)
+            self.solver += ",cs_reconverge="+str(self.vboxnonlinearsolver.children[1].children[4].v_model)
+            self.solver += ",use_apply_nonlinear="+str(self.vboxnonlinearsolver.children[0].children[5].v_model)
+            self.solver += ",reraise_child_analysiserror="+str(self.vboxnonlinearsolver.children[1].children[5].v_model)
+            if (str(self.vboxnonlinearsolver.children[0].children[4].v_model) == "True"):
+                self.solver += ",aitken_min_factor="+str(self.vboxaitken.children[0].children[0].v_model)
+                self.solver += ",aitken_max_factor="+str(self.vboxaitken.children[1].children[0].v_model)
+                self.solver += ",aitken_initial_factor="+str(self.vboxaitken.children[0].children[1].v_model)
+            self.solver += ")"
+        elif (self.select.v_model == "nonlinear_block_jac"):
+            self.solver += "om.NonlinearBlockJac("
+            self.solver += "maxiter="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)
+            self.solver += ",atol="+str(self.vboxnonlinearsolver.children[1].children[0].v_model)
+            self.solver += ",rtol="+str(self.vboxnonlinearsolver.children[0].children[1].v_model)
+            self.solver += ",iprint="+str(self.vboxnonlinearsolver.children[1].children[1].v_model)
+            self.solver += ",err_on_non_converge="+str(self.vboxnonlinearsolver.children[0].children[2].v_model)
+            self.solver += ",debug_print="+str(self.vboxnonlinearsolver.children[1].children[2].v_model)
+            self.solver += ",stall_limit="+str(self.vboxnonlinearsolver.children[0].children[3].v_model)
+            self.solver += ",stall_tol="+str(self.vboxnonlinearsolver.children[1].children[3].v_model)+")"
+        elif (self.select.v_model == "nonlinear_runonce"):
+            self.solver += "om.NonlinearRunOnce("
+            self.solver += "iprint="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)+")"
         print(self.solver)
 
     def display(self):
