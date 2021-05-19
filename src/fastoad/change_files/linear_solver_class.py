@@ -545,25 +545,10 @@ class LinearSolver:
 
         self.select.on_event('change', onchange)
 
-        btn = v.Btn(
-            color="blue",
-            elevation=4,
-            style_="width:150px",
-            outlined=True,
-            children=[v.Icon(children=["get_app"]), "Save"],
-        )
-
-        def on_save_button_clicked(widget, event, data):
-
-            self.save()
-
-        btn.on_event("click", on_save_button_clicked)
-
         display(self.select)
         direct_change()
         display(self.vboxlinearsolver)
         display(self.vboxaitkenlinear)
-        display(btn)
 
     def save(self):
 
@@ -624,7 +609,9 @@ class LinearSolver:
             self.solver += ",iprint="+str(self.vboxlinearsolver.children[1].children[1].v_model)
             self.solver += ",err_on_non_converge="+str(self.vboxlinearsolver.children[0].children[2].v_model)
             self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[1].children[2].v_model) + ")"
-        print(self.solver)
+
+    def solver_value(self) -> str :
+        return self.solver()
 
     def display(self):
 

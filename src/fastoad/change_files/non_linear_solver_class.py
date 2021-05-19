@@ -431,26 +431,11 @@ class NonLinearSolver:
 
         self.select.on_event('change', onchange)
 
-        btn = v.Btn(
-            color="blue",
-            elevation=4,
-            style_="width:150px",
-            outlined=True,
-            children=[v.Icon(children=["get_app"]), "Save"],
-        )
-
-        def on_save_button_clicked(widget, event, data):
-
-            self.save()
-
-        btn.on_event("click", on_save_button_clicked)
-
         display(self.select)
         nonlinear_block_gs_change()
         display(self.vboxnonlinearsolver)
         display(self.vboxaitken)
         display(self.vboxsubsolves)
-        display(btn)
 
     def save(self):
 
@@ -524,7 +509,9 @@ class NonLinearSolver:
         elif (self.select.v_model == "nonlinear_runonce"):
             self.solver += "om.NonlinearRunOnce("
             self.solver += "iprint="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)+")"
-        print(self.solver)
+
+    def solver_value(self) -> str :
+        return self.solver()
 
     def display(self):
 
