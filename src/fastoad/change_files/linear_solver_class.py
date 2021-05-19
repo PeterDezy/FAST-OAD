@@ -543,6 +543,8 @@ class LinearSolver:
             style_='margin-top:5px;',
         )
 
+        self.select.on_event('change', onchange)
+
         btn = v.Btn(
             color="blue",
             elevation=4,
@@ -556,8 +558,6 @@ class LinearSolver:
             self.save()
 
         btn.on_event("click", on_save_button_clicked)
-
-        self.select.on_event('change', onchange)
 
         display(self.select)
         direct_change()
