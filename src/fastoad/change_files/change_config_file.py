@@ -20,6 +20,7 @@ from ruamel.yaml import YAML
 import openmdao.drivers as driver
 import openmdao.solvers.nonlinear as solversnonlinear
 import openmdao.solvers.linear as solvers
+from fastoad.change_files.linear_solver_class import LinearSolver
 
 
 class ChangeConfigFile:
@@ -50,6 +51,8 @@ class ChangeConfigFile:
         self.selectDriver = None
 
         self.generator = None
+
+        self.linear = None
 
         # Vbox to display several widgets and hide them
         self.vboxdriver = v.Html(
@@ -2092,7 +2095,9 @@ class ChangeConfigFile:
         inputoutput()
         drivers()
         nonlinearsolvers()
-        linearsolvers()
+        # linearsolvers()
+        self.linear = LinearSolver()
+        self.linear.display()
         model()
 
 
