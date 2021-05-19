@@ -54,16 +54,6 @@ class LinearSolver:
             ],
         )
 
-        self.button = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
     def initialize(self):
 
         """
