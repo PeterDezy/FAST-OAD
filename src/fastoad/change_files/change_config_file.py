@@ -14,9 +14,8 @@ Change the configuration file
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import clear_output, display, Markdown
 import ipyvuetify as v
-import ipywidgets as widgets
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
 import openmdao.solvers.nonlinear as solversnonlinear
@@ -25,30 +24,34 @@ import openmdao.solvers.linear as solvers
 
 class ChangeConfigFile:
     """
-    A class which display all the widgets for the configuration file
+    A class which display all widgets to change the configuration file
     """
 
     def __init__(self):
-        # The configuration file name
+        # The path & name of the data file that will be viewed/edited
         self.file_name = "./workdir/oad_process.yml"
 
         # Ruamel yaml ( read the .yml file )
         self.yaml = YAML()
-
-        # Values of the input, output and title
+        
+        # Parameters config file
         self.inputf = None
+
         self.outputf = None
+        
         self.titlef = None
 
         self.input = None
+
         self.output = None
+
         self.title = None
 
         self.selectDriver = None
 
         self.generator = None
 
-
+        # Vbox to display several widgets and hide them
         self.vboxdriver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -61,6 +64,7 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
         self.vboxdoedriver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -73,6 +77,7 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
         self.vboxnonlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -85,6 +90,7 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
         self.vboxaitken = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -97,6 +103,7 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
         self.vboxsubsolves = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -109,6 +116,7 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
         self.vboxlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -121,6 +129,7 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
         self.vboxaitkenlinear = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -133,6 +142,20 @@ class ChangeConfigFile:
                 ),
             ],
         )
+
+        self.vboxmodel = v.Html(
+            tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+
         self.button = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -142,7 +165,8 @@ class ChangeConfigFile:
                 ),
             ],
         )
-        self.generator = v.Html(
+
+        self.vboxgenerator = v.Html(
             tag="div",
             children=[
                 v.Html(
@@ -170,7 +194,7 @@ class ChangeConfigFile:
 
     def save(self):
         """
-        Save the new values, and displays them
+        Save the new values in the configuration file
         """
 
         with open(self.file_name) as file:
@@ -247,24 +271,27 @@ class ChangeConfigFile:
                 content["driver"] += ",disp="+str(self.vboxdriver.children[1].children[1].v_model)+")"
             with open(self.file_name, "w") as file:
                 self.yaml.dump(content, file)
-                if (
-                    self.inputf == self.input.v_model
-                    and self.outputf == self.output.v_model
-                    and self.title == self.title.v_model
-                ):
-                    print("Values inchanched.\n")
-                else:
-                    print("Successfuly changed values !\n")
-                    print("Your new values :\n")
-                    print("Input file : ./" + self.input.v_model + ".xml")
-                    print("Output file : ./" + self.output.v_model + ".xml")
-                    print("Title : " + self.title.v_model)
+
+            success = v.Alert(
+                type='success',
+                children=['Successfuly changed values'],
+                elevation='2',
+            )
+
+            textfile = ""
+            with open(self.file_name, "r") as file:
+                for i in range(20):
+                    textfile += file.readline()
+
+            display(success)
+            display(Markdown("```yaml\n" + textfile + "\n```"))
+
         except:
             raise ValueError("Error while modifying.\n")
 
     def _initialize_widgets(self):
         """
-        Initialize the button widget
+        Initialize all widgets to display them
         """
 
         self.title = v.TextField(
@@ -276,6 +303,9 @@ class ChangeConfigFile:
         )
 
         def title():
+            """
+            Display the title widget
+            """
 
             display(self.title)
 
@@ -300,6 +330,9 @@ class ChangeConfigFile:
 
 
         def inputoutput():
+            """
+            Display the input & output widgets
+            """
 
             display(self.input, self.output)
 
@@ -313,15 +346,25 @@ class ChangeConfigFile:
         )
 
         def on_save_button_clicked(widget, event, data):
+            """
+            The on-click event button, which activate the save function
+            """
+
             self.save()
 
         btn.on_event("click", on_save_button_clicked)
 
         def button():
+            """
+            Display the save button widget
+            """
 
             self.button.children[0].children = [btn]
 
         def drivers():
+            """
+            Initialize widgets for drivers
+            """
 
             drive = driver.scipy_optimizer.ScipyOptimizeDriver()
 
@@ -359,8 +402,11 @@ class ChangeConfigFile:
             )
 
             def scipy_optimizer_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this driver
+                """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = [optimizers, maxiter]
@@ -464,23 +510,30 @@ class ChangeConfigFile:
             )
 
             def differential_evolution_driver_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this driver
+                """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = [maxgendiff, runparalleldiff, penaltyparameterdiff, cross_probdiff, multiobjweightsdiff]
                 self.vboxdriver.children[1].children = [popsizediff, procspermodeldiff, penaltyexponentdiff, diff_rate, multiobjexponentdiff]
 
             def doe_driver_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this driver
+                """
 
                 self.vboxdriver.children[0].children = []
                 self.vboxdriver.children[1].children = []
-                self.button.children[0].children = []
 
                 drive = driver.doe_driver.DOEDriver()
 
                 def onchangegenerator(widget, event, data):
-
+                    """
+                    A function which start the function you need for your generator
+                    """
 
                     if data == "DOEGenerator":
                         doe_generator()
@@ -522,6 +575,9 @@ class ChangeConfigFile:
                     style_="width:500px;margin-top:5px",
                 )
 
+                self.vboxgenerator.children[0].children = [self.generator]
+                self.generator.on_event("change", onchangegenerator)
+
                 procspermodeldoe = v.TextField(
                     v_model=drive.options.__dict__["_dict"]["procs_per_model"].get("value"),
                     min=drive.options.__dict__["_dict"]["procs_per_model"].get("lower"),
@@ -543,6 +599,9 @@ class ChangeConfigFile:
                 drive = driver.doe_generators.DOEGenerator()
 
                 def doe_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [procspermodeldoe]
                     self.vboxdoedriver.children[1].children = [runparalleldoe]
@@ -557,6 +616,9 @@ class ChangeConfigFile:
                 )
 
                 def list_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [_data, runparalleldoe]
                     self.vboxdoedriver.children[1].children = [procspermodeldoe]
@@ -569,6 +631,9 @@ class ChangeConfigFile:
                 )
 
                 def csv_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [_filename, runparalleldoe]
                     self.vboxdoedriver.children[1].children = [procspermodeldoe]
@@ -596,6 +661,9 @@ class ChangeConfigFile:
                 )
 
                 def uniform_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [_num_samples, procspermodeldoe]
                     self.vboxdoedriver.children[1].children = [_seeduniform, runparalleldoe]
@@ -604,8 +672,11 @@ class ChangeConfigFile:
                 drive = driver.doe_generators._pyDOE_Generator()
 
                 def onchangelevels(widget, event, data):
+                    """
+                    A function which change the type of the levels widget ( Int or Dict )
+                    """
 
-                    if generator.v_model == '_pyDOE_Generator':
+                    if self.generator.v_model == '_pyDOE_Generator':
                         drive = drive = driver.doe_generators._pyDOE_Generator()
 
                         if data == "Int":
@@ -631,7 +702,7 @@ class ChangeConfigFile:
 
                         self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodeldoe]
 
-                    elif generator.v_model == 'FullFactorialGenerator':
+                    elif self.generator.v_model == 'FullFactorialGenerator':
                         drive = driver.doe_generators.FullFactorialGenerator()
 
                         if data == "Int":
@@ -657,7 +728,7 @@ class ChangeConfigFile:
 
                         self.vboxdoedriver.children[1].children = [_levelsfull, procspermodeldoe]
 
-                    elif generator.v_model == 'PlackettBurmanGenerator':
+                    elif self.generator.v_model == 'PlackettBurmanGenerator':
                         drive = driver.doe_generators.PlackettBurmanGenerator()
 
                         if data == "Int":
@@ -683,7 +754,7 @@ class ChangeConfigFile:
 
                         self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodeldoe]
 
-                    elif generator.v_model == 'BoxBehnkenGenerator':
+                    elif self.generator.v_model == 'BoxBehnkenGenerator':
                         drive = driver.doe_generators.BoxBehnkenGenerator()
 
                         if data == "Int":
@@ -743,6 +814,9 @@ class ChangeConfigFile:
                 )
 
                 def pydoe_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [selectlevels, _sizespy, runparalleldoe]
                     self.vboxdoedriver.children[1].children = [_levelspydoe, procspermodeldoe]
@@ -771,12 +845,18 @@ class ChangeConfigFile:
                 )
 
                 def full_factorial_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [selectlevels, _sizesfull, runparalleldoe]
                     self.vboxdoedriver.children[1].children = [_levelsfull, procspermodeldoe]
 
 
                 def generalized_subset_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [procspermodeldoe]
                     self.vboxdoedriver.children[1].children = [runparalleldoe]
@@ -804,6 +884,9 @@ class ChangeConfigFile:
                 )
 
                 def plackett_burman_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [selectlevels, _sizesplackett, runparalleldoe]
                     self.vboxdoedriver.children[1].children = [_levelsplackett, procspermodeldoe]
@@ -842,6 +925,9 @@ class ChangeConfigFile:
                 )
 
                 def box_behnken_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [selectlevels, _sizesbox, procspermodeldoe]
                     self.vboxdoedriver.children[1].children = [_levelsbox, _center, runparalleldoe]
@@ -888,15 +974,14 @@ class ChangeConfigFile:
                 )
 
                 def latin_hypercube_generator():
+                    """
+                    Adapt widgets & vbox widgets to only display widgets you need in this generator
+                    """
 
                     self.vboxdoedriver.children[0].children = [_samples, _iterations, procspermodeldoe]
                     self.vboxdoedriver.children[1].children = [_criterion, _seedlatin, runparalleldoe]
 
-
-                generator.on_event("change", onchangegenerator)
                 doe_generator()
-                self.generator.children[0].children = [generator]
-                self.button.children[0].children = [btn]
 
 
             drive = driver.genetic_algorithm_driver.SimpleGADriver()
@@ -1027,16 +1112,22 @@ class ChangeConfigFile:
             )
 
             def genetic_algorithm_driver_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this driver
+                """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = [bits, gray, maxgengenetic, runparallelgenetic, penaltyparametergenetic, cross_probgenetic, multiobjweightsgenetic, computepareto]
                 self.vboxdriver.children[1].children = [elitism, crossbits, popsizegenetic, procspermodelgenetic, penaltyexponentgenetic, mut_rate, multiobjexponentgenetic]
 
             def pyoptsparse_driver_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this driver
+                """
 
-                self.generator.children[0].children = []
+                self.vboxgenerator.children[0].children = []
                 self.vboxdoedriver.children[0].children = []
                 self.vboxdoedriver.children[1].children = []
                 self.vboxdriver.children[0].children = []
@@ -1044,6 +1135,9 @@ class ChangeConfigFile:
 
 
             def onchange(widget, event, data):
+                """
+                A function which start the function you need for your driver
+                """
 
                 if data == "scipy_optimizer":
                     scipy_optimizer_change()
@@ -1073,12 +1167,15 @@ class ChangeConfigFile:
             self.selectDriver.on_event("change", onchange)
 
             display(self.selectDriver)
-            scipy_optimizer_change()
             display(self.vboxdriver)
-            display(self.generator)
+            display(self.vboxgenerator)
             display(self.vboxdoedriver)
+            scipy_optimizer_change()
 
         def nonlinearsolvers():
+            """
+            Initialize widgets for non-linear solvers
+            """
 
             solver = solversnonlinear.broyden.BroydenSolver()
 
@@ -1235,6 +1332,9 @@ class ChangeConfigFile:
             )
 
             def broyden_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
+                """
 
                 self.vboxsubsolves.children[0].children = []
                 self.vboxaitken.children[0].children = []
@@ -1273,6 +1373,9 @@ class ChangeConfigFile:
             )
 
             def change_use_solve_subsystems(widget, event, data):
+                """
+                A function which display or not the 'max_sub_solves' widget, dependent on if you use solve subsystems
+                """
 
                 if data:
                     self.vboxsubsolves.children[0].children = [max_sub_solves]
@@ -1282,6 +1385,9 @@ class ChangeConfigFile:
             solve_subsystems.on_event('change', change_use_solve_subsystems)
 
             def newton_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
+                """
 
                 solve_subsystems.v_model = False
                 self.vboxaitken.children[0].children = []
@@ -1347,6 +1453,9 @@ class ChangeConfigFile:
 
 
             def change_use_aitken(widget, event, data):
+                """
+                A function which display or not the aitken options widgets, dependent on if you use aitken
+                """
 
                 if data:
                     self.vboxaitken.children[0].children = [aitken_min_factor, aitken_initial_factor]
@@ -1358,6 +1467,9 @@ class ChangeConfigFile:
             use_aitken.on_event('change', change_use_aitken)
 
             def nonlinear_block_gs_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
+                """
 
                 self.vboxsubsolves.children[0].children = []
                 use_aitken.v_model = False
@@ -1366,6 +1478,9 @@ class ChangeConfigFile:
 
 
             def nonlinear_block_jac_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
+                """
 
                 self.vboxsubsolves.children[0].children = []
                 self.vboxaitken.children[0].children = []
@@ -1384,6 +1499,9 @@ class ChangeConfigFile:
             )
 
             def nonlinear_runonce_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
+                """
 
                 self.vboxsubsolves.children[0].children = []
                 self.vboxnonlinearsolver.children[0].children = [iprintrunonce]
@@ -1391,6 +1509,9 @@ class ChangeConfigFile:
 
 
             def onchange(widget, event, data):
+                """
+                A function which start the function you need for your non-linear driver
+                """
 
                 if data == "broyden":
                     broyden_change()
@@ -1422,7 +1543,7 @@ class ChangeConfigFile:
 
         def linearsolvers():
             """
-            A class to change the linear solver in the configuration file
+            Initialize widgets for linear solvers
             """
 
             solver = solvers.direct.DirectSolver()
@@ -1450,6 +1571,9 @@ class ChangeConfigFile:
             )
 
             def direct_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 self.vboxaitkenlinear.children[0].children = []
                 self.vboxaitkenlinear.children[1].children = []
@@ -1548,6 +1672,9 @@ class ChangeConfigFile:
             )
 
             def change_use_aitkengs(widget, event, data):
+                """
+                A function which display or not the aitken options widgets, dependent on if you use aitken
+                """
 
                 if data:
                     self.vboxaitkenlinear.children[0].children = [aitken_min_factorgs, aitken_initial_factorgs]
@@ -1559,6 +1686,9 @@ class ChangeConfigFile:
             use_aitkengs.on_event('change', change_use_aitkengs)
 
             def linear_block_gs_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 use_aitkengs.v_model = False
                 self.vboxaitkenlinear.children[0].children = []
@@ -1622,6 +1752,9 @@ class ChangeConfigFile:
             )
 
             def linear_block_jac_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 self.vboxaitkenlinear.children[0].children = []
                 self.vboxaitkenlinear.children[1].children = []
@@ -1684,6 +1817,9 @@ class ChangeConfigFile:
             )
 
             def change_use_aitkenrunonce(widget, event, data):
+                """
+                A function which display or not the aitken options widgets, dependent on if you use aitken
+                """
 
                 if data:
                     self.vboxaitkenlinear.children[0].children = [aitken_min_factorrunonce, aitken_initial_factorrunonce]
@@ -1695,6 +1831,9 @@ class ChangeConfigFile:
             use_aitkenrunonce.on_event('change', change_use_aitkenrunonce)
 
             def linear_runonce_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 use_aitkenrunonce.v_model = False
                 self.vboxaitkenlinear.children[0].children = []
@@ -1704,6 +1843,9 @@ class ChangeConfigFile:
 
 
             def petsc_ksp_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 self.vboxaitkenlinear.children[0].children = []
                 self.vboxaitkenlinear.children[1].children = []
@@ -1776,6 +1918,9 @@ class ChangeConfigFile:
             )
 
             def scipy_iter_solver_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 self.vboxaitkenlinear.children[0].children = []
                 self.vboxaitkenlinear.children[1].children = []
@@ -1838,6 +1983,9 @@ class ChangeConfigFile:
             )
 
             def user_defined_change():
+                """
+                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
+                """
 
                 self.vboxaitkenlinear.children[0].children = []
                 self.vboxaitkenlinear.children[1].children = []
@@ -1846,6 +1994,9 @@ class ChangeConfigFile:
 
 
             def onchange(widget, event, data):
+                """
+                A function which start the function you need for your linear driver
+                """
 
                 if data == "direct":
                     direct_change()
@@ -1884,6 +2035,55 @@ class ChangeConfigFile:
             direct_change()
             display(self.vboxlinearsolver)
             display(self.vboxaitkenlinear)
+
+
+        def model():
+            """
+            Initialize widgets for the model, her subgroups & components
+            """
+
+            self.vboxmodel.children[0].children = []
+            self.vboxmodel.children[1].children = []
+
+            add = v.Btn(
+                color="primary",
+                elevation=4,
+                style_="width:150px",
+                children=["Add subgroup"],
+            )
+
+            def addsubgroup(widget, event, data):
+
+
+                subgroup = v.TextField(
+                    label="Subgroup name",
+                    outlined=True,
+                    style_='width:500px;margin-top:5px;',
+                )
+
+                usesolver = v.Checkbox(
+                    v_model=False,
+                    label="Use solver",
+                )
+
+                component = v.Select(
+                    items=[
+                        "Component 1",
+                        "Component 2"
+                    ],
+                    v_model="Component 1",
+                    label="Component :",
+                    outlined=True,
+                    style_='width:500px;margin-top:5px;margin-left:50px;',
+                )
+
+                self.vboxmodel.children[0].children = [subgroup, usesolver]
+                self.vboxmodel.children[1].children = [component]
+
+            add.on_event("click", addsubgroup)
+
+            display(add)
+            display(self.vboxmodel)
             button()
             display(self.button)
 
@@ -1893,13 +2093,14 @@ class ChangeConfigFile:
         drivers()
         nonlinearsolvers()
         linearsolvers()
+        model()
 
 
     def display(self):
         """
-        Display the user interface
-        :return the display object
+        Read the configuration file, and display all widgets
         """
+
         clear_output(wait=True)
         self.read()
         self._initialize_widgets()
