@@ -14,7 +14,7 @@ Model class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import clear_output, display, Markdown
 import ipyvuetify as v
 import ipywidgets as widgets
 from fastoad.change_files.linear_solver_class import LinearSolver
@@ -33,9 +33,11 @@ class Model:
 
         self.btn = None
 
-        self.models = None
+        self.models = []
 
-        self.components = None
+        self.addMod = None
+
+        self.components = []
 
         self.txt = None
 
@@ -59,9 +61,21 @@ class Model:
 
         self.btn.on_event("click", on_save_button_clicked)
 
-        self.models = []
+        self.addMod = v.Btn(
+            color="blue",
+            elevation=4,
+            style_="width:150px",
+            outlined=True,
+            children=["Add subgroup"],
+        )
 
-        self.components = []
+        def on_addMod_button_clicked(widget, event, data):
+
+            self.models.append(Model("subgroup"))
+            clear_output()
+            self.display()
+
+        self.addMod.on_event("click", on_addMod_button_clicked)
 
         self.txt = ""
 
@@ -73,15 +87,19 @@ class Model:
 
         self.txt += self.name+":\n"
 
-        self.txt += "\t"+self.linear.solver_value() +"\n"
+        self.txt += "\t"+self.linear.solver_value()+"\n"
 
-        self.txt += "\t"+self.nonlinear.solver_value()
+        self.txt += "\t"+self.nonlinear.solver_value()+"\n"
 
-        print(self.txt)
+        display(Markdown("```yaml\n"+self.txt+"\n```"))
+
+        print(str(self.models))
 
     def display(self):
 
         self.initialize()
         self.linear.display()
         self.nonlinear.display()
-        display(self.btn)
+        for i in self.models:
+            i.display()
+        display(self.addMod, self.btn)
