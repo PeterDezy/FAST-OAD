@@ -27,11 +27,11 @@ class Model:
         # Parameters config file
         self.name = name
 
+        self.namew = None
+
         self.linear = None
 
         self.nonlinear = None
-
-        self.btn = None
 
         self.models = []
 
@@ -43,23 +43,17 @@ class Model:
 
     def initialize(self):
 
+        self.namew = v.TextField(
+            v_model=self.name,
+            label="Name :",
+            outlined=True,
+            clearable=True,
+            style_="margin-top:20px",
+        )
+
         self.linear = LinearSolver()
 
         self.nonlinear = NonLinearSolver()
-
-        self.btn = v.Btn(
-            color="blue",
-            elevation=4,
-            style_="width:150px",
-            outlined=True,
-            children=[v.Icon(children=["get_app"]), "Save"],
-        )
-
-        def on_save_button_clicked(widget, event, data):
-
-            self.save()
-
-        self.btn.on_event("click", on_save_button_clicked)
 
         self.addMod = v.Btn(
             color="blue",
@@ -72,14 +66,12 @@ class Model:
         def on_addMod_button_clicked(widget, event, data):
 
             self.models.append(Model("subgroup"))
-            clear_output()
-            self.display()
 
         self.addMod.on_event("click", on_addMod_button_clicked)
 
         self.txt = ""
 
-    def save(self):
+    def save(self)->str:
 
         self.linear.save()
 
@@ -91,15 +83,17 @@ class Model:
 
         self.txt += "\t"+self.nonlinear.solver_value()+"\n"
 
-        display(Markdown("```yaml\n"+self.txt+"\n```"))
+        for i in self.models:
+            self.txt += "\t"+i.save()+"\n"
 
-        print(str(self.models))
+        return self.txt
 
     def display(self):
 
         self.initialize()
+        display(self.namew)
         self.linear.display()
         self.nonlinear.display()
         for i in self.models:
             i.display()
-        display(self.addMod, self.btn)
+        display(self.addMod)
