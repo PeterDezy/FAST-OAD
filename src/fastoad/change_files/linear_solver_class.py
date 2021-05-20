@@ -611,7 +611,7 @@ class LinearSolver:
             self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[1].children[2].v_model) + ")"
 
     def solver_value(self) -> str :
-        return self.solver()
+        return self.solver
 
     def display(self):
 

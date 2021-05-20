@@ -511,7 +511,7 @@ class NonLinearSolver:
             self.solver += "iprint="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)+")"
 
     def solver_value(self) -> str :
-        return self.solver()
+        return self.solver
 
     def display(self):
 

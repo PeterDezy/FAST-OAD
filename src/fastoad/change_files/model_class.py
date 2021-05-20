@@ -22,9 +22,11 @@ from fastoad.change_files.non_linear_solver_class import NonLinearSolver
 
 class Model:
 
-    def __init__(self):
+    def __init__(self, name):
 
         # Parameters config file
+        self.name = name
+
         self.linear = None
 
         self.nonlinear = None
@@ -69,9 +71,13 @@ class Model:
 
         self.nonlinear.save()
 
-        self.txt += self.linear.solver_value() +"\n"
+        self.txt += self.name+":\n"
 
-        self.txt += self.nonlinear.solver_value()
+        self.txt += "\t"+self.linear.solver_value() +"\n"
+
+        self.txt += "\t"+self.nonlinear.solver_value()
+
+        print(self.txt)
 
     def display(self):
 
