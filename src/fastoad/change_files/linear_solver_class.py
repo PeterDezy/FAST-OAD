@@ -16,7 +16,6 @@ Linear solver class
 
 from IPython.display import clear_output, display
 import ipyvuetify as v
-import ipywidgets as widgets
 import openmdao.solvers.linear as solvers
 
 class LinearSolver:
