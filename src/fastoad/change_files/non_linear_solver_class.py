@@ -16,7 +16,6 @@ Non Linear solver class
 
 from IPython.display import clear_output, display
 import ipyvuetify as v
-import ipywidgets as widgets
 import openmdao.solvers.nonlinear as solversnonlinear
 
 class NonLinearSolver:
