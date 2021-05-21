@@ -431,11 +431,26 @@ class NonLinearSolver:
 
         self.select.on_event('change', onchange)
 
-        display(self.select)
+        panel = v.ExpansionPanel(
+            children=[
+                v.ExpansionPanelHeader(
+                    color='#eaeaea',
+                    children=['Nonlinear Solver'],
+                    style_='margin-bottom:25px;'
+                ),
+                v.ExpansionPanelContent(
+                    children=[self.select, self.vboxnonlinearsolver, self.vboxaitken, self.vboxsubsolves]
+                ),
+            ]
+        )
+
+        expansionPanel = v.ExpansionPanels(
+            focusable=True,
+            children=[panel],
+        )
+
+        display(expansionPanel)
         nonlinear_block_gs_change()
-        display(self.vboxnonlinearsolver)
-        display(self.vboxaitken)
-        display(self.vboxsubsolves)
 
     def save(self):
 

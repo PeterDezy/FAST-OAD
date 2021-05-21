@@ -545,10 +545,26 @@ class LinearSolver:
 
         self.select.on_event('change', onchange)
 
-        display(self.select)
+        panel = v.ExpansionPanel(
+            children=[
+                v.ExpansionPanelHeader(
+                    color='#eaeaea',
+                    children=['Linear Solver'],
+                    style_='margin-bottom:25px;'
+                ),
+                v.ExpansionPanelContent(
+                    children=[self.select, self.vboxlinearsolver, self.vboxaitkenlinear]
+                ),
+            ]
+        )
+
+        expansionPanel = v.ExpansionPanels(
+            focusable=True,
+            children=[panel],
+        )
+
+        display(expansionPanel)
         direct_change()
-        display(self.vboxlinearsolver)
-        display(self.vboxaitkenlinear)
 
     def save(self):
 

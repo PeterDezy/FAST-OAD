@@ -39,7 +39,7 @@ class Model:
 
         self.components = []
 
-        self.txt = None
+        self.txt = ""
 
     def initialize(self):
 
@@ -49,6 +49,9 @@ class Model:
             outlined=True,
             style_="margin-top:20px",
         )
+
+        if self.namew.v_model == 'model':
+            self.namew.readonly = True
 
         self.linear = LinearSolver()
 
@@ -64,11 +67,15 @@ class Model:
 
         def on_addMod_button_clicked(widget, event, data):
 
-            self.models.append(Model("subgroup"))
+            self.name = 'subgroup'
+            self.initialize()
 
         self.addMod.on_event("click", on_addMod_button_clicked)
 
-        self.txt = ""
+        display(self.namew)
+        self.linear.display()
+        self.nonlinear.display()
+        display(self.addMod)
 
     def save(self)->str:
 
@@ -89,18 +96,11 @@ class Model:
 
         return self.txt
 
-    def disabled_name(self):
-
-        self.namew.readonly = True
-
     def display(self):
 
         self.initialize()
-        if (self.name == "model"):
-            self.disabled_name()
-        display(self.namew)
-        self.linear.display()
-        self.nonlinear.display()
+
+
+    def addsub(self):
         for i in self.models:
             i.display()
-        display(self.addMod)

@@ -21,6 +21,7 @@ import openmdao.drivers as driver
 import openmdao.solvers.nonlinear as solversnonlinear
 import openmdao.solvers.linear as solvers
 from fastoad.change_files.linear_solver_class import LinearSolver
+from fastoad.change_files.non_linear_solver_class import NonLinearSolver
 
 
 class ChangeConfigFile:
@@ -48,11 +49,15 @@ class ChangeConfigFile:
 
         self.title = None
 
+        self.textfile = ""
+
         self.selectDriver = None
 
         self.generator = None
 
         self.linear = None
+
+        self.nonlinear = None
 
         # Vbox to display several widgets and hide them
         self.vboxdriver = v.Html(
@@ -146,19 +151,6 @@ class ChangeConfigFile:
             ],
         )
 
-        self.vboxmodel = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
         self.button = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -178,6 +170,16 @@ class ChangeConfigFile:
             ],
         )
 
+        self.vboxtext = v.Html(
+            tag="div",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+
+
 
     def read(self):
         """
@@ -195,7 +197,7 @@ class ChangeConfigFile:
 
         self.outputf = self.outputf[2 : len(self.outputf) - 4]
 
-    def save(self):
+    def save(self, widget, event, data):
         """
         Save the new values in the configuration file
         """
@@ -281,13 +283,12 @@ class ChangeConfigFile:
                 elevation='2',
             )
 
-            textfile = ""
             with open(self.file_name, "r") as file:
                 for i in range(20):
-                    textfile += file.readline()
+                    self.textfile += file.readline()
 
             display(success)
-            display(Markdown("```yaml\n" + textfile + "\n```"))
+            display(Markdown("```yaml\n" + self.textfile + "\n```"))
 
         except:
             raise ValueError("Error while modifying.\n")
@@ -348,14 +349,7 @@ class ChangeConfigFile:
             children=[v.Icon(children=["get_app"]), "Save"],
         )
 
-        def on_save_button_clicked(widget, event, data):
-            """
-            The on-click event button, which activate the save function
-            """
-
-            self.save()
-
-        btn.on_event("click", on_save_button_clicked)
+        btn.on_event("click", self.save)
 
         def button():
             """
@@ -1169,936 +1163,37 @@ class ChangeConfigFile:
 
             self.selectDriver.on_event("change", onchange)
 
-            display(self.selectDriver)
-            display(self.vboxdriver)
-            display(self.vboxgenerator)
-            display(self.vboxdoedriver)
+
+            panel = v.ExpansionPanel(
+                children=[
+                    v.ExpansionPanelHeader(
+                        color='#eaeaea',
+                        children=['Driver'],
+                        style_='margin-bottom:25px;'
+                    ),
+                    v.ExpansionPanelContent(
+                        children=[self.selectDriver,self.vboxdriver,self.vboxgenerator,self.vboxdoedriver]
+                    ),
+                ]
+            )
+
+            expansionPanel = v.ExpansionPanels(
+                focusable=True,
+                children=[panel],
+            )
+
+            display(expansionPanel)
             scipy_optimizer_change()
-
-        def nonlinearsolvers():
-            """
-            Initialize widgets for non-linear solvers
-            """
-
-            solver = solversnonlinear.broyden.BroydenSolver()
-
-            maxiter = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
-                min=0,
-                max=10000,
-                label="Maxiter :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            atol = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
-                min=0,
-                max=1,
-                label="Absolute Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;margin-left:50px;',
-            )
-
-            rtol = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
-                min=0,
-                max=1,
-                label="Relative Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            iprint = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            err_on_non_converge = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
-                label="Err on non converge",
-                style_='margin-bottom:20px;',
-            )
-
-            debug_print = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["debug_print"].get("value"),
-                label="Debug Print",
-                style_='margin-left:50px;margin-bottom:20px;',
-            )
-
-            stall_limit = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["stall_limit"].get("value"),
-                min=0,
-                max=100,
-                label="Stall Limit :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            stall_tol = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["stall_tol"].get("value"),
-                min=0,
-                max=1,
-                label="Stall tol :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            alpha = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["alpha"].get("value"),
-                min=0,
-                max=10,
-                label="Alpha :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            compute_jacobian = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["compute_jacobian"].get("value"),
-                label="Compute Jacobian",
-                style_='margin-left:50px;margin-bottom:35px;',
-            )
-
-            converge_limit = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["converge_limit"].get("value"),
-                min=0,
-                max=100,
-                label="Converge limit :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            cs_reconvergebroyden = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["cs_reconverge"].get("value"),
-                label="Cs reconverge",
-                style_='margin-left:50px;margin-bottom:20px;',
-            )
-
-            diverge_limit = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["diverge_limit"].get("value"),
-                min=0,
-                max=100,
-                label="Diverge Limit :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            max_converge_failures = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["max_converge_failures"].get("value"),
-                min=0,
-                max=100,
-                label="Max Converge Failures :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            max_jacobians = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["max_jacobians"].get("value"),
-                min=0,
-                max=100,
-                label="Max Jacobians :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            state_vars = v.TextField(
-                v_model="[]",
-                label="State Vars :",
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            update_broyden = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["update_broyden"].get("value"),
-                label="Update Broyden",
-            )
-
-            reraise_child_analysiserrorbroyden = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
-                label="Reraise child Analysiserror",
-                style_='margin-left:50px;',
-            )
-
-            def broyden_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
-                """
-
-                self.vboxsubsolves.children[0].children = []
-                self.vboxaitken.children[0].children = []
-                self.vboxaitken.children[1].children = []
-                self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit, alpha, converge_limit,diverge_limit,max_jacobians,update_broyden]
-                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, compute_jacobian,cs_reconvergebroyden,max_converge_failures,state_vars,reraise_child_analysiserrorbroyden]
-
-
-            solver = solversnonlinear.newton.NewtonSolver()
-
-
-            solve_subsystems = v.Checkbox(
-                v_model=False,
-                label="Solve Subsystems",
-            )
-
-            max_sub_solves = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["max_sub_solves"].get("value"),
-                min=0,
-                max=100,
-                label="Max Sub Solves :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            cs_reconvergenewton = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["cs_reconverge"].get("value"),
-                label="Cs reconverge",
-            )
-
-            reraise_child_analysiserrornewton = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
-                label="Reraise child Analysiserror",
-                style_='margin-left:50px;'
-            )
-
-            def change_use_solve_subsystems(widget, event, data):
-                """
-                A function which display or not the 'max_sub_solves' widget, dependent on if you use solve subsystems
-                """
-
-                if data:
-                    self.vboxsubsolves.children[0].children = [max_sub_solves]
-                else:
-                    self.vboxsubsolves.children[0].children = []
-
-            solve_subsystems.on_event('change', change_use_solve_subsystems)
-
-            def newton_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
-                """
-
-                solve_subsystems.v_model = False
-                self.vboxaitken.children[0].children = []
-                self.vboxaitken.children[1].children = []
-                self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit, solve_subsystems, cs_reconvergenewton]
-                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, reraise_child_analysiserrornewton]
-
-
-            solver = solversnonlinear.nonlinear_block_gs.NonlinearBlockGS()
-
-
-            use_aitken = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
-                label="Use Aitken relaxation",
-            )
-
-            aitken_min_factor = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken min factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            aitken_max_factor = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken max factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;margin-left:50px;',
-            )
-
-            aitken_initial_factor = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
-                min=0,
-                max=1,
-                label="Aitken initial factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            cs_reconvergegs = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["cs_reconverge"].get("value"),
-                label="Cs reconverge",
-                style_='margin-left:50px;',
-            )
-
-            use_apply_nonlinear = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["use_apply_nonlinear"].get("value"),
-                label="Use apply nonlinear",
-                style_='width:500px;margin-left:50px;',
-            )
-
-            reraise_child_analysiserrorgs = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["reraise_child_analysiserror"].get("value"),
-                label="Reraise child Analysiserror",
-            )
-
-
-            def change_use_aitken(widget, event, data):
-                """
-                A function which display or not the aitken options widgets, dependent on if you use aitken
-                """
-
-                if data:
-                    self.vboxaitken.children[0].children = [aitken_min_factor, aitken_initial_factor]
-                    self.vboxaitken.children[1].children = [aitken_max_factor]
-                else:
-                    self.vboxaitken.children[0].children = []
-                    self.vboxaitken.children[1].children = []
-
-            use_aitken.on_event('change', change_use_aitken)
-
-            def nonlinear_block_gs_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
-                """
-
-                self.vboxsubsolves.children[0].children = []
-                use_aitken.v_model = False
-                self.vboxnonlinearsolver.children[0].children = [maxiter,rtol,err_on_non_converge,stall_limit,use_aitken,reraise_child_analysiserrorgs]
-                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol, cs_reconvergegs, use_apply_nonlinear]
-
-
-            def nonlinear_block_jac_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
-                """
-
-                self.vboxsubsolves.children[0].children = []
-                self.vboxaitken.children[0].children = []
-                self.vboxaitken.children[1].children = []
-                self.vboxnonlinearsolver.children[0].children = [maxiter, rtol, err_on_non_converge, stall_limit]
-                self.vboxnonlinearsolver.children[1].children = [atol, iprint, debug_print, stall_tol]
-
-            iprintrunonce = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            def nonlinear_runonce_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this non-linear solver
-                """
-
-                self.vboxsubsolves.children[0].children = []
-                self.vboxnonlinearsolver.children[0].children = [iprintrunonce]
-                self.vboxnonlinearsolver.children[1].children = []
-
-
-            def onchange(widget, event, data):
-                """
-                A function which start the function you need for your non-linear driver
-                """
-
-                if data == "broyden":
-                    broyden_change()
-                elif data == "newton":
-                    newton_change()
-                elif data == "nonlinear_block_gs":
-                    nonlinear_block_gs_change()
-                elif data == "nonlinear_block_jac":
-                    nonlinear_block_jac_change()
-                elif data == "nonlinear_runonce":
-                    nonlinear_runonce_change()
-
-            select = v.Select(
-                items=["broyden", "newton", "nonlinear_block_gs", "nonlinear_block_jac", "nonlinear_runonce"],
-                v_model="nonlinear_block_gs",
-                label="Nonlinear solver :",
-                outlined=True,
-                style_="margin-top:5px;",
-            )
-
-            select.on_event('change', onchange)
-
-            display(select)
-            nonlinear_block_gs_change()
-            display(self.vboxnonlinearsolver)
-            display(self.vboxaitken)
-            display(self.vboxsubsolves)
-
-
-        def linearsolvers():
-            """
-            Initialize widgets for linear solvers
-            """
-
-            solver = solvers.direct.DirectSolver()
-
-
-            iprintdirect = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            assemble_jacdirect = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
-                label="Assemble jacobian",
-                style_='margin-left:50px;width:500px;',
-            )
-
-            err_on_singular = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["err_on_singular"].get("value"),
-                label="Raise an error if LU decomposition is singular",
-            )
-
-            def direct_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = [iprintdirect, err_on_singular]
-                self.vboxlinearsolver.children[1].children = [assemble_jacdirect]
-
-
-            solver = solvers.linear_block_gs.LinearBlockGS()
-
-
-            maxitergs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
-                min=1,
-                max=10000,
-                label="Maxiter :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            atolgs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
-                min=1e-20,
-                max=1,
-                label="Absolute Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;margin-left:50px;',
-            )
-
-            rtolgs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
-                min=10e-12,
-                max=1,
-                label="Relative Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            iprintgs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            err_on_non_convergegs = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
-                label="Err on non converge",
-                style_='margin-bottom:20px;',
-            )
-
-            assemble_jacgs = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
-                label="Assemble jacobian",
-            )
-
-            use_aitkengs = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
-                label="Use Aitken relaxation",
-                style_='margin-left:50px;',
-            )
-
-            aitken_min_factorgs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken min factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            aitken_max_factorgs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken max factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;margin-top:5px;',
-            )
-
-            aitken_initial_factorgs = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken initial factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            def change_use_aitkengs(widget, event, data):
-                """
-                A function which display or not the aitken options widgets, dependent on if you use aitken
-                """
-
-                if data:
-                    self.vboxaitkenlinear.children[0].children = [aitken_min_factorgs, aitken_initial_factorgs]
-                    self.vboxaitkenlinear.children[1].children = [aitken_max_factorgs]
-                else:
-                    self.vboxaitkenlinear.children[0].children = []
-                    self.vboxaitkenlinear.children[1].children = []
-
-            use_aitkengs.on_event('change', change_use_aitkengs)
-
-            def linear_block_gs_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                use_aitkengs.v_model = False
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = [maxitergs, rtolgs, err_on_non_convergegs, assemble_jacgs]
-                self.vboxlinearsolver.children[1].children = [atolgs, iprintgs, use_aitkengs]
-
-
-            solver = solvers.linear_block_jac.LinearBlockJac()
-
-
-            maxiterjac = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
-                min=1,
-                max=10000,
-                label="Maxiter :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            atoljac = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
-                min=1e-20,
-                max=1,
-                label="Absolute Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;margin-top:5px;',
-            )
-
-            rtoljac = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
-                min=10e-12,
-                max=1,
-                label="Relative Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            iprintjac = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            err_on_non_convergejac = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
-                label="Err on non converge",
-            )
-
-            assemble_jacblockjac = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
-                label="Assemble jacobian",
-                style_='margin-left:50px;',
-            )
-
-            def linear_block_jac_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = [maxiterjac, rtoljac, err_on_non_convergejac]
-                self.vboxlinearsolver.children[1].children = [atoljac, iprintjac, assemble_jacblockjac]
-
-
-            solver = solvers.linear_runonce.LinearRunOnce()
-
-
-            iprintrunonce = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            assemble_jacrunonce = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
-                label="Assemble jacobian",
-            )
-
-            use_aitkenrunonce = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["use_aitken"].get("value"),
-                label="Use Aitken relaxation",
-                style_='margin-left:50px;width:500px;',
-            )
-
-            aitken_min_factorrunonce = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_min_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken min factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            aitken_max_factorrunonce = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_max_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken max factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;margin-top:5px;',
-            )
-
-            aitken_initial_factorrunonce = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["aitken_initial_factor"].get("value"),
-                min=0,
-                max=100,
-                label="Aitken initial factor :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            def change_use_aitkenrunonce(widget, event, data):
-                """
-                A function which display or not the aitken options widgets, dependent on if you use aitken
-                """
-
-                if data:
-                    self.vboxaitkenlinear.children[0].children = [aitken_min_factorrunonce, aitken_initial_factorrunonce]
-                    self.vboxaitkenlinear.children[1].children = [aitken_max_factorrunonce]
-                else:
-                    self.vboxaitkenlinear.children[0].children = []
-                    self.vboxaitkenlinear.children[1].children = []
-
-            use_aitkenrunonce.on_event('change', change_use_aitkenrunonce)
-
-            def linear_runonce_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                use_aitkenrunonce.v_model = False
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = [iprintrunonce, assemble_jacrunonce]
-                self.vboxlinearsolver.children[1].children = [use_aitkenrunonce]
-
-
-            def petsc_ksp_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = []
-                self.vboxlinearsolver.children[1].children = []
-
-
-            solver = solvers.scipy_iter_solver.ScipyKrylov()
-
-
-            maxiterspicy = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
-                min=1,
-                max=10000,
-                label="Maxiter :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            atolspicy = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
-                min=1e-20,
-                max=1,
-                label="Absolute Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;margin-left:50px;',
-            )
-
-            rtolspicy = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
-                min=10e-12,
-                max=1,
-                label="Relative Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            iprintspicy = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            err_on_non_convergespicy = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
-                label="Err on non converge",
-                style_='margin-bottom:20px;',
-            )
-
-            assemble_jacspicy = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
-                label="Assemble jacobian",
-            )
-
-            restart = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["restart"].get("value"),
-                min=0,
-                max=1000,
-                label="Restart :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            def scipy_iter_solver_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = [maxiterspicy, rtolspicy, err_on_non_convergespicy, assemble_jacspicy]
-                self.vboxlinearsolver.children[1].children = [atolspicy, iprintspicy, restart]
-
-
-            solver = solvers.user_defined.LinearUserDefined()
-
-
-            maxiteruser = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["maxiter"].get("value"),
-                min=1,
-                max=10000,
-                label="Maxiter :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;',
-            )
-
-            atoluser = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["atol"].get("value"),
-                min=1e-20,
-                max=1,
-                label="Absolute Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-top:5px;margin-left:50px;',
-            )
-
-            rtoluser = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["rtol"].get("value"),
-                min=10e-12,
-                max=1,
-                label="Relative Error Tolerance :",
-                type='number',
-                outlined=True,
-                style_='width:500px;',
-            )
-
-            iprintuser = v.TextField(
-                v_model=solver.options.__dict__["_dict"]["iprint"].get("value"),
-                min=0,
-                max=1,
-                label="Print the output :",
-                type='number',
-                outlined=True,
-                style_='width:500px;margin-left:50px;',
-            )
-
-            err_on_non_convergeuser = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["err_on_non_converge"].get("value"),
-                label="Err on non converge",
-            )
-
-            assemble_jacuser = v.Checkbox(
-                v_model=solver.options.__dict__["_dict"]["assemble_jac"].get("value"),
-                label="Assemble jacobian",
-                style_='margin-left:50px;',
-            )
-
-            def user_defined_change():
-                """
-                Adapt widgets & vbox widgets to only display widgets you need in this linear solver
-                """
-
-                self.vboxaitkenlinear.children[0].children = []
-                self.vboxaitkenlinear.children[1].children = []
-                self.vboxlinearsolver.children[0].children = [maxiteruser, rtoluser, err_on_non_convergeuser]
-                self.vboxlinearsolver.children[1].children = [atoluser, iprintuser, assemble_jacuser]
-
-
-            def onchange(widget, event, data):
-                """
-                A function which start the function you need for your linear driver
-                """
-
-                if data == "direct":
-                    direct_change()
-                elif data == "linear_block_gs":
-                    linear_block_gs_change()
-                elif data == "linear_block_jac":
-                    linear_block_jac_change()
-                elif data == "linear_runonce":
-                    linear_runonce_change()
-                elif data == "petsc_ksp":
-                    petsc_ksp_change()
-                elif data == "scipy_iter_solver":
-                    scipy_iter_solver_change()
-                elif data == "user_defined":
-                    user_defined_change()
-
-            select = v.Select(
-                items=[
-                    "direct",
-                    "linear_block_gs",
-                    "linear_block_jac",
-                    "linear_runonce",
-                    "petsc_ksp",
-                    "scipy_iter_solver",
-                    "user_defined",
-                ],
-                v_model="direct",
-                label="Linear solvers :",
-                outlined=True,
-                style_='margin-top:5px;',
-            )
-
-            select.on_event('change', onchange)
-
-            display(select)
-            direct_change()
-            display(self.vboxlinearsolver)
-            display(self.vboxaitkenlinear)
-
-
-        def model():
-            """
-            Initialize widgets for the model, her subgroups & components
-            """
-
-            self.vboxmodel.children[0].children = []
-            self.vboxmodel.children[1].children = []
-
-            add = v.Btn(
-                color="primary",
-                elevation=4,
-                style_="width:150px",
-                children=["Add subgroup"],
-            )
-
-            def addsubgroup(widget, event, data):
-
-
-                subgroup = v.TextField(
-                    label="Subgroup name",
-                    outlined=True,
-                    style_='width:500px;margin-top:5px;',
-                )
-
-                usesolver = v.Checkbox(
-                    v_model=False,
-                    label="Use solver",
-                )
-
-                component = v.Select(
-                    items=[
-                        "Component 1",
-                        "Component 2"
-                    ],
-                    v_model="Component 1",
-                    label="Component :",
-                    outlined=True,
-                    style_='width:500px;margin-top:5px;margin-left:50px;',
-                )
-
-                self.vboxmodel.children[0].children = [subgroup, usesolver]
-                self.vboxmodel.children[1].children = [component]
-
-            add.on_event("click", addsubgroup)
-
-            display(add)
-            display(self.vboxmodel)
-            button()
-            display(self.button)
-
 
         title()
         inputoutput()
         drivers()
-        nonlinearsolvers()
-        # linearsolvers()
+        self.nonlinear = NonLinearSolver()
+        self.nonlinear.display()
         self.linear = LinearSolver()
         self.linear.display()
-        model()
+        button()
+        display(self.button)
 
 
     def display(self):

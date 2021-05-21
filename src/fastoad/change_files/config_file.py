@@ -16,7 +16,6 @@ Config file class
 
 from IPython.display import clear_output, display, Markdown
 import ipyvuetify as v
-import ipywidgets as widgets
 from fastoad.change_files.model_class import Model
 
 class ConfigFile:
@@ -38,7 +37,7 @@ class ConfigFile:
         self.btn = v.Btn(
             color="blue",
             elevation=4,
-            style_="width:150px",
+            style_="width:150px;margin:auto",
             outlined=True,
             children=[v.Icon(children=["get_app"]), "Save"],
         )
@@ -58,7 +57,6 @@ class ConfigFile:
     def display(self):
 
         self.initialize()
-        clear_output()
         self.model.display()
         display(self.btn)
 
