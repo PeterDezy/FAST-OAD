@@ -47,7 +47,6 @@ class Model:
             v_model=self.name,
             label="Name :",
             outlined=True,
-            clearable=True,
             style_="margin-top:20px",
         )
 
@@ -73,6 +72,8 @@ class Model:
 
     def save(self)->str:
 
+        self.name = self.namew.v_model
+
         self.linear.save()
 
         self.nonlinear.save()
@@ -88,9 +89,15 @@ class Model:
 
         return self.txt
 
+    def disabled_name(self):
+
+        self.namew.readonly = True
+
     def display(self):
 
         self.initialize()
+        if (self.name == "model"):
+            self.disabled_name()
         display(self.namew)
         self.linear.display()
         self.nonlinear.display()
