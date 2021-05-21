@@ -26,6 +26,10 @@ class Driver:
 
         self.select = None
 
+        self.generator = None
+
+        self.selectDriver = None
+
         # Vbox to display several widgets and hide them
         self.vboxdriver = v.Html(
             tag="div",

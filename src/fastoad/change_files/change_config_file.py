@@ -22,7 +22,7 @@ import openmdao.solvers.nonlinear as solversnonlinear
 import openmdao.solvers.linear as solvers
 from fastoad.change_files.linear_solver_class import LinearSolver
 from fastoad.change_files.non_linear_solver_class import NonLinearSolver
-
+from fastoad.change_files.driver_class import Driver
 
 class ChangeConfigFile:
     """
@@ -51,53 +51,11 @@ class ChangeConfigFile:
 
         self.textfile = ""
 
-        self.selectDriver = None
-
-        self.generator = None
+        self.driver = None
 
         self.linear = None
 
         self.nonlinear = None
-
-        # Vbox to display several widgets and hide them
-        self.vboxdriver = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
-        self.vboxdoedriver = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
-        self.vboxnonlinearsolver = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
 
         self.vboxaitken = v.Html(
             tag="div",
@@ -125,32 +83,6 @@ class ChangeConfigFile:
             ],
         )
 
-        self.vboxlinearsolver = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
-        self.vboxaitkenlinear = v.Html(
-            tag="div",
-            class_="d-flex justify-center mb-6",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
         self.button = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -160,16 +92,6 @@ class ChangeConfigFile:
                 ),
             ],
         )
-
-        self.vboxgenerator = v.Html(
-            tag="div",
-            children=[
-                v.Html(
-                    tag="div", children=[]
-                ),
-            ],
-        )
-
 
     def read(self):
         """
@@ -351,6 +273,7 @@ class ChangeConfigFile:
 
         title()
         inputoutput()
+        self.driver = Driver()
         self.nonlinear = NonLinearSolver()
         self.nonlinear.display()
         self.linear = LinearSolver()
