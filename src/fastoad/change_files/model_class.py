@@ -41,6 +41,19 @@ class Model:
 
         self.txt = ""
 
+        self.vboxmodels = v.Html(
+            tag="div",
+            class_="d-flex justify-center mb-6",
+            children=[
+                v.Html(
+                    tag="div", children=[]
+                ),
+                v.Html(
+                    tag="div", children=[]
+                ),
+            ],
+        )
+
     def initialize(self):
 
         self.namew = v.TextField(
@@ -67,15 +80,11 @@ class Model:
 
         def on_addMod_button_clicked(widget, event, data):
 
-            self.name = 'subgroup'
-            self.initialize()
+            self.models.append(Model("subgroup" + str(len(self.models)+1)))
+            if(len(self.models)==1):
+                self.models[0].display()
 
         self.addMod.on_event("click", on_addMod_button_clicked)
-
-        display(self.namew)
-        self.linear.display()
-        self.nonlinear.display()
-        display(self.addMod)
 
     def save(self)->str:
 
@@ -85,6 +94,8 @@ class Model:
 
         self.nonlinear.save()
 
+        self.txt = ""
+
         self.txt += self.name+":\n"
 
         self.txt += "\t"+self.linear.solver_value()+"\n"
@@ -92,15 +103,17 @@ class Model:
         self.txt += "\t"+self.nonlinear.solver_value()+"\n"
 
         for i in self.models:
-            self.txt += "\t"+i.save()+"\n"
+            texte = i.save()
+            ligne = texte.splitlines()
+            for a in range(0,len(ligne)):
+                self.txt += "\t"+ligne[a]+"\n"
 
         return self.txt
 
     def display(self):
 
         self.initialize()
-
-
-    def addsub(self):
-        for i in self.models:
-            i.display()
+        display(self.namew)
+        self.linear.display()
+        self.nonlinear.display()
+        display(self.vboxmodels, self.addMod)

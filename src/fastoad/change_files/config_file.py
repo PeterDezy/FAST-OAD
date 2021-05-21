@@ -50,6 +50,8 @@ class ConfigFile:
 
     def save(self):
 
+        self.txt = ""
+
         self.txt = self.model.save()
 
         display(Markdown("```yaml\n" + self.txt + "\n```"))
