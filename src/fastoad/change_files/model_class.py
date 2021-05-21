@@ -41,7 +41,7 @@ class Model:
 
         self.txt = ""
 
-        self.vboxmodels = v.Html(
+        self.vbox = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
             children=[
@@ -80,11 +80,41 @@ class Model:
 
         def on_addMod_button_clicked(widget, event, data):
 
-            self.models.append(Model("subgroup" + str(len(self.models)+1)))
-            if(len(self.models)==1):
-                self.models[0].display()
+            if (len(self.models) != 10):
+                self.models.append(Model("subgroup" + str(len(self.models)+1)))
+                if (len(self.models) == 1):
+                    self.models[0].display()
+                elif (len(self.models) == 2):
+                    self.models[1].display()
+                elif (len(self.models) == 3):
+                    self.models[2].display()
+                elif (len(self.models) == 4):
+                    self.models[3].display()
+                elif (len(self.models) == 5):
+                    self.models[4].display()
+                elif (len(self.models) == 6):
+                    self.models[5].display()
+                elif (len(self.models) == 7):
+                    self.models[6].display()
+                elif (len(self.models) == 8):
+                    self.models[7].display()
+                elif (len(self.models) == 9):
+                    self.models[8].display()
+                elif (len(self.models) == 10):
+                    self.models[9].display()
+                    self.vbox.children = []
 
         self.addMod.on_event("click", on_addMod_button_clicked)
+
+        self.delMod = v.Btn(
+            color="blue",
+            elevation=4,
+            style_="width:150px",
+            outlined=True,
+            children=["Delete last subgroup"],
+        )
+
+        self.vbox.children = [self.addMod]
 
     def save(self)->str:
 
@@ -116,4 +146,4 @@ class Model:
         display(self.namew)
         self.linear.display()
         self.nonlinear.display()
-        display(self.vboxmodels, self.addMod)
+        display(self.vbox)
