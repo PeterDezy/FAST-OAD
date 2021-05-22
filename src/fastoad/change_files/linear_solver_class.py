@@ -27,6 +27,10 @@ class LinearSolver:
 
         self.select = None
 
+        self.panel = None
+
+        self.expansionPanel = None
+
         self.vboxlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -544,7 +548,7 @@ class LinearSolver:
 
         self.select.on_event('change', onchange)
 
-        panel = v.ExpansionPanel(
+        self.panel = v.ExpansionPanel(
             children=[
                 v.ExpansionPanelHeader(
                     color='#eaeaea',
@@ -557,12 +561,12 @@ class LinearSolver:
             ]
         )
 
-        expansionPanel = v.ExpansionPanels(
+        self.expansionPanel = v.ExpansionPanels(
             focusable=True,
-            children=[panel],
+            children=[self.panel],
         )
 
-        display(expansionPanel)
+        display(self.expansionPanel)
         direct_change()
 
     def save(self):
