@@ -103,7 +103,7 @@ class Model:
         def on_addMod_button_clicked (widget, event, data):
 
             if (len(self.models) != 10):
-                self.models.append(Model("subgroup" + str(len(self.models)+1)))
+                self.models.append(Model(self.name+ str(len(self.models)+1)))
                 if (len(self.models) == 1):
                     self.models[0].display()
                 elif (len(self.models) == 2):
@@ -128,22 +128,7 @@ class Model:
 
         self.addMod.on_event("click", on_addMod_button_clicked)
 
-        self.delMod = v.Btn(
-            color="blue",
-            elevation=4,
-            style_="width:240px; margin-left:50px;",
-            outlined=True,
-            children=["Delete last subgroup"],
-        )
-
-        def on_delMod_button_clicked (widget, event, data):
-
-            self.models.pop()
-
-        self.delMod.on_event("click", on_delMod_button_clicked)
-
-        self.vbox.children[0].children = [self.addMod]
-        self.vbox.children[1].children = [self.delMod]
+        self.vbox.children = [self.addMod]
 
     def save(self)->str:
 
