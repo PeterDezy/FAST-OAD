@@ -27,6 +27,10 @@ class NonLinearSolver:
 
         self.select = None
 
+        self.panel = None
+
+        self.expansionPanel = None
+
         self.vboxnonlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -430,7 +434,7 @@ class NonLinearSolver:
 
         self.select.on_event('change', onchange)
 
-        panel = v.ExpansionPanel(
+        self.panel = v.ExpansionPanel(
             children=[
                 v.ExpansionPanelHeader(
                     color='#eaeaea',
@@ -443,12 +447,12 @@ class NonLinearSolver:
             ]
         )
 
-        expansionPanel = v.ExpansionPanels(
+        self.expansionPanel = v.ExpansionPanels(
             focusable=True,
-            children=[panel],
+            children=[self.panel],
         )
 
-        display(expansionPanel)
+        display(self.expansionPanel)
         nonlinear_block_gs_change()
 
     def save(self):

@@ -29,6 +29,8 @@ class Model:
 
         self.namew = None
 
+        self.usesolver = None
+
         self.linear = None
 
         self.nonlinear = None
@@ -36,6 +38,8 @@ class Model:
         self.models = []
 
         self.addMod = None
+
+        self.delMod = None
 
         self.components = []
 
@@ -63,6 +67,12 @@ class Model:
             style_="margin-top:20px",
         )
 
+        self.usesolver = v.Checkbox(
+            v_model=True,
+            label='Use solver',
+            style_="margin-bottom:10px",
+        )
+
         if self.namew.v_model == 'model':
             self.namew.readonly = True
 
@@ -70,15 +80,27 @@ class Model:
 
         self.nonlinear = NonLinearSolver()
 
+        def disabled (widget, event, data):
+
+            if self.usesolver.v_model == False:
+                self.linear.expansionPanel.disabled = True
+                self.nonlinear.expansionPanel.disabled = True
+            else:
+                self.linear.expansionPanel.disabled = False
+                self.nonlinear.expansionPanel.disabled = False
+
+
+        self.usesolver.on_event("click", disabled)
+
         self.addMod = v.Btn(
             color="blue",
             elevation=4,
-            style_="width:150px",
+            style_="width:240px",
             outlined=True,
             children=["Add subgroup"],
         )
 
-        def on_addMod_button_clicked(widget, event, data):
+        def on_addMod_button_clicked (widget, event, data):
 
             if (len(self.models) != 10):
                 self.models.append(Model("subgroup" + str(len(self.models)+1)))
@@ -109,12 +131,13 @@ class Model:
         self.delMod = v.Btn(
             color="blue",
             elevation=4,
-            style_="width:150px",
+            style_="width:240px; margin-left:50px;",
             outlined=True,
             children=["Delete last subgroup"],
         )
 
-        self.vbox.children = [self.addMod]
+        self.vbox.children[0].children = [self.addMod]
+        self.vbox.children[1].children = [self.delMod]
 
     def save(self)->str:
 
@@ -143,7 +166,7 @@ class Model:
     def display(self):
 
         self.initialize()
-        display(self.namew)
+        display(self.namew, self.usesolver)
         self.linear.display()
         self.nonlinear.display()
         display(self.vbox)
