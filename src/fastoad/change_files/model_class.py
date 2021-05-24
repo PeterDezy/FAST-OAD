@@ -145,14 +145,14 @@ class Model:
         self.txt += "\t"
 
         if self.usesolver.v_model == False:
-            self.txt += "#"
+            self.txt += "# "
 
         self.txt += self.linear.solver_value()+"\n"
 
         self.txt += "\t"
 
         if self.usesolver.v_model == False:
-            self.txt += "#"
+            self.txt += "# "
 
         self.txt += self.nonlinear.solver_value()+"\n"
 
