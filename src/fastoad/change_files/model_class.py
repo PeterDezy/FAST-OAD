@@ -58,6 +58,220 @@ class Model:
             ],
         )
 
+    def newvbox(self):
+
+        if len(self.models) == 1:
+
+            self.vbox2 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox.children[0].children = []
+            self.vbox.children[1].children = []
+
+            self.vbox2.children[0].children = [self.addMod]
+            self.vbox2.children[1].children = [self.delMod]
+
+            display(self.vbox2)
+
+        elif len(self.models) == 2:
+
+            self.vbox3 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox2.children[0].children = []
+            self.vbox2.children[1].children = []
+
+            self.vbox3.children[0].children = [self.addMod]
+            self.vbox3.children[1].children = [self.delMod]
+
+            display(self.vbox3)
+
+        elif len(self.models) == 3:
+
+            self.vbox4 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox3.children[0].children = []
+            self.vbox3.children[1].children = []
+
+            self.vbox4.children[0].children = [self.addMod]
+            self.vbox4.children[1].children = [self.delMod]
+
+            display(self.vbox4)
+
+        elif len(self.models) == 4:
+
+            self.vbox5 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox4.children[0].children = []
+            self.vbox4.children[1].children = []
+
+            self.vbox5.children[0].children = [self.addMod]
+            self.vbox5.children[1].children = [self.delMod]
+
+            display(self.vbox5)
+
+        elif len(self.models) == 5:
+
+            self.vbox6 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox5.children[0].children = []
+            self.vbox5.children[1].children = []
+
+            self.vbox6.children[0].children = [self.addMod]
+            self.vbox6.children[1].children = [self.delMod]
+
+            display(self.vbox6)
+
+        elif len(self.models) == 6:
+
+            self.vbox7 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox6.children[0].children = []
+            self.vbox6.children[1].children = []
+
+            self.vbox7.children[0].children = [self.addMod]
+            self.vbox7.children[1].children = [self.delMod]
+
+            display(self.vbox7)
+
+        elif len(self.models) == 7:
+
+            self.vbox8 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox7.children[0].children = []
+            self.vbox7.children[1].children = []
+
+            self.vbox8.children[0].children = [self.addMod]
+            self.vbox8.children[1].children = [self.delMod]
+
+            display(self.vbox8)
+
+        elif len(self.models) == 8:
+
+            self.vbox9 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox8.children[0].children = []
+            self.vbox8.children[1].children = []
+
+            self.vbox9.children[0].children = [self.addMod]
+            self.vbox9.children[1].children = [self.delMod]
+
+            display(self.vbox9)
+
+        elif len(self.models) == 9:
+
+            self.vbox10 = v.Html(
+                tag="div",
+                class_="d-flex justify-center mb-6",
+                children=[
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                    v.Html(
+                        tag="div", children=[]
+                    ),
+                ],
+            )
+
+            self.vbox9.children[0].children = []
+            self.vbox9.children[1].children = []
+
+            self.vbox10.children[0].children = [self.addMod]
+            self.vbox10.children[1].children = [self.delMod]
+
+            display(self.vbox10)
+
+        elif len(self.models) == 10:
+
+            self.vbox10.children[0].children = [self.delMod]
+            self.vbox10.children[1].children = []
+
     def initialize(self):
 
         self.namew = v.TextField(
@@ -105,26 +319,34 @@ class Model:
             if (len(self.models) != 10):
                 self.models.append(Model("subgroup" + str(len(self.models)+1)))
                 if (len(self.models) == 1):
-                    self.models[0].display()
+                    self.models[0].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 2):
-                    self.models[1].display()
+                    self.models[1].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 3):
-                    self.models[2].display()
+                    self.models[2].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 4):
-                    self.models[3].display()
+                    self.models[3].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 5):
-                    self.models[4].display()
+                    self.models[4].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 6):
-                    self.models[5].display()
+                    self.models[5].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 7):
-                    self.models[6].display()
+                    self.models[6].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 8):
-                    self.models[7].display()
+                    self.models[7].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 9):
-                    self.models[8].display()
+                    self.models[8].newsub()
+                    self.newvbox()
                 elif (len(self.models) == 10):
-                    self.models[9].display()
-                    self.vbox.children = []
+                    self.models[9].newsub()
 
         self.addMod.on_event("click", on_addMod_button_clicked)
 
@@ -186,3 +408,9 @@ class Model:
         self.linear.display()
         self.nonlinear.display()
         display(self.vbox)
+
+    def newsub(self):
+        self.initialize()
+        display(self.namew, self.usesolver)
+        self.linear.display()
+        self.nonlinear.display()

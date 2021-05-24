@@ -44,6 +44,7 @@ class ChangeConfigFile:
 
         self.btn = None
 
+
     def save(self, widget, event, data):
         """
         Save the new values in the configuration file
