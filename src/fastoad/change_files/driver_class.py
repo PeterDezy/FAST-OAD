@@ -16,6 +16,7 @@ Driver class
 
 from IPython.display import clear_output, display
 import ipyvuetify as v
+import openmdao.drivers as driver
 
 class Driver:
 
@@ -891,12 +892,13 @@ class Driver:
         scipy_optimizer_change()
 
 
-    def save(self):
+    def save(self) -> str :
         """
         Save the new values in the configuration file
         """
 
-        self.driver = "driver: "
+        self.driver = "# Definition of problem driver assuming the OpenMDAO convention \"import openmdao.api as om\"\n"
+        self.driver += "driver: "
         if (self.selectDriver.v_model == "differential_evolution_driver"):
             self.driver += "om.DifferentialEvolutionDriver("
             self.driver += "max_gen=" + str(self.vboxdriver.children[0].children[0].v_model)
@@ -954,10 +956,10 @@ class Driver:
             self.driver += "optimizer=\'" + self.vboxdriver.children[0].children[0].v_model + "\'"
             self.driver += ",tol=" + str(self.vboxdriver.children[1].children[0].v_model)
             self.driver += ",maxiter=" + str(self.vboxdriver.children[0].children[1].v_model)
-            self.driver += ",disp=" + str(self.vboxdriver.children[1].children[1].v_model) + ")"
-
-
-    def driver_value(self) -> str :
+            self.driver += ",disp=" + str(self.vboxdriver.children[1].children[1].v_model) + ")\n\n"
+            self.driver += "# Definition of OpenMDAO model\n"
+            self.driver += "# Although \"model\" is a mandatory name for the top level of the model, its\n"
+            self.driver += "# sub-components can be freely named by user\n"
         return self.driver
 
     def display(self):

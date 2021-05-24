@@ -136,6 +136,12 @@ class Model:
             children=["Delete last subgroup"],
         )
 
+        def on_delMod_button_clicked (widget, event, data):
+
+            self.models.pop()
+
+        self.delMod.on_event("click", on_delMod_button_clicked)
+
         self.vbox.children[0].children = [self.addMod]
         self.vbox.children[1].children = [self.delMod]
 
@@ -151,9 +157,19 @@ class Model:
 
         self.txt += self.name+":\n"
 
-        self.txt += "\t"+self.linear.solver_value()+"\n"
+        self.txt += "\t"
 
-        self.txt += "\t"+self.nonlinear.solver_value()+"\n"
+        if self.usesolver.v_model == False:
+            self.txt += "#"
+
+        self.txt += self.linear.solver_value()+"\n"
+
+        self.txt += "\t"
+
+        if self.usesolver.v_model == False:
+            self.txt += "#"
+
+        self.txt += self.nonlinear.solver_value()+"\n"
 
         for i in self.models:
             texte = i.save()
