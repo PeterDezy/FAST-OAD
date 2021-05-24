@@ -28,6 +28,8 @@ class ConfigFile:
 
         self.btn = None
 
+        self.initialize()
+
     def initialize(self):
 
         self.model = Model("model")
@@ -58,7 +60,6 @@ class ConfigFile:
 
     def display(self):
 
-        self.initialize()
         self.model.display()
         display(self.btn)
 
