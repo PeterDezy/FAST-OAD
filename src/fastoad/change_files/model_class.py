@@ -70,7 +70,7 @@ class Model:
         self.usesolver = v.Checkbox(
             v_model=True,
             label='Use solver',
-            style_="margin-bottom:10px",
+            style_="margin-bottom:10px; margin-left:10px;",
         )
 
         if self.namew.v_model == 'model':
@@ -90,7 +90,7 @@ class Model:
                 self.nonlinear.expansionPanel.disabled = False
 
 
-        self.usesolver.on_event("click", disabled)
+        self.usesolver.on_event("change", disabled)
 
         self.addMod = v.Btn(
             color="blue",
