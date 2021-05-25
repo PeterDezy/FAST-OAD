@@ -58,6 +58,8 @@ class Model:
             ],
         )
 
+        self.initialize()
+
     def initialize(self):
 
         self.namew = v.TextField(
@@ -166,7 +168,6 @@ class Model:
 
     def display(self):
 
-        self.initialize()
         display(self.namew, self.usesolver)
         self.linear.display()
         self.nonlinear.display()
