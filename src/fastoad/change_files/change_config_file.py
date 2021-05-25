@@ -30,24 +30,25 @@ class ChangeConfigFile:
         # The path & name of the data file that will be viewed/edited
         self.file_name = "./workdir/oad_process.yml"
 
+        # A variable which take the title_and_files class
         self.title_and_files = None
 
+        # A variable which take the driver class
         self.driver = None
 
-        self.linear = None
-
-        self.nonlinear = None
-
+        # A variable which take the model class
         self.model = None
 
+        # The text to write on the yaml file
         self.txt = None
 
+        # Widgets button to save the values
         self.btn = None
 
 
     def save(self, widget, event, data):
         """
-        Save the new values in the configuration file
+        Save the new values in the configuration file and display an overview
         """
 
         success = v.Alert(
@@ -88,7 +89,7 @@ class ChangeConfigFile:
 
     def display(self):
         """
-        Read the configuration file, and display all widgets
+        Display all widgets
         """
 
         clear_output(wait=True)

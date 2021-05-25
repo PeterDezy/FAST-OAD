@@ -14,12 +14,15 @@ Title & Input/Output file class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import display
 import ipyvuetify as v
 from ruamel.yaml import YAML
 import openmdao.drivers as driver
 
 class TitleAndFiles:
+    """
+    A class which display the title and the input / output file widgets
+    """
 
     def __init__(self):
 
@@ -29,7 +32,15 @@ class TitleAndFiles:
         # Ruamel yaml ( read the .yml file )
         self.yaml = YAML()
 
+        # Text to return in the yaml file
         self.title_and_files = None
+
+        # Ipyvuetify widgets
+        self.input = None
+
+        self.output = None
+
+        self.title = None
 
         # Parameters config file
         self.inputf = None
@@ -38,15 +49,9 @@ class TitleAndFiles:
 
         self.titlef = None
 
-        self.input = None
-
-        self.output = None
-
-        self.title = None
-
     def read(self):
         """
-        Read the configuration file
+        Read the configuration file to display the title and the input / output file values
         """
 
         with open(self.file_name) as file:
@@ -61,6 +66,9 @@ class TitleAndFiles:
         self.outputf = self.outputf[2: len(self.outputf) - 4]
 
     def initialize(self):
+        """
+        All ipyvuetify widgets to display for the title and the input / output file
+        """
 
         self.title = v.TextField(
             v_model=self.titlef,
@@ -69,13 +77,6 @@ class TitleAndFiles:
             clearable=True,
             style_="margin-top:20px",
         )
-
-        def title():
-            """
-            Display the title widget
-            """
-
-            display(self.title)
 
         self.input = v.TextField(
             v_model=self.inputf,
@@ -95,19 +96,11 @@ class TitleAndFiles:
             style_="margin-top:5px",
         )
 
-        def inputoutput():
-            """
-            Display the input & output widgets
-            """
-
-            display(self.input, self.output)
-
-        title()
-        inputoutput()
+        display(self.title, self.input, self.output)
 
     def save(self) -> str :
         """
-        Save the new values in the configuration file
+        Return the text to write in the yaml file for the title and the input / output file
         """
 
         self.title_and_files = "title: "

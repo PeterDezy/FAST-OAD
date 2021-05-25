@@ -14,23 +14,28 @@ Non Linear solver class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import display
 import ipyvuetify as v
 import openmdao.solvers.nonlinear as solversnonlinear
 
 class NonLinearSolver:
+    """
+    A class which display the nonlinear solver widgets
+    """
 
     def __init__(self):
 
-        # Parameters config file
+        # Text to return in the yaml file
         self.solver = None
 
+        # Ipyvuetify widgets
         self.select = None
 
         self.panel = None
 
         self.expansionPanel = None
 
+        # Vbox to display several widgets and hide them
         self.vboxnonlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -71,9 +76,8 @@ class NonLinearSolver:
         )
 
     def initialize(self):
-
         """
-        Initialize widgets for non-linear solvers
+        All ipyvuetify widgets to display for the nonlinear solver
         """
 
         solver = solversnonlinear.broyden.BroydenSolver()
@@ -456,6 +460,9 @@ class NonLinearSolver:
         nonlinear_block_gs_change()
 
     def save(self):
+        """
+        Return the text to write in the yaml file for the nonlinear solver
+        """
 
         self.solver = "nonlinear_solver: "
         if (self.select.v_model == "broyden"):

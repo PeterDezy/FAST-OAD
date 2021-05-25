@@ -14,17 +14,21 @@ Driver class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import display
 import ipyvuetify as v
 import openmdao.drivers as driver
 
 class Driver:
+    """
+    A class which display the driver widgets
+    """
 
     def __init__(self):
 
-        # Parameters config file
+        # Text to return in the yaml file
         self.driver = None
 
+        # Ipyvuetify widgets
         self.select = None
 
         self.generator = None
@@ -68,6 +72,9 @@ class Driver:
         )
 
     def initialize(self):
+        """
+        All ipyvuetify widgets to display for the driver
+        """
 
         drive = driver.scipy_optimizer.ScipyOptimizeDriver()
 
@@ -894,7 +901,7 @@ class Driver:
 
     def save(self) -> str :
         """
-        Save the new values in the configuration file
+        Return the text to write in the yaml file for the driver
         """
 
         self.driver = "# Definition of problem driver assuming the OpenMDAO convention \"import openmdao.api as om\"\n"

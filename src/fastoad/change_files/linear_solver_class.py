@@ -14,23 +14,28 @@ Linear solver class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import display
 import ipyvuetify as v
 import openmdao.solvers.linear as solvers
 
 class LinearSolver:
+    """
+    A class which display the linear solver widgets
+    """
 
     def __init__(self):
 
-        # Parameters config file
+        # Text to return in the yaml file
         self.solver = None
 
+        # Ipyvuetify widgets
         self.select = None
 
         self.panel = None
 
         self.expansionPanel = None
 
+        # Vbox to display several widgets and hide them
         self.vboxlinearsolver = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -58,9 +63,8 @@ class LinearSolver:
         )
 
     def initialize(self):
-
         """
-        Initialize widgets for linear solvers
+        All ipyvuetify widgets to display for the linear solver
         """
 
         solver = solvers.direct.DirectSolver()
@@ -570,6 +574,9 @@ class LinearSolver:
         direct_change()
 
     def save(self):
+        """
+        Return the text to write in the yaml file for the linear solver
+        """
 
         self.solver = "linear_solver: "
         if (self.select.v_model == "direct"):
