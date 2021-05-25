@@ -81,7 +81,7 @@ class TitleAndFiles:
         self.input = v.TextField(
             v_model=self.inputf,
             label="Input_file :",
-            suffix=".yml",
+            suffix=".xml",
             outlined=True,
             clearable=True,
             style_="margin-top:5px",
@@ -90,7 +90,7 @@ class TitleAndFiles:
         self.output = v.TextField(
             v_model=self.outputf,
             label="Output_file :",
-            suffix=".yml",
+            suffix=".xml",
             outlined=True,
             clearable=True,
             style_="margin-top:5px",
