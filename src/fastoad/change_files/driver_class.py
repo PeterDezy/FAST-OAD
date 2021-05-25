@@ -963,10 +963,11 @@ class Driver:
             self.driver += "optimizer=\'" + self.vboxdriver.children[0].children[0].v_model + "\'"
             self.driver += ",tol=" + str(self.vboxdriver.children[1].children[0].v_model)
             self.driver += ",maxiter=" + str(self.vboxdriver.children[0].children[1].v_model)
-            self.driver += ",disp=" + str(self.vboxdriver.children[1].children[1].v_model) + ")\n\n"
-            self.driver += "# Definition of OpenMDAO model\n"
-            self.driver += "# Although \"model\" is a mandatory name for the top level of the model, its\n"
-            self.driver += "# sub-components can be freely named by user\n"
+            self.driver += ",disp=" + str(self.vboxdriver.children[1].children[1].v_model) + ")"
+        self.driver += "\n\n"
+        self.driver += "# Definition of OpenMDAO model\n"
+        self.driver += "# Although \"model\" is a mandatory name for the top level of the model, its\n"
+        self.driver += "# sub-components can be freely named by user\n"
         return self.driver
 
     def display(self):

@@ -78,7 +78,23 @@ class ChangeConfigFile:
             children=[v.Icon(children=["get_app"]), "Save"],
         )
 
+        self.reset = v.Btn(
+            color="red",
+            elevation=4,
+            style_="width:150px;margin:auto;",
+            outlined=True,
+            children=["Reset"],
+        )
+
+        def resetwidgets(widget, event, data):
+
+            clear_output(wait=True)
+            self.display()
+
+
         self.btn.on_event("click", self.save)
+
+        self.reset.on_event("click", resetwidgets)
 
         self.title_and_files = TitleAndFiles()
         self.title_and_files.display()
@@ -94,4 +110,5 @@ class ChangeConfigFile:
 
         clear_output(wait=True)
         self._initialize_widgets()
+        display(self.reset)
         display(self.btn)
