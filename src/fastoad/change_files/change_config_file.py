@@ -58,7 +58,7 @@ class ChangeConfigFile:
         )
 
         self.txt = self.title_and_files.save()
-        self.txt += self.driver.save()+"\n"
+        self.txt += self.driver.save()
         self.txt += self.model.save()
 
         display(success)
