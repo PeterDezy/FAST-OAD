@@ -637,8 +637,15 @@ class LinearSolver:
             self.solver += ",assemble_jac="+str(self.vboxlinearsolver.children[1].children[2].v_model) + ")"
 
     def solver_value(self) -> str :
+        """
+        Return the text to write in the yaml file for the linear solver
+        """
+
         return self.solver
 
     def display(self):
+        """
+        Call the necessary functions to display the widgets
+        """
 
         self.initialize()

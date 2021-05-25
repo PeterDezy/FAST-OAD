@@ -970,5 +970,8 @@ class Driver:
         return self.driver
 
     def display(self):
+        """
+        Call the necessary functions to display the widgets
+        """
 
         self.initialize()

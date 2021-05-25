@@ -536,8 +536,15 @@ class NonLinearSolver:
             self.solver += "iprint="+str(self.vboxnonlinearsolver.children[0].children[0].v_model)+")"
 
     def solver_value(self) -> str :
+        """
+        Return the text to write in the yaml file for the nonlinear solver
+        """
+
         return self.solver
 
     def display(self):
+        """
+        Call the necessary functions to display the widgets
+        """
 
         self.initialize()

@@ -118,6 +118,9 @@ class TitleAndFiles:
         return self.title_and_files
 
     def display(self):
+        """
+        Call the necessary functions to display the widgets
+        """
 
         self.read()
         self.initialize()

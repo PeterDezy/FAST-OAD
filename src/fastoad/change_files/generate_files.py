@@ -5,6 +5,10 @@ import fastoad.api as oad
 
 
 class GenerateFiles:
+    """
+    Generate the configuration file
+    """
+
     DATA_FOLDER_PATH = "data"
 
     WORK_FOLDER_PATH = "workdir"

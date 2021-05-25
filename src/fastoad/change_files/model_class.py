@@ -14,37 +14,46 @@ Model class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display, Markdown
+from IPython.display import display
 import ipyvuetify as v
-import ipywidgets as widgets
 from fastoad.change_files.linear_solver_class import LinearSolver
 from fastoad.change_files.non_linear_solver_class import NonLinearSolver
 
 class Model:
+    """
+    A class which display the model widgets ( nonlinear & linear solver, subgroup, component )
+    """
 
     def __init__(self, name):
 
-        # Parameters config file
+        # Name of the model
         self.name = name
 
+        # Widget TextField to change the name of the model
         self.namew = None
 
+        # Widget checkbox to use solver or not
         self.usesolver = None
 
+        # A variable which take the linear solver class
         self.linear = None
 
+        # A variable which take the nonlinear solver class
         self.nonlinear = None
 
-        self.models = []
-
+        # Widget button to add a subgroup
         self.addMod = None
 
-        self.delMod = None
+        # List of the models
+        self.models = []
 
+        # List of the components
         self.components = []
 
+        # The text to write on the yaml file
         self.txt = ""
 
+        # Vbox to display several widgets and hide them
         self.vbox = v.Html(
             tag="div",
             class_="d-flex justify-center mb-6",
@@ -58,9 +67,13 @@ class Model:
             ],
         )
 
+        # Call the initialize function
         self.initialize()
 
     def initialize(self):
+        """
+        All ipyvuetify widgets to display for the model
+        """
 
         self.namew = v.TextField(
             v_model=self.name,
@@ -83,6 +96,9 @@ class Model:
         self.nonlinear = NonLinearSolver()
 
         def disabled (widget, event, data):
+            """
+            Disabled linear & nonlinear solver widgets if you don't use it
+            """
 
             if self.usesolver.v_model == False:
                 self.linear.expansionPanel.disabled = True
@@ -103,6 +119,9 @@ class Model:
         )
 
         def on_addMod_button_clicked (widget, event, data):
+            """
+            Display the widgets for each subgroup ( until 10 )
+            """
 
             if (len(self.models) != 10):
                 self.models.append(Model(self.name+ str(len(self.models)+1)))
@@ -133,6 +152,9 @@ class Model:
         self.vbox.children = [self.addMod]
 
     def save(self)->str:
+        """
+        Return the text to write in the yaml file for the model
+        """
 
         self.name = self.namew.v_model
 
@@ -167,6 +189,9 @@ class Model:
         return self.txt
 
     def display(self):
+        """
+        Display all widgets for the model
+        """
 
         display(self.namew, self.usesolver)
         self.linear.display()
