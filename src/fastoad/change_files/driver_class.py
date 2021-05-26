@@ -14,16 +14,21 @@ Driver class
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from IPython.display import clear_output, display
+from IPython.display import display
 import ipyvuetify as v
+import openmdao.drivers as driver
 
 class Driver:
+    """
+    A class which display the driver widgets
+    """
 
     def __init__(self):
 
-        # Parameters config file
+        # Text to return in the yaml file
         self.driver = None
 
+        # Ipyvuetify widgets
         self.select = None
 
         self.generator = None
@@ -67,6 +72,9 @@ class Driver:
         )
 
     def initialize(self):
+        """
+        All ipyvuetify widgets to display for the driver
+        """
 
         drive = driver.scipy_optimizer.ScipyOptimizeDriver()
 
@@ -891,12 +899,13 @@ class Driver:
         scipy_optimizer_change()
 
 
-    def save(self):
+    def save(self) -> str :
         """
-        Save the new values in the configuration file
+        Return the text to write in the yaml file for the driver
         """
 
-        self.driver = "driver: "
+        self.driver = "# Definition of problem driver assuming the OpenMDAO convention \"import openmdao.api as om\"\n"
+        self.driver += "driver: "
         if (self.selectDriver.v_model == "differential_evolution_driver"):
             self.driver += "om.DifferentialEvolutionDriver("
             self.driver += "max_gen=" + str(self.vboxdriver.children[0].children[0].v_model)
@@ -955,11 +964,15 @@ class Driver:
             self.driver += ",tol=" + str(self.vboxdriver.children[1].children[0].v_model)
             self.driver += ",maxiter=" + str(self.vboxdriver.children[0].children[1].v_model)
             self.driver += ",disp=" + str(self.vboxdriver.children[1].children[1].v_model) + ")"
-
-
-    def driver_value(self) -> str :
+        self.driver += "\n\n"
+        self.driver += "# Definition of OpenMDAO model\n"
+        self.driver += "# Although \"model\" is a mandatory name for the top level of the model, its\n"
+        self.driver += "# sub-components can be freely named by user\n"
         return self.driver
 
     def display(self):
+        """
+        Call the necessary functions to display the widgets
+        """
 
         self.initialize()

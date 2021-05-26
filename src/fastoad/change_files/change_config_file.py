@@ -30,23 +30,25 @@ class ChangeConfigFile:
         # The path & name of the data file that will be viewed/edited
         self.file_name = "./workdir/oad_process.yml"
 
+        # A variable which take the title_and_files class
         self.title_and_files = None
 
+        # A variable which take the driver class
         self.driver = None
 
-        self.linear = None
-
-        self.nonlinear = None
-
+        # A variable which take the model class
         self.model = None
 
+        # The text to write on the yaml file
         self.txt = None
 
+        # Widgets button to save the values
         self.btn = None
+
 
     def save(self, widget, event, data):
         """
-        Save the new values in the configuration file
+        Save the new values in the configuration file and display an overview
         """
 
         success = v.Alert(
@@ -76,20 +78,38 @@ class ChangeConfigFile:
             children=[v.Icon(children=["get_app"]), "Save"],
         )
 
+        self.reset = v.Btn(
+            color="red",
+            elevation=4,
+            style_="width:150px;margin:auto;",
+            outlined=True,
+            children=["Reset"],
+        )
+
+        def resetwidgets(widget, event, data):
+
+            clear_output(wait=True)
+            self.display()
+
+
         self.btn.on_event("click", self.save)
 
+        self.reset.on_event("click", resetwidgets)
+
         self.title_and_files = TitleAndFiles()
-        self.title_and_files.display()
         self.driver = Driver()
-        self.driver.display()
         self.model = Model("model")
-        self.model.display()
+
 
     def display(self):
         """
-        Read the configuration file, and display all widgets
+        Display all widgets
         """
 
         clear_output(wait=True)
         self._initialize_widgets()
-        display(self.btn)
+        self.title_and_files.display()
+        self.driver.display()
+        self.model.display()
+        display(self.reset)
+        return self.btn
